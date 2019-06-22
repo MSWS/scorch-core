@@ -1,8 +1,10 @@
 package com.scorch.core;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.scorch.core.modules.AbstractModule;
@@ -14,10 +16,16 @@ public class ScorchCore extends JavaPlugin {
 	private static ScorchCore instance;
 
 	private List<AbstractModule> modules;
-	
+
+	private File guiYml = new File(getDataFolder(), "guis.yml");
+
+	private YamlConfiguration gui;
+
 	@Override
 	public void onEnable() {
 		instance = this;
+
+		loadFiles();
 
 		this.modules = new ArrayList<>();
 
@@ -29,6 +37,14 @@ public class ScorchCore extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		unloadModules();
+	}
+
+	public YamlConfiguration getGui() {
+		return gui;
+	}
+
+	private void loadFiles() {
+		gui = YamlConfiguration.loadConfiguration(guiYml);
 	}
 
 	private void loadModules() {
