@@ -2,7 +2,10 @@ package com.scorch.core.modules.data;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
@@ -45,6 +48,46 @@ public class ConnectionManager extends AbstractModule {
 		
 	}
 	
+	/**
+	 * Executes <code>query</code> in sync
+	 * @param  query the query to execute
+	 * @return The <code>ResultSet</code> returned by executing <code>query</code>
+	 */
+	public ResultSet executeQuery (String query) {
+		if(this.isConnected()) {
+			try {
+				Statement statement = this.getConnection().createStatement();
+				return statement.executeQuery(query);
+			} catch (SQLException e) {
+				Logger.error("Error occured while trying execute query: " + e.getMessage() + "\n" + query);
+				return null;
+			}
+		}
+		else {
+			Logger.error("Couldn't execute query because there's no active connection to the database!\n" + query);
+			return null;
+		}
+	}
+	
+	/**
+	 * Creates a prepared statement with <code>query</code> as sql
+	 * @param  query the sql to use in the statement
+	 * @return A prepared statement instance that you can use to execute database actions
+	 */
+	public PreparedStatement prepareStatement (String query) {
+		if(this.isConnected()) {
+			try {
+				return this.getConnection().prepareStatement(query);
+			}
+			catch(SQLException e) {
+				Logger.error("Couldn't create prepared statement: " + e.getMessage() + "\n" + query);
+				return null;
+			}
+		}
+		else {
+			return null;
+		}
+	}
 	
 	/**
 	 * Connects to the database
