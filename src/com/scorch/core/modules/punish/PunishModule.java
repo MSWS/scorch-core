@@ -31,7 +31,7 @@ public class PunishModule extends AbstractModule implements Listener {
 
 	@Override
 	public void disable() {
-
+		
 	}
 
 	public void addPunishment(Punishment punishment) {
@@ -49,7 +49,6 @@ public class PunishModule extends AbstractModule implements Listener {
 
 		if (punishments.isEmpty())
 			return;
-		//
 
 		Collections.sort(punishments, new Comparator<Punishment>() {
 			@Override
@@ -57,6 +56,7 @@ public class PunishModule extends AbstractModule implements Listener {
 				return o1.getDate() > o2.getDate() ? -1 : 1;
 			}
 		});
+		
 		event.setResult(Result.KICK_BANNED);
 		Punishment active = punishments.get(0);
 

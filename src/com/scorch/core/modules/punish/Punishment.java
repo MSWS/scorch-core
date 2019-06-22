@@ -3,16 +3,18 @@ package com.scorch.core.modules.punish;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.scorch.utils.MSG;
 
-public class Punishment implements Comparable<Punishment> {
+public class Punishment implements Comparable<Punishment>, ConfigurationSerializable {
 	private final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a");
 
 	private UUID target;
@@ -114,5 +116,22 @@ public class Punishment implements Comparable<Punishment> {
 	@Override
 	public int compareTo(Punishment o) {
 		return getDate() > o.getDate() ? -1 : 1;
+	}
+
+	@Override
+	public Map<String, Object> serialize() {
+		return null;
+	}
+
+	public static Punishment deserialize(Map<String, Object> values) {
+		if (values.containsKey("remover")) {
+			return new Punishment(UUID.fromString((String) values.get("target")), (String) values.get("staff"),
+					(String) values.get("reason"), (long) values.get("date"), (long) values.get("duration"),
+					PunishType.valueOf((String) values.get("type")), (String) values.get("remover"),
+					(String) values.get("removeReason"), (long) values.get("removeDate"));
+		}
+		return new Punishment(UUID.fromString((String) values.get("target")), (String) values.get("staff"),
+				(String) values.get("reason"), (long) values.get("date"), (long) values.get("duration"),
+				PunishType.valueOf((String) values.get("type")));
 	}
 }
