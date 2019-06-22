@@ -1,4 +1,4 @@
-package com.scorch.core.utils;
+package com.scorch.utils;
 
 import java.util.Arrays;
 import java.util.HashMap;

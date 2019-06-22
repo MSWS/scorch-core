@@ -1,4 +1,4 @@
-package com.scorch.core.utils;
+package com.scorch.utils;
 
 import java.util.Collection;
 
@@ -100,6 +100,7 @@ public class MSG {
 	 * Logs a message to console
 	 * 
 	 * @param msg Message to log
+	 * @deprecated
 	 */
 	public static void log(Object msg) {
 		tell(Bukkit.getConsoleSender(), "[" + plugin.getDescription().getName() + "] " + msg);

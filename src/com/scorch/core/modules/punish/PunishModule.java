@@ -1,5 +1,8 @@
 package com.scorch.core.modules.punish;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,12 +25,15 @@ public class PunishModule extends AbstractModule implements Listener {
 
 	@Override
 	public void disable() {
-
+		
 	}
 
 	@EventHandler
 	public void onLogin(PlayerLoginEvent event) {
 		Player player = event.getPlayer();
-		
+
+		List<Punishment> punishments = null; // TODO
+
+		punishments.stream().filter(Punishment::isActive).collect(Collectors.toList());
 	}
 }

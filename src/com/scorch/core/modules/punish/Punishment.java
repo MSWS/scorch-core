@@ -10,15 +10,15 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.scorch.core.utils.MSG;
+import com.scorch.utils.MSG;
 
 public class Punishment {
 	private final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a");
 
 	private UUID target;
-	private String staff, reason, unbanner, unbanreason;
+	private String staff, reason, remover, removeReason;
 
-	private long date, duration, unbandate;
+	private long date, duration, removeDate;
 
 	private PunishType punishType;
 
@@ -34,14 +34,20 @@ public class Punishment {
 	}
 
 	public Punishment(UUID target, String staff, String reason, long date, long duration, PunishType type,
-			String unbanner, String unbanreason, long unbandate) {
-		this(target, staff, unbanreason, unbandate, duration, type);
+			String remover, String removeReason, long removeDate) {
+		this(target, staff, removeReason, removeDate, duration, type);
 
-		this.unbanner = unbanner;
-		this.unbanreason = unbanreason;
-		this.unbandate = unbandate;
+		this.remover = remover;
+		this.removeReason = removeReason;
+		this.removeDate = removeDate;
 	}
-	
+
+	public void remove(String remover, String removeReason) {
+		this.remover = remover;
+		this.removeReason = removeReason;
+		this.removeDate = System.currentTimeMillis();
+	}
+
 	public UUID getTargetUUID() {
 		return target;
 	}
@@ -58,16 +64,16 @@ public class Punishment {
 		return reason;
 	}
 
-	public String getUnbanReason() {
-		return unbanreason;
+	public String getRemoveReason() {
+		return removeReason;
 	}
 
 	public PunishType getType() {
 		return punishType;
 	}
 
-	public long getUnbanDate() {
-		return unbandate;
+	public long getRemoveDate() {
+		return removeDate;
 	}
 
 	public ItemStack getItem() {
@@ -82,9 +88,9 @@ public class Punishment {
 			lore.add(MSG.color("&eDuration: " + MSG.getTime(duration)));
 
 		if (isRemoved()) {
-			lore.add(MSG.color("&eRemoved By: " + unbanner));
-			lore.add(MSG.color("&eRemove Reason: " + unbanreason));
-			lore.add(MSG.color("&eRemove Date: " + sdf.format(unbandate)));
+			lore.add(MSG.color("&eRemoved By: " + remover));
+			lore.add(MSG.color("&eRemove Reason: " + removeReason));
+			lore.add(MSG.color("&eRemove Date: " + sdf.format(removeDate)));
 		}
 
 		return item;
@@ -95,6 +101,6 @@ public class Punishment {
 	}
 
 	public boolean isRemoved() {
-		return unbanner != null;
+		return remover != null;
 	}
 }
