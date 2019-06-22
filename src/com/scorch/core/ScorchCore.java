@@ -6,7 +6,7 @@ import java.util.List;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.scorch.core.modules.AbstractModule;
-import com.scorch.core.modules.ConnectionManager;
+import com.scorch.core.modules.data.ConnectionManager;
 
 public class ScorchCore extends JavaPlugin {
 	

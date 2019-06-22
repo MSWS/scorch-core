@@ -1,10 +1,11 @@
-package com.scorch.core.modules;
+package com.scorch.core.modules.data;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import com.scorch.core.ScorchCore;
+import com.scorch.core.modules.AbstractModule;
 import com.scorch.utils.Logger;
 
 public class ConnectionManager extends AbstractModule {
