@@ -1,29 +1,36 @@
 package com.scorch.core;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.scorch.core.modules.AbstractModule;
-import com.scorch.core.modules.data.ConnectionManager;
+import com.scorch.core.modules.ConnectionManager;
+import com.scorch.utils.Logger;
 
 public class ScorchCore extends JavaPlugin {
-	
+
 	private static ScorchCore instance;
 
 	private List<AbstractModule> modules;
 
+	private File guiYml = new File(getDataFolder(), "guis.yml");
+
+	private YamlConfiguration gui;
+
 	@Override
 	public void onEnable() {
-		//Maybe do other stuff before loading all the modules
 		instance = this;
-		
+
+		loadFiles();
+
 		this.modules = new ArrayList<>();
-		
-		
+
 		this.registerModule(new ConnectionManager("DataManager"));
-		
+
 		loadModules();
 	}
 
@@ -32,37 +39,38 @@ public class ScorchCore extends JavaPlugin {
 		unloadModules();
 	}
 
+	public YamlConfiguration getGui() {
+		return gui;
+	}
+
+	private void loadFiles() {
+		gui = YamlConfiguration.loadConfiguration(guiYml);
+	}
+
 	private void loadModules() {
-		for(AbstractModule module : this.getModules()) {
-			module.initialize();
-		}
+		getModules().forEach(AbstractModule::initialize);
 	}
 
 	private void unloadModules() {
-		for(AbstractModule module : this.getModules()) {
-			module.disable();
-		}
+		getModules().forEach(AbstractModule::disable);
 	}
 
 	public List<AbstractModule> getModules() {
 		return modules;
 	}
-	
-	
-	public void registerModule (AbstractModule module){
-		if(!this.hasModule(module)) {
+
+	public void registerModule(AbstractModule module) {
+		if (!this.hasModule(module)) {
 			this.modules.add(module);
-		}
-		else {
-			//TODO: Replace this with logger class
-			System.out.println("Module (" + module.getId() + ") already registered!");
+		} else {
+			Logger.warn("Module (" + module.getId() + ") already registered!");
 		}
 	}
-	
+
 	public boolean hasModule(AbstractModule module) {
 		return modules.contains(module);
 	}
-	
+
 	public static ScorchCore getInstance() {
 		return instance;
 	}

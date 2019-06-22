@@ -12,7 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.scorch.utils.MSG;
 
-public class Punishment {
+public class Punishment implements Comparable<Punishment> {
 	private final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a");
 
 	private UUID target;
@@ -76,6 +76,10 @@ public class Punishment {
 		return removeDate;
 	}
 
+	public long getDate() {
+		return date;
+	}
+
 	public ItemStack getItem() {
 		ItemStack item = new ItemStack(punishType.getMaterial());
 		ItemMeta meta = item.getItemMeta();
@@ -102,5 +106,13 @@ public class Punishment {
 
 	public boolean isRemoved() {
 		return remover != null;
+	}
+
+	/**
+	 * @deprecated
+	 */
+	@Override
+	public int compareTo(Punishment o) {
+		return getDate() > o.getDate() ? -1 : 1;
 	}
 }
