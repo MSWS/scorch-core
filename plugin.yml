@@ -1,0 +1,6 @@
+main: com.scorch.core.ScorchCore
+description: Core
+version: 0.0.1
+authors:
+- MSWS
+- kitsune

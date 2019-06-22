@@ -3,15 +3,17 @@ package com.scorch.core.modules.punish;
 import org.bukkit.Material;
 
 import com.scorch.utils.Logger;
-import com.scorch.utils.MSG;
 
 public enum PunishType {
-	IP_BAN("BEDROCK"), PERM_BAN("REDSTONE_BLOCK"), TEMP_BAN("DIAMOND_SWORD"), PERM_MUTE("WRITABLE_BOOK"),
-	TEMP_MUTE("WRITABLE_BOOK"), WARNING("PAPER"), KICK("LEATHER_BOOTS"), OTHER("HOPPER");
+	IP_BAN("BEDROCK", true), PERM_BAN("REDSTONE_BLOCK", true), TEMP_BAN("DIAMOND_SWORD", true),
+	PERM_MUTE("WRITABLE_BOOK", false), TEMP_MUTE("WRITABLE_BOOK", false), WARNING("PAPER", false),
+	KICK("LEATHER_BOOTS", false), OTHER("HOPPER", false);
 
 	private Material mat;
+	private boolean restrictLogin;
 
-	PunishType(String mat) {
+	PunishType(String mat, boolean restrictLogin) {
+		this.restrictLogin = restrictLogin;
 		try {
 			this.mat = Material.valueOf(mat);
 		} catch (Exception e) {
@@ -21,5 +23,9 @@ public enum PunishType {
 
 	public Material getMaterial() {
 		return mat;
+	}
+
+	public boolean restrictsLogin() {
+		return restrictLogin;
 	}
 }

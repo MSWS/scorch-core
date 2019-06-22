@@ -171,8 +171,6 @@ public class GUILib {
 	}
 	
 	public static class GUIListener implements Listener{
-
-		
 		public GUIListener (Plugin plugin) {
 			plugin.getServer().getPluginManager().registerEvents(this, plugin);
 		}
