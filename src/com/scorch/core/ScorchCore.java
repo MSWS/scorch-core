@@ -7,8 +7,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.scorch.core.modules.AbstractModule;
 
-import net.md_5.bungee.api.ChatColor;
-
 public class ScorchCore extends JavaPlugin {
 	
 	private static ScorchCore instance;
@@ -18,7 +16,7 @@ public class ScorchCore extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		//Maybe do other stuff before loading all the modules
-		ScorchCore.setInstance(this);
+		instance = this;
 		
 		this.modules = new ArrayList<>();
 		
@@ -63,9 +61,5 @@ public class ScorchCore extends JavaPlugin {
 	
 	public static ScorchCore getInstance() {
 		return instance;
-	}
-	
-	public static void setInstance (ScorchCore plugin) {
-		instance = plugin;
 	}
 }
