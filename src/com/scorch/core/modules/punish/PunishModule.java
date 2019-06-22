@@ -42,13 +42,14 @@ public class PunishModule extends AbstractModule implements Listener {
 	public void onLogin(PlayerLoginEvent event) {
 		Player player = event.getPlayer();
 
-		List<Punishment> punishments = null; // TODO
+		List<Punishment> punishments = null; // TODO 
 
 		punishments.stream().filter(Punishment::isActive).filter(p -> p.getType().restrictsLogin())
 				.collect(Collectors.toList());
 
 		if (punishments.isEmpty())
 			return;
+		//
 
 		Collections.sort(punishments, new Comparator<Punishment>() {
 			@Override

@@ -8,7 +8,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.scorch.core.modules.AbstractModule;
-import com.scorch.core.modules.ConnectionManager;
+import com.scorch.core.modules.data.ConnectionManager;
 import com.scorch.utils.Logger;
 
 public class ScorchCore extends JavaPlugin {
