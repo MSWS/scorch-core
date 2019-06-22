@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.scorch.core.modules.AbstractModule;
+import com.scorch.core.modules.ConnectionManager;
 
 public class ScorchCore extends JavaPlugin {
 	
@@ -19,6 +20,9 @@ public class ScorchCore extends JavaPlugin {
 		instance = this;
 		
 		this.modules = new ArrayList<>();
+		
+		
+		this.registerModule(new ConnectionManager("DataManager"));
 		
 		loadModules();
 	}
