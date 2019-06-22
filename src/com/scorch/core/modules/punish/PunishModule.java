@@ -1,8 +1,15 @@
 package com.scorch.core.modules.punish;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerLoginEvent;
+
+import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
 
-public class PunishModule extends AbstractModule {
+public class PunishModule extends AbstractModule implements Listener {
 
 	public PunishModule(String id) {
 		super(id);
@@ -10,15 +17,17 @@ public class PunishModule extends AbstractModule {
 
 	@Override
 	public void initialize() {
-		loadPunishments();
+		Bukkit.getPluginManager().registerEvents(this, ScorchCore.getInstance());
 	}
 
 	@Override
 	public void disable() {
-		
+
 	}
-	
-	private void loadPunishments() {
+
+	@EventHandler
+	public void onLogin(PlayerLoginEvent event) {
+		Player player = event.getPlayer();
 		
 	}
 }
