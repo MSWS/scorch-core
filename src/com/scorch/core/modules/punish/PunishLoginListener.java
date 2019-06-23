@@ -14,6 +14,13 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 import com.scorch.core.ScorchCore;
 
+/**
+ * {@link PunishLoginListener} is the listener for when players join the/a
+ * server NOTE: Work in process
+ * 
+ * @author imodm
+ *
+ */
 public class PunishLoginListener implements Listener {
 	public PunishLoginListener() {
 		Bukkit.getPluginManager().registerEvents(this, ScorchCore.getInstance());
