@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.ConnectionManager;
 import com.scorch.core.modules.data.DataManager;
+import com.scorch.core.modules.punish.BanwaveModule;
 import com.scorch.core.modules.punish.PunishModule;
 import com.scorch.utils.Logger;
 
@@ -35,6 +36,7 @@ public class ScorchCore extends JavaPlugin {
 
 		registerModule(new ConnectionManager("ConnectionManager"));
 		registerModule(new PunishModule("PunishModule"));
+		registerModule(new BanwaveModule("BanwaveModule"));
 		// DO NOT load ScoreboardModule
 
 		loadModules();
