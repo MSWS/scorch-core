@@ -35,6 +35,7 @@ public class ScorchCore extends JavaPlugin {
 
 		registerModule(new ConnectionManager("ConnectionManager"));
 		registerModule(new PunishModule("PunishModule"));
+		// DO NOT load ScoreboardModule
 
 		loadModules();
 	}
