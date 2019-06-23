@@ -33,7 +33,6 @@ public class PunishCommand implements CommandExecutor {
 		Inventory inv = Utils.getGui(player, ScorchCore.getInstance().getGui(), "punish", 0);
 
 		player.openInventory(inv);
-
 		return true;
 	}
 

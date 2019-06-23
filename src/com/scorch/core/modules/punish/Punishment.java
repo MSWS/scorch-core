@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -42,6 +43,16 @@ public class Punishment implements Comparable<Punishment>, ConfigurationSerializ
 		this.remover = remover;
 		this.removeReason = removeReason;
 		this.removeDate = removeDate;
+	}
+
+	public void execute() {
+		Player target = Bukkit.getPlayer(this.target);
+		kick: if (punishType.restrictsLogin()) {
+			if (target == null || !target.isOnline())
+				break kick;
+
+			target.kickPlayer(null);
+		}
 	}
 
 	public void remove(String remover, String removeReason) {
@@ -133,5 +144,22 @@ public class Punishment implements Comparable<Punishment>, ConfigurationSerializ
 		return new Punishment(UUID.fromString((String) values.get("target")), (String) values.get("staff"),
 				(String) values.get("reason"), (long) values.get("date"), (long) values.get("duration"),
 				PunishType.valueOf((String) values.get("type")));
+	}
+
+	public String getKickMessage() {
+		if (!punishType.restrictsLogin()) {
+			return "Unknown";
+		}
+
+		String verb = "punished"; // should never appear
+		switch (punishType) {
+		case IP_BAN:
+			verb = "ip banned";
+			break;
+		}
+
+		// TODO
+
+		return "&c&lYou have been ";
 	}
 }
