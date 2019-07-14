@@ -202,8 +202,11 @@ public class Utils {
 			item.setAmount(gui.getInt("Amount"));
 //		if (gui.contains("Data"))
 //			item.setDurability((short) gui.getInt("Data"));
-		if (gui.contains("Data"))
-			((Damageable) item).setDamage(gui.getInt("Data"));
+		if (gui.contains("Data")) {
+			Damageable dmg = (Damageable) item.getItemMeta();
+			dmg.setDamage(gui.getInt("Data"));
+			item.setItemMeta((ItemMeta) dmg);
+		}
 		if (gui.contains("Owner")) {
 			SkullMeta meta = (SkullMeta) item.getItemMeta();
 //			meta.setOwner(gui.getString("Owner"));

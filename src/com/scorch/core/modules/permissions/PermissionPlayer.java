@@ -16,7 +16,7 @@ import java.util.*;
 public class PermissionPlayer {
 
     private UUID uniqueId;
-    private String group;
+    private String groupName;
     private List<String> permissions;
 
     /**
@@ -36,7 +36,7 @@ public class PermissionPlayer {
      */
     public PermissionPlayer (UUID uniqueId, String group, String... permissions){
         this.uniqueId = uniqueId;
-        this.group = group;
+        this.groupName = group;
         this.permissions = new ArrayList<>(Arrays.asList(permissions));
     }
 
@@ -65,7 +65,7 @@ public class PermissionPlayer {
      */
     public PermissionPlayer (UUID uniqueId, String group){
         this.uniqueId = uniqueId;
-        this.group = group;
+        this.groupName = group;
         this.permissions = new ArrayList<>();
     }
 
@@ -132,7 +132,7 @@ public class PermissionPlayer {
      * @return the group
      */
     public String getGroup() {
-        return group;
+        return groupName;
     }
 
     /**
