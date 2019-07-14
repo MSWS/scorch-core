@@ -6,14 +6,17 @@ import java.util.Map.Entry;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.scorch.core.modules.data.annotations.DataNotNull;
 import com.scorch.core.utils.MSG;
-import com.sun.istack.internal.NotNull;
 
 public class CMessage {
-	@NotNull
+	@DataNotNull
 	private String msg;
-	@NotNull
+	@DataNotNull
 	private String id;
+
+	public CMessage() {
+	}
 
 	public CMessage(String id, String raw) {
 		this.id = id;

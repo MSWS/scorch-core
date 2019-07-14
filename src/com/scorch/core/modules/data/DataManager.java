@@ -19,9 +19,10 @@ import com.scorch.core.modules.data.annotations.DataIgnore;
 import com.scorch.core.modules.data.annotations.DataNotNull;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.utils.Logger;
+import com.scorch.core.utils.MSG;
 
 /**
- *  Utility to easily save different types of objects to a database and load them
+ * Utility to easily save different types of objects to a database and load them
  *
  * @author Gijs de Jong
  */
@@ -50,25 +51,27 @@ public class DataManager extends AbstractModule {
 
 	/**
 	 * Creates a table if it doesn't exist already with <code>name</code> as name
-	 * and with the fields of <code>storageType</code> as columns Call this in
-	 * your plugin/module initialisation
+	 * and with the fields of <code>storageType</code> as columns Call this in your
+	 * plugin/module initialisation
 	 * 
 	 * @param name        the name of the database
 	 * @param storageType the column template
 	 */
 	public void createTable(String name, Class storageType) throws NoDefaultConstructorException {
 
-		if(!hasDefaultConstructor(storageType)){
+		if (!hasDefaultConstructor(storageType)) {
 			throw new NoDefaultConstructorException();
 		}
 
-		String query = "CREATE TABLE IF NOT EXISTS " + name + " (local_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, object_type TEXT NOT NULL, ";
+		String query = "CREATE TABLE IF NOT EXISTS " + name
+				+ " (local_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, object_type TEXT NOT NULL, ";
 
 		for (int i = 0; i < storageType.getDeclaredFields().length; i++) {
 			Field field = storageType.getDeclaredFields()[i];
 
 			// Makes sure that the field doesn't have to be ignored for serialisation
-			if (field.isAnnotationPresent(DataIgnore.class)) continue;
+			if (field.isAnnotationPresent(DataIgnore.class))
+				continue;
 
 			query += field.getName();
 
@@ -94,10 +97,11 @@ public class DataManager extends AbstractModule {
 
 			if (field.getAnnotation(DataNotNull.class) != null) {
 				query += "NOT NULL, ";
-			} else if (i != (storageType.getDeclaredFields().length-1)) {
+			} else if (i != (storageType.getDeclaredFields().length - 1)) {
 				query += ", ";
 			} else {
 				query += ");";
+				Logger.log(query);
 				this.getConnectionManager().executeQuery(query);
 			}
 		}
@@ -105,6 +109,7 @@ public class DataManager extends AbstractModule {
 
 	/**
 	 * Saves the <code>object</code> to <code>table</code>
+	 * 
 	 * @param table  the table to save <code>object</code> to
 	 * @param object the object to save
 	 */
@@ -115,17 +120,19 @@ public class DataManager extends AbstractModule {
 			Field field = object.getClass().getDeclaredFields()[i];
 
 			// Makes sure that the field doesn't have to be ignored for serialisation
-			if (field.isAnnotationPresent(DataIgnore.class)) continue;
+			if (field.isAnnotationPresent(DataIgnore.class))
+				continue;
 
 			if (field.getAnnotation(DataIgnore.class) == null) {
 				query += field.getName();
 
-				if (i == object.getClass().getDeclaredFields().length-1) {
+				if (i == object.getClass().getDeclaredFields().length - 1) {
 					query += ") VALUES (?,";
 					for (int j = 0; j < object.getClass().getDeclaredFields().length; j++) {
-						if(object.getClass().getDeclaredFields()[j].isAnnotationPresent(DataIgnore.class)) continue;
+						if (object.getClass().getDeclaredFields()[j].isAnnotationPresent(DataIgnore.class))
+							continue;
 						query += "?";
-						if (j == object.getClass().getDeclaredFields().length-1) {
+						if (j == object.getClass().getDeclaredFields().length - 1) {
 							query += ");";
 						} else {
 							query += ", ";
@@ -151,7 +158,8 @@ public class DataManager extends AbstractModule {
 				field.setAccessible(true);
 
 				// Makes sure that the field doesn't have to be ignored for serialisation
-				if (field.isAnnotationPresent(DataIgnore.class)) continue;
+				if (field.isAnnotationPresent(DataIgnore.class))
+					continue;
 
 				try {
 					if (field.getType() == Integer.class) {
@@ -178,11 +186,12 @@ public class DataManager extends AbstractModule {
 					parameterIndex++;
 
 				} catch (IllegalArgumentException | IllegalAccessException e) {
-					Logger.error("An error occurred while trying to serialize a class for a prepared statement " +
-							"(" + field.getName() + " of " + field.getDeclaringClass().getName() + "): "
-							+ e.getMessage() + "\n" + query);
+					Logger.error("An error occurred while trying to serialize a class for a prepared statement " + "("
+							+ field.getName() + " of " + field.getDeclaringClass().getName() + "): " + e.getMessage()
+							+ "\n" + query);
 				}
 			}
+			Logger.log(statement.toString());
 			statement.execute();
 		} catch (SQLException e) {
 			Logger.error("An error occurred while trying to save an object: " + e.getMessage());
@@ -190,29 +199,31 @@ public class DataManager extends AbstractModule {
 	}
 
 	/**
-	 * Gets the object where selector == value from table
-	 * Returns a {@link java.util.Collection} of said object if multiple objects are found in the database
-	 * that match the selectors
+	 * Gets the object where selector == value from table Returns a
+	 * {@link java.util.Collection} of said object if multiple objects are found in
+	 * the database that match the selectors
+	 * 
 	 * @param table        the table
 	 * @param sqlSelectors the selectors to use
-	 * @return             the object found in the database
+	 * @return the object found in the database
 	 */
-	public Object getObject (String table, SQLSelector... sqlSelectors) throws DataObtainException {
+	public Object getObject(String table, SQLSelector... sqlSelectors) throws DataObtainException {
 
-		if(table == null || table.equals("")) throw new DataObtainException("Table name is null");
-		if(sqlSelectors == null || sqlSelectors.length == 0) throw new DataObtainException("No sql selectors defined");
+		if (table == null || table.equals(""))
+			throw new DataObtainException("Table name is null");
+		if (sqlSelectors == null || sqlSelectors.length == 0)
+			throw new DataObtainException("No sql selectors defined");
 
-
-
-		String sql = String.format("SELECT * FROM %s WHERE %s='%s' ", table, sqlSelectors[0].getSelector(), sqlSelectors[0].getValue());
+		String sql = String.format("SELECT * FROM %s WHERE %s='%s' ", table, sqlSelectors[0].getSelector(),
+				sqlSelectors[0].getValue());
 
 		// Strip first element from sqlSelectors because we just used it ^ there
-		SQLSelector[] remainingSelectors = IntStream.range(1, sqlSelectors.length)
-				.mapToObj(i -> sqlSelectors[i])
+		SQLSelector[] remainingSelectors = IntStream.range(1, sqlSelectors.length).mapToObj(i -> sqlSelectors[i])
 				.toArray(SQLSelector[]::new);
 
-		for(int i = 0; i < remainingSelectors.length; i++){
-			sql = sql + String.format(" AND %s='&s'", remainingSelectors[i].getSelector(), remainingSelectors[i].getValue());
+		for (int i = 0; i < remainingSelectors.length; i++) {
+			sql = sql + String.format(" AND %s='&s'", remainingSelectors[i].getSelector(),
+					remainingSelectors[i].getValue());
 		}
 
 		sql = sql + ";";
@@ -220,7 +231,8 @@ public class DataManager extends AbstractModule {
 		ResultSet res = this.getConnectionManager().executeQuery(sql);
 
 		try {
-			if(res == null) return null;
+			if (res == null)
+				return null;
 			res.last();
 			int rowCount = res.getRow();
 
@@ -229,7 +241,7 @@ public class DataManager extends AbstractModule {
 
 			Collection<Object> collection = new ArrayList<>();
 
-			while(res.next()){
+			while (res.next()) {
 				String className = res.getString("object_type");
 				Class clazz = Class.forName(className);
 				Object dataObject = clazz.newInstance();
@@ -239,10 +251,11 @@ public class DataManager extends AbstractModule {
 				int columnIndex = 3;
 
 				// Start at one since we've already gotten the class name ^
-				for(Field field : clazz.getDeclaredFields()){
+				for (Field field : clazz.getDeclaredFields()) {
 
 					// Make sure the field doesn't have to be ignored
-					if(field.isAnnotationPresent(DataIgnore.class)) continue;
+					if (field.isAnnotationPresent(DataIgnore.class))
+						continue;
 
 					// Make sure the field is accessible in case it's private
 					field.setAccessible(true);
@@ -256,7 +269,8 @@ public class DataManager extends AbstractModule {
 					} else if (field.getType() == UUID.class) {
 						field.set(dataObject, UUID.fromString(res.getString(columnIndex)));
 					} else if (field.getType().isEnum()) {
-						field.set(dataObject, field.getType().getMethod("valueOf", String.class).invoke(null, res.getString(columnIndex)));
+						field.set(dataObject, field.getType().getMethod("valueOf", String.class).invoke(null,
+								res.getString(columnIndex)));
 					} else if (Collection.class.isAssignableFrom(field.getType())) {
 						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), Collection.class));
 					} else if (Map.class.isAssignableFrom(field.getType())) {
@@ -270,17 +284,16 @@ public class DataManager extends AbstractModule {
 
 					columnIndex++;
 				}
-				if(rowCount > 1){
+				if (rowCount > 1) {
 					// should return array so add to list
 					collection.add(dataObject);
-				}
-				else {
+				} else {
 					return dataObject;
 				}
 			}
 			return collection;
-		}
-		catch(SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e){
+		} catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException
+				| NoSuchMethodException | InvocationTargetException e) {
 			Logger.error("An error occurred while trying to get object from table: " + e.getMessage());
 			e.printStackTrace();
 			return null;
@@ -289,21 +302,23 @@ public class DataManager extends AbstractModule {
 
 	/**
 	 * Gets all the objects in a table using SELECT * FROM table
-	 * @param table                the target table
-	 * @return                     a {@link Collection} of objects that are stored in the table
+	 * 
+	 * @param table the target table
+	 * @return a {@link Collection} of objects that are stored in the table
 	 * @throws DataObtainException thrown when there's an issue obtaining the data
 	 *
 	 * @see this.getObject
 	 */
-	public <T> Collection<T> getAllObjects (String table) throws DataObtainException {
-		if(table == null || table == "") throw new DataObtainException("Table name is null");
+	public <T> Collection<T> getAllObjects(String table) throws DataObtainException {
+		if (table == null || table == "")
+			throw new DataObtainException("Table name is null");
 		ResultSet res = this.getConnectionManager().executeQuery(String.format("SELECT * FROM %s;", table));
 		Collection<T> collection = new ArrayList<>();
 
-
 		try {
-			if(res == null) return collection;
-			while(res.next()){
+			if (res == null)
+				return collection;
+			while (res.next()) {
 				String className = res.getString("object_type");
 				Class clazz = Class.forName(className);
 				Object dataObject = clazz.newInstance();
@@ -313,10 +328,11 @@ public class DataManager extends AbstractModule {
 				int columnIndex = 3;
 
 				// Start at one since we've already gotten the class name ^
-				for(Field field : clazz.getDeclaredFields()){
+				for (Field field : clazz.getDeclaredFields()) {
 
 					// Make sure the field doesn't have to be ignored
-					if(field.isAnnotationPresent(DataIgnore.class)) continue;
+					if (field.isAnnotationPresent(DataIgnore.class))
+						continue;
 
 					// Make sure the field is accessible in case it's private
 					field.setAccessible(true);
@@ -330,7 +346,8 @@ public class DataManager extends AbstractModule {
 					} else if (field.getType() == UUID.class) {
 						field.set(dataObject, UUID.fromString(res.getString(columnIndex)));
 					} else if (field.getType().isEnum()) {
-						field.set(dataObject, field.getType().getMethod("valueOf", String.class).invoke(null, res.getString(columnIndex)));
+						field.set(dataObject, field.getType().getMethod("valueOf", String.class).invoke(null,
+								res.getString(columnIndex)));
 					} else if (Collection.class.isAssignableFrom(field.getType())) {
 						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), Collection.class));
 					} else if (Map.class.isAssignableFrom(field.getType())) {
@@ -344,11 +361,11 @@ public class DataManager extends AbstractModule {
 
 					columnIndex++;
 				}
-				collection.add((T)dataObject);
+				collection.add((T) dataObject);
 			}
 			return collection;
-		}
-		catch(SQLException | IllegalAccessException | NoSuchMethodException | InstantiationException | ClassNotFoundException | InvocationTargetException e){
+		} catch (SQLException | IllegalAccessException | NoSuchMethodException | InstantiationException
+				| ClassNotFoundException | InvocationTargetException e) {
 			Logger.error("An error occurred while trying to get objects from table: " + e.getMessage());
 			e.printStackTrace();
 			return null;
@@ -357,14 +374,15 @@ public class DataManager extends AbstractModule {
 
 	/**
 	 * Checks if the type has a default constructor
+	 * 
 	 * @param type the type to check
-	 * @return     whether the type has a default constructor
+	 * @return whether the type has a default constructor
 	 */
-	private boolean hasDefaultConstructor (Class type) {
+	private boolean hasDefaultConstructor(Class type) {
 		// Loop through all constructors in type
-		for(Constructor constructor : type.getConstructors()){
+		for (Constructor constructor : type.getConstructors()) {
 			// No parameters in constructor so its a default constructor
-			if(constructor.getParameters().length == 0){
+			if (constructor.getParameters().length == 0) {
 				return true;
 			}
 		}
@@ -374,6 +392,7 @@ public class DataManager extends AbstractModule {
 
 	/**
 	 * Gets the gson instance
+	 * 
 	 * @return the gson instance
 	 */
 	public static Gson getGson() {

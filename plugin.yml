@@ -7,4 +7,6 @@ authors:
 - kitsune
 commands:
   punish:
-    description: "general punish command"
+    description: general punish command
+  test:
+    description: for testing database

@@ -34,7 +34,6 @@ public class PunishModule extends AbstractModule {
 
 
 		try {
-
 			ScorchCore.getInstance().getDataManager().createTable(table, Punishment.class);
 		}
 		catch(NoDefaultConstructorException e){
