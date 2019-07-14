@@ -295,10 +295,10 @@ public class DataManager extends AbstractModule {
 	 *
 	 * @see this.getObject
 	 */
-	public Collection<Object> getAllObjects (String table) throws DataObtainException {
+	public <T> Collection<T> getAllObjects (String table) throws DataObtainException {
 		if(table == null || table == "") throw new DataObtainException("Table name is null");
 		ResultSet res = this.getConnectionManager().executeQuery(String.format("SELECT * FROM %s;", table));
-		Collection<Object> collection = new ArrayList<>();
+		Collection<T> collection = new ArrayList<>();
 
 
 		try {
@@ -344,7 +344,7 @@ public class DataManager extends AbstractModule {
 
 					columnIndex++;
 				}
-				collection.add(dataObject);
+				collection.add((T)dataObject);
 			}
 			return collection;
 		}

@@ -1,5 +1,6 @@
 package com.scorch.core.modules.punish;
 
+import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 
@@ -32,10 +33,13 @@ public class PunishModule extends AbstractModule {
 		joinListener = new PunishLoginListener();
 
 
-		/*
+		try {
 
-			ScorchCore.getInstance().getData().createTable(table, Punishment.class);
-		*/
+			ScorchCore.getInstance().getDataManager().createTable(table, Punishment.class);
+		}
+		catch(NoDefaultConstructorException e){
+			e.printStackTrace();
+		}
 	}
 
 	@Override

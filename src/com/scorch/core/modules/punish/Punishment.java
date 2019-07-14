@@ -76,7 +76,7 @@ public class Punishment implements Comparable<Punishment>, ConfigurationSerializ
 	/**
 	 * Empty contructor for the datamanager
 	 */
-
+	public Punishment () {}
 
 
 	/**
