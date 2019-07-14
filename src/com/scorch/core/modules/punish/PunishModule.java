@@ -31,7 +31,11 @@ public class PunishModule extends AbstractModule {
 		new PunishCommand();
 		joinListener = new PunishLoginListener();
 
-		ScorchCore.getInstance().getData().createTable(table, Punishment.class);
+
+		/*
+
+			ScorchCore.getInstance().getData().createTable(table, Punishment.class);
+		*/
 	}
 
 	@Override

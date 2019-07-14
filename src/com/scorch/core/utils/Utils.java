@@ -1,4 +1,4 @@
-package com.scorch.utils;
+package com.scorch.core.utils;
 
 import java.io.BufferedReader;
 import java.io.File;

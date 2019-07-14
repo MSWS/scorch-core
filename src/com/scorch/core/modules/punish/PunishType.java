@@ -2,7 +2,7 @@ package com.scorch.core.modules.punish;
 
 import org.bukkit.Material;
 
-import com.scorch.utils.Logger;
+import com.scorch.core.utils.Logger;
 
 public enum PunishType {
 	IP_BAN("BEDROCK", true), PERM_BAN("REDSTONE_BLOCK", true), TEMP_BAN("DIAMOND_SWORD", true),

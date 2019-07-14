@@ -22,8 +22,8 @@ public class BanwaveModule extends AbstractModule {
 	@Override
 	public void initialize() {
 		punishments = new ArrayList<Punishment>();
-		rate = 1000 * 60 * 5; // 1 second * 1 minutes * 5 minutes = 5 Minute rate (milliseconds) // TODO may
-								// be changed later
+		rate = 1000 * 60 * 5; // 1 second * 1 minutes * 5 minutes = 5 Minute rate (milliseconds)
+		// TODO may be changed later
 
 		getBanwave().runTaskTimer(ScorchCore.getInstance(), rate, rate);
 	}
@@ -32,7 +32,7 @@ public class BanwaveModule extends AbstractModule {
 	public void disable() {
 		punishments.clear();
 
-		getBanwave().cancel();
+		//getBanwave().cancel();
 	}
 
 	private BukkitRunnable getBanwave() {

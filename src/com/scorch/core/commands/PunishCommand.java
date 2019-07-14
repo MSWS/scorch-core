@@ -9,8 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.utils.MSG;
-import com.scorch.utils.Utils;
+import com.scorch.core.utils.MSG;
+import com.scorch.core.utils.Utils;
 
 public class PunishCommand implements CommandExecutor {
 

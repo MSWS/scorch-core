@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="core-development:jar">
+    <output-path>$USER_HOME$/Desktop/scorch test/plugins</output-path>
+    <root id="archive" name="ScorchCore.jar">
+      <element id="module-output" name="core-development" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/mariadb/jdbc/mariadb-java-client/2.4.2/mariadb-java-client-2.4.2.jar" path-in-jar="/" />
+      <element id="file-copy" path="$PROJECT_DIR$/config.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/guis.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/plugin.yml" />
+    </root>
+  </artifact>
+</component>

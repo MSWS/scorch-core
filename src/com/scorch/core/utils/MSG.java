@@ -1,4 +1,4 @@
-package com.scorch.utils;
+package com.scorch.core.utils;
 
 import java.util.Collection;
 
@@ -12,7 +12,7 @@ public class MSG {
 	public static JavaPlugin plugin;
 
 	/**
-	 * Returns the string with &'s being §
+	 * Returns the string with &'s being ï¿½
 	 * 
 	 * @param msg the message to replace
 	 * @return returns colored msg

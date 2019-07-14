@@ -9,8 +9,14 @@ import java.sql.Statement;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
-import com.scorch.utils.Logger;
+import com.scorch.core.utils.Logger;
 
+/**
+ *  ConnectionManager that handles SQL connections to the database heavily used by {@link DataManager}
+ *
+ * @see DataManager;
+ * @author Gijs de Jong
+ */
 public class ConnectionManager extends AbstractModule {
 
 	
@@ -19,16 +25,12 @@ public class ConnectionManager extends AbstractModule {
 	
 	public ConnectionManager(String id) {
 		super(id);
-		//Setup configuration file
-		ScorchCore.getInstance().getConfig().options().copyDefaults(true);
-		ScorchCore.getInstance().saveConfig();
 	}
 
 	
 	
 	@Override
 	public void initialize() {
-		
 		this.driver = "org.mariadb.jdbc.Driver";
 		this.database = ScorchCore.getInstance().getConfig().getString("MySql.database");
 		this.port = ScorchCore.getInstance().getConfig().getString("MySql.port");
@@ -37,21 +39,17 @@ public class ConnectionManager extends AbstractModule {
 		this.password = ScorchCore.getInstance().getConfig().getString("MySql.password");
 		
 		this.connect();
-		
-		//TODO setup base tables here
-		
 	}
 
 	@Override
 	public void disable() {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	/**
 	 * Executes <code>query</code> in sync
 	 * @param  query the query to execute
-	 * @return The <code>ResultSet</code> returned by executing <code>query</code>
+	 * @return The {@link java.sql.ResultSet} returned by executing <code>query</code>
 	 */
 	public ResultSet executeQuery (String query) {
 		if(this.isConnected()) {
@@ -88,7 +86,7 @@ public class ConnectionManager extends AbstractModule {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Connects to the database
 	 */
@@ -97,7 +95,7 @@ public class ConnectionManager extends AbstractModule {
 			Class.forName(this.driver);
 			this.connection = DriverManager.getConnection(this.host, this.user, this.password);
 		} catch (ClassNotFoundException | SQLException e) {
-			Logger.error("Error occured while trying to connect to database: " + e.getMessage());
+			Logger.error("Error occurred while trying to connect to database: " + e.getMessage());
 			this.connection = null;
 		}
 	}
@@ -111,7 +109,7 @@ public class ConnectionManager extends AbstractModule {
 			try {
 				return !this.getConnection().isClosed();
 			} catch (SQLException e) {
-				Logger.error("Error occured while trying to check the sql connection status: " + e.getMessage());
+				Logger.error("Error occurred while trying to check the sql connection status: " + e.getMessage());
 				return false;
 			}
 		}
@@ -134,7 +132,7 @@ public class ConnectionManager extends AbstractModule {
 				return connection;
 			}
 		} catch (SQLException e) {
-			Logger.error("Error occured while trying to check the sql connection status: " + e.getMessage());
+			Logger.error("Error occurred while trying to check the sql connection status: " + e.getMessage());
 			return null;
 		}
 	}

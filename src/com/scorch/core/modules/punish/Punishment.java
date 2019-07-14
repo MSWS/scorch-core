@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.scorch.core.modules.data.annotations.DataIgnore;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -14,8 +15,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.scorch.utils.Logger;
-import com.scorch.utils.MSG;
+import com.scorch.core.utils.Logger;
+import com.scorch.core.utils.MSG;
 
 /**
  * Punishment is an entry to a player's Punishment History, supports
@@ -25,7 +26,9 @@ import com.scorch.utils.MSG;
  *
  */
 public class Punishment implements Comparable<Punishment>, ConfigurationSerializable {
-	private final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a");
+
+	@DataIgnore
+	final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a");
 
 	private UUID target;
 	private String staff, reason, remover, removeReason;
@@ -69,6 +72,12 @@ public class Punishment implements Comparable<Punishment>, ConfigurationSerializ
 		this.removeReason = removeReason;
 		this.removeDate = removeDate;
 	}
+
+	/**
+	 * Empty contructor for the datamanager
+	 */
+
+
 
 	/**
 	 * Runs the punishment and any appropriate actions. (Sending messages to staff

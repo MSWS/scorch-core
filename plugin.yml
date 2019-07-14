@@ -6,3 +6,5 @@ authors:
 - MSWS
 - kitsune
 commands:
+  punish:
+    description: "general punish command"
