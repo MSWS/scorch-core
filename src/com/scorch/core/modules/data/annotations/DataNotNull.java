@@ -1,4 +1,4 @@
-package com.scorch.annotations;
+package com.scorch.core.modules.data.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

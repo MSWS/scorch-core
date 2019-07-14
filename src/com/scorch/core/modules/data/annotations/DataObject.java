@@ -6,6 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * @deprecated No longer using {@link DefaultConstructor}
+ *
  * Annotation that is used internally to make sure the objects that are stored in the database
  * have a default constructor so the objects can be reconstructed using reflection
  *
