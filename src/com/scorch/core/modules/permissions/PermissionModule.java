@@ -12,6 +12,8 @@ import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 
+import java.util.*;
+
 /**
  * A permissions handler
  * TODO Implement a way to add default groups/permissions and a proper addPlayer method
