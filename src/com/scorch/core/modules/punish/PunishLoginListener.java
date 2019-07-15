@@ -10,9 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 import com.scorch.core.ScorchCore;
+import com.scorch.core.utils.MSG;
 
 /**
  * {@link PunishLoginListener} is the listener for when players join the/a
@@ -30,11 +30,11 @@ public class PunishLoginListener implements Listener {
 	public void onLogin(PlayerLoginEvent event) {
 		Player player = event.getPlayer();
 
-		List<Punishment> punishments = ScorchCore.getInstance().getPunishModule().getPunishments(player.getUniqueId()); // TODO
+		List<Punishment> punishments = ScorchCore.getInstance().getPunishModule().getPunishments(player.getUniqueId());
 
 		punishments.stream().filter(Punishment::isActive).filter(p -> p.getType().restrictsLogin())
 				.collect(Collectors.toList());
-
+		
 		if (punishments.isEmpty())
 			return;
 
@@ -45,9 +45,9 @@ public class PunishLoginListener implements Listener {
 			}
 		});
 
-		event.setResult(Result.KICK_BANNED);
+		// event.setResult(Result.KICK_BANNED);
 		Punishment active = punishments.get(0);
 
-		event.setKickMessage(active.getReason());
+		event.setKickMessage(MSG.color(active.getKickMessage()));
 	}
 }

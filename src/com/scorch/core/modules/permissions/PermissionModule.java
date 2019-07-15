@@ -1,9 +1,11 @@
 package com.scorch.core.modules.permissions;
 
-import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.AbstractModule;
-import com.scorch.core.modules.data.exceptions.DataObtainException;
-import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 
@@ -11,8 +13,6 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
-
-import java.util.*;
 
 /**
  * A permissions handler

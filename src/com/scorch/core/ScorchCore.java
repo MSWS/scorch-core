@@ -5,10 +5,13 @@ import java.util.*;
 
 import com.scorch.core.modules.ModulePriority;
 import com.scorch.core.modules.permissions.PermissionModule;
+
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.scorch.core.modules.AbstractModule;
+import com.scorch.core.modules.data.CPlayer;
 import com.scorch.core.modules.data.ConnectionManager;
 import com.scorch.core.modules.data.DataManager;
 import com.scorch.core.modules.messages.MessagesModule;
@@ -190,6 +193,16 @@ public class ScorchCore extends JavaPlugin {
 
 	public PunishModule getPunishModule() {
 		return pMod;
+	}
+
+	/**
+	 * Returns a CPlayer from an OfflinePlayer
+	 * 
+	 * @param player
+	 * @return
+	 */
+	public CPlayer getPlayer(OfflinePlayer player) {
+		return dataManager.getPlayer(player);
 	}
 
 	/**

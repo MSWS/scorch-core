@@ -8,13 +8,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 
 import com.google.gson.Gson;
+import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.annotations.DataIgnore;
 import com.scorch.core.modules.data.annotations.DataNotNull;
@@ -33,6 +36,8 @@ public class DataManager extends AbstractModule {
 
 	private ConnectionManager connectionManager;
 
+	private Map<OfflinePlayer, CPlayer> players;
+
 	public DataManager(String id, ConnectionManager connectionManager) {
 		super(id);
 		this.connectionManager = connectionManager;
@@ -40,14 +45,38 @@ public class DataManager extends AbstractModule {
 
 	@Override
 	public void initialize() {
-		// TODO Auto-generated method stub
-
+		players = new HashMap<>();
 	}
 
 	@Override
 	public void disable() {
-		// TODO Auto-generated method stub
+	}
 
+	public CPlayer getPlayer(OfflinePlayer player) {
+		if (!players.containsKey(player))
+			players.put(player, new CPlayer(player, ScorchCore.getInstance()));
+		return players.get(player);
+	}
+
+	public ArrayList<OfflinePlayer> getLoadedPlayers() {
+		return new ArrayList<OfflinePlayer>(players.keySet());
+	}
+
+	public void removePlayer(OfflinePlayer player) {
+		if (players.containsKey(player))
+			players.get(player).saveData();
+		players.remove(player);
+	}
+
+	public void clearPlayers() {
+		for (OfflinePlayer player : players.keySet())
+			removePlayer(player);
+	}
+
+	public void loadData(OfflinePlayer player) {
+		if (players.containsKey(player))
+			throw new IllegalArgumentException("Player data already loaded");
+		players.put(player, new CPlayer(player, ScorchCore.getInstance()));
 	}
 
 	/**

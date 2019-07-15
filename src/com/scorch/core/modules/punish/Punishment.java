@@ -3,18 +3,18 @@ package com.scorch.core.modules.punish;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
-import com.scorch.core.modules.data.annotations.DataIgnore;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.scorch.core.modules.data.annotations.DataIgnore;
 import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
 
@@ -25,7 +25,7 @@ import com.scorch.core.utils.MSG;
  * @author imodm
  *
  */
-public class Punishment implements Comparable<Punishment>, ConfigurationSerializable {
+public class Punishment {
 
 	@DataIgnore
 	final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a");
@@ -138,17 +138,21 @@ public class Punishment implements Comparable<Punishment>, ConfigurationSerializ
 	public long getDate() {
 		return date;
 	}
+	
+	public long getDuration() {
+		return duration;
+	}
 
 	public ItemStack getItem() {
 		ItemStack item = new ItemStack(punishType.getMaterial());
 		ItemMeta meta = item.getItemMeta();
-		meta.setDisplayName(MSG.color("&r" + punishType.toString()));
+		meta.setDisplayName(MSG.color("&r" + punishType.getColored()));
 		List<String> lore = new ArrayList<>();
 		lore.add(MSG.color("&ePunisher: " + staff));
 		lore.add(MSG.color("&eReason: " + reason));
 		lore.add(MSG.color("&eDate: " + sdf.format(date)));
 		if (punishType != PunishType.WARNING && punishType != PunishType.KICK)
-			lore.add(MSG.color("&eDuration: " + MSG.getTime(duration)));
+			lore.add(MSG.color("&eDuration: " + (duration == -1 ? "Permanent" : MSG.getTime(duration))));
 
 		if (isRemoved()) {
 			lore.add(MSG.color("&eRemoved By: " + remover));
@@ -156,6 +160,14 @@ public class Punishment implements Comparable<Punishment>, ConfigurationSerializ
 			lore.add(MSG.color("&eRemove Date: " + sdf.format(removeDate)));
 		}
 
+		meta.setLore(lore);
+
+		if (isActive()) {
+			meta.addEnchant(Enchantment.DURABILITY, 0, true);
+			meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
+		}
+
+		item.setItemMeta(meta);
 		return item;
 	}
 
@@ -165,31 +177,6 @@ public class Punishment implements Comparable<Punishment>, ConfigurationSerializ
 
 	public boolean isRemoved() {
 		return remover != null;
-	}
-
-	/**
-	 * @deprecated
-	 */
-	@Override
-	public int compareTo(Punishment o) {
-		return getDate() > o.getDate() ? -1 : 1;
-	}
-
-	@Override
-	public Map<String, Object> serialize() {
-		return null;
-	}
-
-	public static Punishment deserialize(Map<String, Object> values) {
-		if (values.containsKey("remover")) {
-			return new Punishment(UUID.fromString((String) values.get("target")), (String) values.get("staff"),
-					(String) values.get("reason"), (long) values.get("date"), (long) values.get("duration"),
-					PunishType.valueOf((String) values.get("type")), (String) values.get("remover"),
-					(String) values.get("removeReason"), (long) values.get("removeDate"));
-		}
-		return new Punishment(UUID.fromString((String) values.get("target")), (String) values.get("staff"),
-				(String) values.get("reason"), (long) values.get("date"), (long) values.get("duration"),
-				PunishType.valueOf((String) values.get("type")));
 	}
 
 	/**
@@ -206,10 +193,6 @@ public class Punishment implements Comparable<Punishment>, ConfigurationSerializ
 			Logger.warn("Attempted to get kick message of a non-kickable punishment type. (Type: " + punishType + ")");
 			return null;
 		}
-
-		String verb = "punished"; // should never appear
-
-		// TODO
 
 		return "&c&lYou have been " + getVerb() + " by " + staff + " for " + duration + " (Reason: " + reason + ")";
 	}

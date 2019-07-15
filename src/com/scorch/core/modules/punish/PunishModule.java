@@ -6,8 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.commands.HistoryCommand;
@@ -17,6 +22,8 @@ import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.DataManager;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
+import com.scorch.core.utils.MSG;
+import com.scorch.core.utils.Utils;
 
 /**
  * {@link PunishModule} Manages and loads all commands, events, etc. related to
@@ -32,7 +39,7 @@ public class PunishModule extends AbstractModule {
 		super(id);
 	}
 
-	private Listener joinListener;
+	private Listener joinListener, clickListener;
 	private final String table = "punishments";
 
 	private List<Punishment> punishments;
@@ -46,6 +53,7 @@ public class PunishModule extends AbstractModule {
 		new UnpunishCommand();
 
 		joinListener = new PunishLoginListener();
+		clickListener = new PunishInventoryListener();
 
 		punishments = new ArrayList<Punishment>();
 
@@ -69,6 +77,7 @@ public class PunishModule extends AbstractModule {
 	@Override
 	public void disable() {
 		PlayerLoginEvent.getHandlerList().unregister(joinListener);
+		PlayerLoginEvent.getHandlerList().unregister(clickListener);
 	}
 
 	public void addPunishment(Punishment punishment) {
@@ -82,8 +91,30 @@ public class PunishModule extends AbstractModule {
 		ScorchCore.getInstance().getDataManager().saveObject("punishments", punishment);
 	}
 
-	public List<Punishment> getPunishments(UUID player) {
-		return linked.get(player);
+	public Inventory getPunishGUI(OfflinePlayer player) {
+		Inventory inv = Utils.getGui(player, ScorchCore.getInstance().getGui(), "punish", 0);
+		List<Punishment> history = getPunishments(player.getUniqueId());
+		for (int i = 0; i < 5 && i < history.size(); i++) {
+			Punishment p = history.get(i);
+			ItemStack item = p.getItem();
+			inv.setItem(8 + (i * 9), item);
+			if (i >= 4) {
+				ItemStack more = new ItemStack(Material.BOOK, history.size());
+				ItemMeta mMeta = more.getItemMeta();
+				mMeta.setDisplayName(MSG.color("&a&l" + history.size() + " Total Punishments"));
+				more.setItemMeta(mMeta);
+				inv.setItem(inv.getSize() - 1, more);
+				break;
+			}
+		}
+		return inv;
 	}
 
+	public Inventory getHistoryGUI(OfflinePlayer player) {
+		return null;
+	}
+
+	public List<Punishment> getPunishments(UUID player) {
+		return linked.getOrDefault(player, new ArrayList<>());
+	}
 }

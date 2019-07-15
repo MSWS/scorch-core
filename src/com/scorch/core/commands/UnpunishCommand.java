@@ -38,6 +38,8 @@ public class UnpunishCommand implements CommandExecutor {
 		for (Punishment p : ScorchCore.getInstance().getPunishModule().getPunishments(target.getUniqueId())) {
 			p.remove("CONSOLE", "Remover");
 		}
+
+		MSG.tell(sender, "Successfully unbanned " + target.getName());
 		return true;
 	}
 }
