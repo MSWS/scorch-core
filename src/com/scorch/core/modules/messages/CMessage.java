@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import com.scorch.core.modules.data.annotations.DataNotNull;
 import com.scorch.core.utils.MSG;
@@ -28,13 +27,11 @@ public class CMessage {
 		applyPlaceholders(holders);
 	}
 
-	public String format(Player player) {
-		// TODO
-		return msg;
+	public void send(CommandSender sender) {
+		sender.sendMessage(msg);
 	}
 
-	public String format(CommandSender sender) {
-		// TODO
+	public String getMessage() {
 		return msg;
 	}
 
@@ -48,4 +45,8 @@ public class CMessage {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return msg;
+	}
 }

@@ -30,7 +30,7 @@ public class PunishLoginListener implements Listener {
 	public void onLogin(PlayerLoginEvent event) {
 		Player player = event.getPlayer();
 
-		List<Punishment> punishments = null; // TODO
+		List<Punishment> punishments = ScorchCore.getInstance().getPunishModule().getPunishments(player.getUniqueId()); // TODO
 
 		punishments.stream().filter(Punishment::isActive).filter(p -> p.getType().restrictsLogin())
 				.collect(Collectors.toList());

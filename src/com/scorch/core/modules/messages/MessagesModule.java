@@ -21,6 +21,7 @@ public class MessagesModule extends AbstractModule {
 		defaults = new ArrayList<CMessage>();
 
 		defaults.add(new CMessage("test", "The test works!"));
+		defaults.add(new CMessage("noperm", "&cYou do not have permission."));
 	}
 
 	@Override
@@ -28,7 +29,7 @@ public class MessagesModule extends AbstractModule {
 		messages = new ArrayList<CMessage>();
 
 		new TestCommand();
-		
+
 		try {
 			Logger.log("Creating table...");
 			ScorchCore.getInstance().getDataManager().createTable("messages", CMessage.class);

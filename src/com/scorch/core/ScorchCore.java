@@ -32,6 +32,7 @@ public class ScorchCore extends JavaPlugin {
 
 	private DataManager dataManager;
 	private MessagesModule messages;
+	private PunishModule pMod;
 
 	private File guiYml = new File(getDataFolder(), "guis.yml");
 	private YamlConfiguration gui;
@@ -47,15 +48,14 @@ public class ScorchCore extends JavaPlugin {
 
 		// Data modules
 		registerModule(new ConnectionManager("ConnectionManager"), ModulePriority.HIGHEST);
-		registerModule(new DataManager("DataManager", (ConnectionManager) getModule("ConnectionManager")),
+		dataManager = (DataManager) registerModule(
+				new DataManager("DataManager", (ConnectionManager) getModule("ConnectionManager")),
 				ModulePriority.HIGHEST);
-		this.dataManager = (DataManager) getModule("DataManager");
+		messages = (MessagesModule) registerModule(new MessagesModule("MessagesModule"), ModulePriority.HIGH);
 
 		registerModule(new PermissionModule("PermissionModule"), ModulePriority.HIGH);
-		registerModule(new PunishModule("PunishModule"), ModulePriority.MEDIUM);
+		pMod = (PunishModule) registerModule(new PunishModule("PunishModule"), ModulePriority.MEDIUM);
 		registerModule(new BanwaveModule("BanwaveModule"), ModulePriority.MEDIUM);
-
-		messages = (MessagesModule) registerModule(new MessagesModule("MessagesModule"), ModulePriority.MEDIUM);
 
 		// DO NOT load ScoreboardModule
 
@@ -186,6 +186,10 @@ public class ScorchCore extends JavaPlugin {
 	 */
 	public YamlConfiguration getGui() {
 		return gui;
+	}
+
+	public PunishModule getPunishModule() {
+		return pMod;
 	}
 
 	/**

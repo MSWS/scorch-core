@@ -3,23 +3,24 @@ package com.scorch.core.modules.data;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-import com.scorch.core.modules.data.exceptions.DataObtainException;
-import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import org.bukkit.Location;
 
 import com.google.gson.Gson;
+import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.annotations.DataIgnore;
 import com.scorch.core.modules.data.annotations.DataNotNull;
-import com.scorch.core.modules.AbstractModule;
+import com.scorch.core.modules.data.exceptions.DataObtainException;
+import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;
-import com.scorch.core.utils.MSG;
 
 /**
  * Utility to easily save different types of objects to a database and load them
@@ -57,7 +58,7 @@ public class DataManager extends AbstractModule {
 	 * @param name        the name of the database
 	 * @param storageType the column template
 	 */
-	public void createTable(String name, Class storageType) throws NoDefaultConstructorException {
+	public void createTable(String name, Class<?> storageType) throws NoDefaultConstructorException {
 
 		if (!hasDefaultConstructor(storageType)) {
 			throw new NoDefaultConstructorException();
@@ -69,7 +70,7 @@ public class DataManager extends AbstractModule {
 		for (int i = 0; i < storageType.getDeclaredFields().length; i++) {
 			Field field = storageType.getDeclaredFields()[i];
 
-			// Makes sure that the field doesn't have to be ignored for serialisation
+			// Makes sure that the field doesn't have to be ignored for serialization
 			if (field.isAnnotationPresent(DataIgnore.class))
 				continue;
 
@@ -96,8 +97,10 @@ public class DataManager extends AbstractModule {
 			}
 
 			if (field.getAnnotation(DataNotNull.class) != null) {
-				query += "NOT NULL, ";
-			} else if (i != (storageType.getDeclaredFields().length - 1)) {
+				query += " NOT NULL";
+			}
+
+			if (i != (storageType.getDeclaredFields().length - 1)) {
 				query += ", ";
 			} else {
 				query += ");";
@@ -243,7 +246,7 @@ public class DataManager extends AbstractModule {
 
 			while (res.next()) {
 				String className = res.getString("object_type");
-				Class clazz = Class.forName(className);
+				Class<?> clazz = Class.forName(className);
 				Object dataObject = clazz.newInstance();
 
 				// Start at 3 since columns start counting at 1 and we need to skip the first
@@ -309,6 +312,7 @@ public class DataManager extends AbstractModule {
 	 *
 	 * @see this.getObject
 	 */
+	@SuppressWarnings("unchecked")
 	public <T> Collection<T> getAllObjects(String table) throws DataObtainException {
 		if (table == null || table == "")
 			throw new DataObtainException("Table name is null");
@@ -320,7 +324,7 @@ public class DataManager extends AbstractModule {
 				return collection;
 			while (res.next()) {
 				String className = res.getString("object_type");
-				Class clazz = Class.forName(className);
+				Class<?> clazz = Class.forName(className);
 				Object dataObject = clazz.newInstance();
 
 				// Start at 3 since columns start counting at 1 and we need to skip the first
@@ -378,9 +382,9 @@ public class DataManager extends AbstractModule {
 	 * @param type the type to check
 	 * @return whether the type has a default constructor
 	 */
-	private boolean hasDefaultConstructor(Class type) {
+	private boolean hasDefaultConstructor(Class<?> type) {
 		// Loop through all constructors in type
-		for (Constructor constructor : type.getConstructors()) {
+		for (Constructor<?> constructor : type.getConstructors()) {
 			// No parameters in constructor so its a default constructor
 			if (constructor.getParameters().length == 0) {
 				return true;

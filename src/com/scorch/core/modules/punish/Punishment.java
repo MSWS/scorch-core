@@ -76,8 +76,8 @@ public class Punishment implements Comparable<Punishment>, ConfigurationSerializ
 	/**
 	 * Empty contructor for the datamanager
 	 */
-	public Punishment () {}
-
+	public Punishment() {
+	}
 
 	/**
 	 * Runs the punishment and any appropriate actions. (Sending messages to staff
@@ -208,14 +208,33 @@ public class Punishment implements Comparable<Punishment>, ConfigurationSerializ
 		}
 
 		String verb = "punished"; // should never appear
-		switch (punishType) {
-		case IP_BAN:
-			verb = "ip banned";
-			break;
-		}
 
 		// TODO
 
-		return "&c&lYou have been ";
+		return "&c&lYou have been " + getVerb() + " by " + staff + " for " + duration + " (Reason: " + reason + ")";
+	}
+
+	public String getVerb() {
+		switch (punishType) {
+		case IP_BAN:
+			return "ip banned";
+		case KICK:
+			return "kicked";
+		case OTHER:
+			return "punished";
+		case PERM_BAN:
+			return "permanently banned";
+		case PERM_MUTE:
+			return "permanently muted";
+		case TEMP_BAN:
+			return "temporarily banned";
+		case TEMP_MUTE:
+			return "temporarily muted";
+		case WARNING:
+			return "warned";
+		default:
+			Logger.warn("Unknown punish type: " + punishType);
+			return "punished";
+		}
 	}
 }

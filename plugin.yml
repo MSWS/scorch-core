@@ -8,5 +8,14 @@ authors:
 commands:
   punish:
     description: general punish command
+    aliases:
+    - p
   test:
     description: for testing database
+  history:
+    description: get player history
+    aliases:
+    - ph
+    - phistory
+  unpunish:
+    description: remove punishments from console
