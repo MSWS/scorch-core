@@ -1,30 +1,27 @@
 package com.scorch.core.modules.data;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.scorch.core.ScorchCore;
+import com.scorch.core.modules.AbstractModule;
+import com.scorch.core.modules.data.annotations.DataIgnore;
+import com.scorch.core.modules.data.annotations.DataNotNull;
+import com.scorch.core.modules.data.exceptions.DataDeleteException;
+import com.scorch.core.modules.data.exceptions.DataObtainException;
+import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
+import com.scorch.core.modules.data.wrappers.JSONLocation;
+import com.scorch.core.utils.Logger;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.IntStream;
-
-import com.scorch.core.modules.data.exceptions.DataDeleteException;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-
-import com.google.gson.Gson;
-import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.AbstractModule;
-import com.scorch.core.modules.data.annotations.DataIgnore;
-import com.scorch.core.modules.data.annotations.DataNotNull;
-import com.scorch.core.modules.data.exceptions.DataObtainException;
-import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
-import com.scorch.core.utils.Logger;
 
 /**
  * Utility to easily save different types of objects to a database and load them
@@ -33,7 +30,8 @@ import com.scorch.core.utils.Logger;
  */
 public class DataManager extends AbstractModule {
 
-	private static Gson gson = new Gson();
+	// Maybe change the gson configuration sometime in the future.
+	private static Gson gson = new GsonBuilder().create();
 
 	private ConnectionManager connectionManager;
 
@@ -210,8 +208,7 @@ public class DataManager extends AbstractModule {
 					} else if (Map.class.isAssignableFrom(field.getType())) {
 						statement.setString(parameterIndex, DataManager.getGson().toJson(field.get(object)));
 					} else if (field.getType() == Location.class) {
-						// TODO Write JSON wrapper for Location
-						statement.setString(parameterIndex, DataManager.getGson().toJson(field.get(object)));
+						statement.setString(parameterIndex, DataManager.getGson().toJson(JSONLocation.fromLocation((Location)field.get(object))));
 					} else {
 						statement.setString(parameterIndex, DataManager.getGson().toJson(field.get(object)));
 					}
@@ -309,8 +306,7 @@ public class DataManager extends AbstractModule {
 					} else if (Map.class.isAssignableFrom(field.getType())) {
 						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), Map.class));
 					} else if (field.getType() == Location.class) {
-						// TODO Write JSON wrapper for Location
-						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), Location.class));
+						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), JSONLocation.class).toBukkitLocation());
 					} else {
 						field.set(dataObject, field.getType().cast(res.getObject(columnIndex)));
 					}
@@ -387,8 +383,7 @@ public class DataManager extends AbstractModule {
 					} else if (Map.class.isAssignableFrom(field.getType())) {
 						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), Map.class));
 					} else if (field.getType() == Location.class) {
-						// TODO Write JSON wrapper for Location
-						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), Location.class));
+						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), JSONLocation.class).toBukkitLocation());
 					} else {
 						field.set(dataObject, field.getType().cast(res.getObject(columnIndex)));
 					}
@@ -420,7 +415,8 @@ public class DataManager extends AbstractModule {
 		if (sqlSelectors == null || sqlSelectors.length == 0)
 			throw new DataDeleteException("No sql selectors defined");
 
-		String sql = String.format("SELECT * FROM %s WHERE %s='%s' ", table, sqlSelectors[0].getSelector(),
+		// TODO prepared statement
+		String sql = String.format("DELETE FROM %s WHERE %s='%s' ", table, sqlSelectors[0].getSelector(),
 				sqlSelectors[0].getValue());
 
 		// Strip first element from sqlSelectors because we just used it ^ there
