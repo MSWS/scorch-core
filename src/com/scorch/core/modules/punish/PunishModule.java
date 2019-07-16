@@ -44,7 +44,7 @@ public class PunishModule extends AbstractModule {
 
 	private List<Punishment> punishments;
 
-	private Map<UUID, List<Punishment>> linked = new HashMap<UUID, List<Punishment>>();
+	private Map<UUID, List<Punishment>> linked;
 
 	@Override
 	public void initialize() {
@@ -55,23 +55,7 @@ public class PunishModule extends AbstractModule {
 		joinListener = new PunishLoginListener();
 		clickListener = new PunishInventoryListener();
 
-		punishments = new ArrayList<Punishment>();
-
-		try {
-			ScorchCore.getInstance().getDataManager().createTable(table, Punishment.class);
-
-			ScorchCore.getInstance().getDataManager().getAllObjects("punishments").forEach(punish -> {
-				Punishment p = (Punishment) punish;
-				punishments.add(p);
-
-				List<Punishment> current = linked.getOrDefault(p.getTargetUUID(), new ArrayList<>());
-				current.add(p);
-
-				linked.put(p.getTargetUUID(), current);
-			});
-		} catch (NoDefaultConstructorException | DataObtainException e) {
-			e.printStackTrace();
-		}
+		refreshPunishments();
 	}
 
 	@Override
@@ -116,5 +100,26 @@ public class PunishModule extends AbstractModule {
 
 	public List<Punishment> getPunishments(UUID player) {
 		return linked.getOrDefault(player, new ArrayList<>());
+	}
+
+	public void refreshPunishments() {
+		punishments = new ArrayList<Punishment>();
+		linked = new HashMap<UUID, List<Punishment>>();
+
+		try {
+			ScorchCore.getInstance().getDataManager().createTable(table, Punishment.class);
+
+			ScorchCore.getInstance().getDataManager().getAllObjects("punishments").forEach(punish -> {
+				Punishment p = (Punishment) punish;
+				punishments.add(p);
+
+				List<Punishment> current = linked.getOrDefault(p.getTargetUUID(), new ArrayList<>());
+				current.add(p);
+
+				linked.put(p.getTargetUUID(), current);
+			});
+		} catch (NoDefaultConstructorException | DataObtainException e) {
+			e.printStackTrace();
+		}
 	}
 }

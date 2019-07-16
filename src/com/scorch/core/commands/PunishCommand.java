@@ -18,7 +18,7 @@ public class PunishCommand implements CommandExecutor {
 		PluginCommand cmd = Bukkit.getPluginCommand("punish");
 		cmd.setExecutor(this);
 		cmd.setPermission("scorch.command.punish");
-		cmd.setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").toString()); // TODO
+		cmd.setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").toString());
 	}
 
 	@SuppressWarnings("deprecation")

@@ -1,8 +1,8 @@
 punish:
-  Title: 'Punishing %player%'
+  Title: Punishing %player%
   Size: 54
   skull:
-    Icon: 'SKULL_ITEM'
+    Icon: SKULL_ITEM
     Owner: '%player%'
     Data: 3
     Slot: 4
@@ -10,7 +10,7 @@ punish:
     Lore:
     - '&7Reason: &e%reason%'
   chatCategory:
-    Icon: 'BOOK_AND_QUILL'
+    Icon: BOOK_AND_QUILL
     Name: '&a&lChat Offense'
     Slot: 10
     Lore:
@@ -18,20 +18,21 @@ punish:
     - ''
     - '&cUse Permanent Bans for Bots'
   gameplayCategory:
-    Icon: 'HOPPER'
+    Icon: HOPPER
     Name: '&d&lGameplay Offense'
     Slot: 12
     Lore:
     - '&7Category for offenses occuring in gameplay.'
   hackingCategory:
-    Icon: 'IRON_SWORD'
+    Icon: IRON_SWORD
     Name: '&c&lHacking Offense'
     Slot: 14
     Lore:
     - '&7Category for offenses involving modifications.'
   warning:
-    Icon: 'PAPER'
+    Icon: PAPER
     Name: '&a&lWarning'
+    Type: WARNING
     Slot: 16
     Lore:
     - ''
@@ -40,15 +41,11 @@ punish:
     - '&7 - Light Spam'
     - '&7 - Accidental Advertising'
     - '&7 - Light Rudeness'
-    SendToTarget:
-    - '&c&lWARNING>> &7You have been issued a warning by &c%player%&7.'
-    - '&c&lWARNING>> &7Warning Reason: &e%reason%'
-    SendToStaff:
-    - '&cPunish &4>> &7%player% issued a warning to &e%target%&7.'
   permban:
-    Icon: 'REDSTONE_BLOCK'
+    Icon: REDSTONE_BLOCK
     Slot: 25
     Name: '&c&lPermanent Ban'
+    Type: PERM_BAN
     Lore:
     - ''
     - '&7Certain situations such as'
@@ -60,14 +57,13 @@ punish:
     - '&cContact an Admin to request a permanent'
     - '&cban on someone with &oevidence&c.'
     BanTime: -1
-    Permission: 'rank.mod'
-    SendToStaff:
-    - '&cPunish &4>> &7%player% banned &e%target%&7 permanently.'
+    Permission: rank.mod
   ip:
-    Icon: 'BEDROCK'
+    Icon: BEDROCK
     Slot: 39
     Name: '&4&lIP BAN'
-    Permission: 'rank.dev'
+    Type: IP_BAN
+    Permission: rank.dev
     BanTime: -1
     Lore:
     - ''
@@ -75,12 +71,11 @@ punish:
     - ''
     - '&c - Bot Attacks'
     - '&c - 3+ Alts with Hacking Bans'
-    SendToStaff:
-    - '&cPunish &4>> &7%player% ip banned &e%target%&7 permanently.'
   permmute:
-    Icon: 'BOOK_AND_QUILL'
+    Icon: BOOK_AND_QUILL
     Slot: 34
     Name: '&c&lPermanent Mute'
+    Type: PERM_MUTE
     Lore:
     - ''
     - '&7Certain situations such as'
@@ -91,24 +86,22 @@ punish:
     - '&cContact an Admin to request a permanent'
     - '&cmute on someone with &oreason&c.'
     MuteTime: -1
-    Permission: 'rank.mod'
-    SendToStaff:
-    - '&cPunish &4>> &7%player% muted &e%target%&7 permanently.'
+    Permission: rank.mod
   kick:
-    Icon: 'LEATHER_BOOTS'
+    Icon: LEATHER_BOOTS
     Name: '&a&lKick'
+    Type: KICK
     Slot: 43
     Lore:
     - ''
     - '&7Kicks a player with the provided reason'
-    SendToStaff:
-    - '&cPunish &4>> &7%player% kicked &e%target%&7.'
   sev1chatmute:
-    Icon: 'INK_SACK'
+    Icon: INK_SACK
     Name: '&a&lSeverity 1'
     Slot: 19
     Data: 2
-    Severity: 1
+    Duration: 10000
+    Type: TEMP_MUTE
     Lore:
     - ''
     - '&7Player already has a previous warning'
@@ -117,15 +110,13 @@ punish:
     - '&7 - Intentional Spam'
     - '&7 - Intentional Advertising (No; Links, IPs, and not spammed)'
     - '&7 - DM Spamming'
-    MuteTime: 2.592e+8
-    SendToStaff:
-    - '&cPunish &4>> &7%player% muted &e%target%&7 for 3 days.'
   sev2chatmute:
-    Icon: 'INK_SACK'
+    Icon: INK_SACK
     Name: '&e&lSeverity 2'
     Slot: 28
     Data: 11
-    Severity: 2
+    Duration: 20000
+    Type: TEMP_MUTE
     Lore:
     - ''
     - '&7Player already has a previous severity 1 offense'
@@ -135,42 +126,34 @@ punish:
     - '&7 - Medium Advertising (Link, IP, OR Spammed)'
     - '&7 - Discrimination'
     - '&7 - Extremely profane language'
-    MuteTime: 1.21e+9
-    Permission: 'rank.mod'
-    SendToStaff:
-    - '&cPunish &4>> &7%player% muted &e%target%&7 for 2 weeks.'
+    Permission: rank.mod
   sev3chatmute:
-    Icon: 'INK_SACK'
+    Icon: INK_SACK
     Name: '&c&lSeverity 3'
     Slot: 37
     Data: 1
-    Severity: 3
+    Duration: 40000
+    Type: TEMP_MUTE
     Lore:
     - ''
     - '&7Player already has a previous severity 2 offense'
     - '&7within 3 months'
-    Command: 'tempmute %target% 2 month %reason%'
-    MuteTime: 5.256e+9
-    Permission: 'rank.mod'
-    SendToStaff:
-    - '&cPunish &4>> &7%player% muted &e%target%&7 for 2 months.'
+    Permission: rank.mod
   sev1gameplayban:
-    Icon: 'INK_SACK'
+    Icon: INK_SACK
     Name: '&a&lSeverity 1'
     Slot: 21
     Data: 2
-    Severity: 1
+    Duration: 180000
+    Type: TEMP_BAN
     Lore:
     - ''
     - '&7 - AFK Pools'
     - '&7 - TP Trapping'
     - '&7 - Command Spam'
     - '&7 - Inappropriate Faction Name'
-    BanTime: 2.592e+8
-    SendToStaff:
-    - '&cPunish &4>> &7%player% banned &e%target%&7 for 3 days.'
   sev1hackingban:
-    Icon: 'INK_SACK'
+    Icon: INK_SACK
     Name: '&a&lSeverity 1'
     Slot: 23
     Data: 2
@@ -184,11 +167,8 @@ punish:
     - '&7 - Health Indicators'
     - '&7 - Skin Blinker'
     - '&7 - Derp'
-    BanTime: 2.628e+9
-    SendToStaff:
-    - '&cPunish &4>> &7%player% banned &e%target%&7 for 1 month.'
   sev2hackingban:
-    Icon: 'INK_SACK'
+    Icon: INK_SACK
     Name: '&e&lSeverity 2'
     Slot: 32
     Data: 11
@@ -203,12 +183,8 @@ punish:
     - '&7 - Auto(Eat,Soup,Armor,etc)'
     - '&7 - Any Inventory related hacks'
     - '&7 - XRay'
-    BanTime: 7.884e+9
-    Permission: 'rank.mod'
-    SendToStaff:
-    - '&cPunish &4>> &7%player% banned &e%target%&7 for 3 months.'
   sev3hackingban:
-    Icon: 'INK_SACK'
+    Icon: INK_SACK
     Name: '&c&lSeverity 3'
     Slot: 41
     Data: 1
@@ -225,7 +201,3 @@ punish:
     - '&7 - Any Movement related hack'
     - ''
     - '&cUse Permanent Ban for 3rd Offense'
-    BanTime: 1.314e+10
-    Permission: 'rank.mod'
-    SendToStaff:
-    - '&cPunish &4>> &7%player% banned &e%target%&7 for 5 months.'
