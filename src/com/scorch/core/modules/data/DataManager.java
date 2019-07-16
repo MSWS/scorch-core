@@ -420,7 +420,7 @@ public class DataManager extends AbstractModule {
 		if (sqlSelectors == null || sqlSelectors.length == 0)
 			throw new DataDeleteException("No sql selectors defined");
 
-		String sql = String.format("SELECT * FROM %s WHERE %s='%s' ", table, sqlSelectors[0].getSelector(),
+		String sql = String.format("DELETE FROM %s WHERE %s='%s' ", table, sqlSelectors[0].getSelector(),
 				sqlSelectors[0].getValue());
 
 		// Strip first element from sqlSelectors because we just used it ^ there

@@ -17,7 +17,7 @@ public class UnpunishCommand implements CommandExecutor {
 	public UnpunishCommand() {
 		PluginCommand cmd = Bukkit.getPluginCommand("unpunish");
 		cmd.setExecutor(this);
-		cmd.setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").toString()); // TODO
+		cmd.setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").toString());
 	}
 
 	@SuppressWarnings("deprecation")

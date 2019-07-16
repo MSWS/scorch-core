@@ -28,7 +28,7 @@ import com.scorch.core.utils.MSG;
 public class Punishment {
 
 	@DataIgnore
-	final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a");
+	private final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a");
 
 	private UUID target;
 	private String staff, reason, remover, removeReason;
@@ -107,6 +107,10 @@ public class Punishment {
 		this.removeDate = System.currentTimeMillis();
 	}
 
+	// TODO
+	public void update() {
+	}
+
 	public UUID getTargetUUID() {
 		return target;
 	}
@@ -138,7 +142,7 @@ public class Punishment {
 	public long getDate() {
 		return date;
 	}
-	
+
 	public long getDuration() {
 		return duration;
 	}

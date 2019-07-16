@@ -1,4 +1,4 @@
-name: Core
+name: ScorchCore
 main: com.scorch.core.ScorchCore
 description: Core
 version: 0.0.1

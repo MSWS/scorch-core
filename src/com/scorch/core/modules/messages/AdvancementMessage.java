@@ -1,27 +1,27 @@
 package com.scorch.core.modules.messages;
 
-import org.bukkit.Bukkit;
+import java.util.Collection;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.advancement.Advancement;
 
-import java.util.Collection;
-
 /**
  * // TODO Implement
+ * 
  * @deprecated
  */
 public class AdvancementMessage implements Advancement {
 
-    public AdvancementMessage () {
-    }
+	public AdvancementMessage() {
+	}
 
-    @Override
-    public Collection<String> getCriteria() {
-        return null;
-    }
+	@Override
+	public Collection<String> getCriteria() {
+		return null;
+	}
 
-    @Override
-    public NamespacedKey getKey() {
-        return null;
-    }
+	@Override
+	public NamespacedKey getKey() {
+		return null;
+	}
 }
