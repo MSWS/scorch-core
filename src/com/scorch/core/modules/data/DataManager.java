@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
+import com.scorch.core.modules.data.exceptions.DataDeleteException;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 
@@ -402,6 +403,43 @@ public class DataManager extends AbstractModule {
 			Logger.error("An error occurred while trying to get objects from table: " + e.getMessage());
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	/**
+	 * Deletes the object specified using the {@link SQLSelector}s from the table
+	 * @param table        the table to delete the data from
+	 * @param sqlSelectors the sql selectors that specify the data
+	 * @throws DataDeleteException
+	 *
+	 * @see SQLSelector
+	 */
+	public void deleteObject (String table, SQLSelector... sqlSelectors) throws DataDeleteException  {
+		if (table == null || table.equals(""))
+			throw new DataDeleteException("Table name is null");
+		if (sqlSelectors == null || sqlSelectors.length == 0)
+			throw new DataDeleteException("No sql selectors defined");
+
+		String sql = String.format("SELECT * FROM %s WHERE %s='%s' ", table, sqlSelectors[0].getSelector(),
+				sqlSelectors[0].getValue());
+
+		// Strip first element from sqlSelectors because we just used it ^ there
+		SQLSelector[] remainingSelectors = IntStream.range(1, sqlSelectors.length).mapToObj(i -> sqlSelectors[i])
+				.toArray(SQLSelector[]::new);
+
+		for (int i = 0; i < remainingSelectors.length; i++) {
+			sql = sql + String.format(" AND %s='&s'", remainingSelectors[i].getSelector(),
+					remainingSelectors[i].getValue());
+		}
+
+		sql = sql + ";";
+
+		// Built query, so execute it
+		try {
+			getConnectionManager().prepareStatement(sql).executeUpdate();
+		} catch (SQLException e) {
+			Logger.error("An error occurred while trying to delete object from table: " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 

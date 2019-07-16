@@ -41,7 +41,7 @@ public class PermissionListener implements Listener {
         }
         else {
             PermissionPlayer player = new PermissionPlayer(e.getUniqueId(), new ArrayList<>());
-            module.getPlayerPermissions().put(player.getUniqueId(), player);
+            module.addPlayer(e.getUniqueId(), player);
         }
     }
 

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 
 import com.scorch.core.ScorchCore;
@@ -96,14 +97,36 @@ public class PermissionModule extends AbstractModule {
     }
 
     /**
-     * Removes the player from the list
+     * Removes the player from the {@link PermissionPlayer} map.
+     * Returns true if the player is successfully removed
      * @param uuid the uuid of the player
+     * @return     returns true if the players has been removed successfully
      */
-    public void removePlayer (UUID uuid){
+    public boolean removePlayer (UUID uuid){
         if(getPlayerPermissions().containsKey(uuid)){
             getPlayerPermissions().remove(uuid);
+            return true;
         }
+        return false;
     }
+
+
+    /**
+     * Adds the player to the permission list
+     * Returns true if the player is successfully added to the permission list
+     * @param uuid             the uuid of the player
+     * @param permissionPlayer the {@link PermissionPlayer} object to add
+     * @return                 if the player is added
+     */
+    public boolean addPlayer (UUID uuid, PermissionPlayer permissionPlayer){
+        if(!getPlayerPermissions().containsKey(uuid)){
+            getPlayerPermissions().put(uuid, permissionPlayer);
+            return true;
+        }
+        return false;
+    }
+
+
 
     /**
      * Removes the player from the list
