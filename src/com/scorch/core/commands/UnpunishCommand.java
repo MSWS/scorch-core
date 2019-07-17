@@ -36,10 +36,10 @@ public class UnpunishCommand implements CommandExecutor {
 		OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
 		for (Punishment p : ScorchCore.getInstance().getPunishModule().getPunishments(target.getUniqueId())) {
-			p.remove("CONSOLE", "Remover");
+			p.remove("CONSOLE", "Removed by console command");
 		}
 
-		MSG.tell(sender, "Successfully unbanned " + target.getName());
+		MSG.tell(sender, "Successfully removed all punishments of " + target.getName());
 		return true;
 	}
 }

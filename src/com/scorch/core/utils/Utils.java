@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -24,6 +25,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+
+import com.scorch.core.ScorchCore;
+import com.scorch.core.modules.data.CPlayer;
 
 public class Utils {
 	/**
@@ -135,9 +139,10 @@ public class Utils {
 		ConfigurationSection gui = section.getConfigurationSection(id);
 		if (!gui.contains("Size") || !gui.contains("Title"))
 			return null;
-		String title = gui.getString("Title").replace("%player%", player.getName());
+		CPlayer cp = ScorchCore.getInstance().getPlayer(player);
+		String title = parseTemp(cp, gui.getString("Title"));
 		if (player.isOnline())
-			title = title.replace("%world%", ((Player) player).getWorld().getName());
+			title = title.replace("%world%", player.getPlayer().getWorld().getName());
 		title = title.replace("%world%", "");
 		Inventory inv = Bukkit.createInventory(null, gui.getInt("Size"), MSG.color(title));
 		ItemStack bg = null;
@@ -197,6 +202,7 @@ public class Utils {
 	public static ItemStack parseItem(ConfigurationSection section, String path, OfflinePlayer player) {
 		ConfigurationSection gui = section.getConfigurationSection(path);
 		ItemStack item = new ItemStack(Material.valueOf(gui.getString("Icon")));
+		CPlayer cp = ScorchCore.getInstance().getPlayer(player);
 		List<String> lore = new ArrayList<String>();
 		if (gui.contains("Amount"))
 			item.setAmount(gui.getInt("Amount"));
@@ -210,15 +216,16 @@ public class Utils {
 		if (gui.contains("Owner")) {
 			SkullMeta meta = (SkullMeta) item.getItemMeta();
 //			meta.setOwner(gui.getString("Owner"));
-			meta.setOwningPlayer(Bukkit.getOfflinePlayer(gui.getString("Owner")));
+			meta.setOwningPlayer(Bukkit.getOfflinePlayer(parseTemp(cp, gui.getString("Owner"))));
 			item.setItemMeta(meta);
 		}
 		ItemMeta meta = item.getItemMeta();
+
 		if (gui.contains("Name"))
-			meta.setDisplayName(MSG.color("&r" + gui.getString("Name")));
+			meta.setDisplayName(MSG.color("&r" + parseTemp(cp, gui.getString("Name"))));
 		if (gui.contains("Lore")) {
 			for (String temp : gui.getStringList("Lore"))
-				lore.add(MSG.color("&r" + temp));
+				lore.add(parseTemp(cp, MSG.color("&r" + temp)));
 		}
 		if (gui.getBoolean("Unbreakable")) {
 //			meta.spigot().setUnbreakable(true);
@@ -241,6 +248,17 @@ public class Utils {
 		meta.setLore(lore);
 		item.setItemMeta(meta);
 		return item;
+	}
+
+	public static String parseTemp(CPlayer cp, String string) {
+		for (Entry<String, Object> entry : cp.getTempMap().entrySet()) {
+			if (entry.getKey().equals("punishing")) {
+				string = string.replace("%punishing%", cp.getTempString("punishing").split("\\|")[1]);
+				continue;
+			}
+			string = string.replace("%" + entry.getKey() + "%", entry.getValue() + "");
+		}
+		return string;
 	}
 
 	/**

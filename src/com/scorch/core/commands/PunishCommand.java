@@ -31,7 +31,7 @@ public class PunishCommand implements CommandExecutor {
 
 		Player player = (Player) sender;
 
-		if (args.length < 1) {
+		if (args.length < 2) {
 			MSG.tell(sender, "/punish [player] [reason]");
 			return true;
 		}
@@ -44,12 +44,16 @@ public class PunishCommand implements CommandExecutor {
 		String reason = sb.toString().trim();
 
 		OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-		CPlayer cp = ScorchCore.getInstance().getPlayer(target);
-
-		player.openInventory(ScorchCore.getInstance().getPunishModule().getPunishGUI(target));
+		CPlayer cp = ScorchCore.getInstance().getPlayer(player);
 
 		cp.setTempData("openInventory", "punish");
-		cp.setTempData("punishing", target.getUniqueId() + "");
+		cp.setTempData("punishing", target.getUniqueId() + "|" + args[0]);
+		cp.setTempData("reason", reason);
+
+		player.openInventory(ScorchCore.getInstance().getPunishModule().getPunishGUI(player, target));
+
+		cp.setTempData("openInventory", "punish");
+		cp.setTempData("punishing", target.getUniqueId() + "|" + args[0]);
 		cp.setTempData("reason", reason);
 		return true;
 	}

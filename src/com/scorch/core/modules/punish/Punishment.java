@@ -1,20 +1,28 @@
 package com.scorch.core.modules.punish;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.annotations.DataIgnore;
+import com.scorch.core.modules.messages.CMessage;
+import com.scorch.core.modules.messages.MessagesModule;
+import com.scorch.core.modules.messages.OfflineMessage;
+import com.scorch.core.modules.messages.OfflineMessagesModule;
 import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
 
@@ -25,12 +33,12 @@ import com.scorch.core.utils.MSG;
  * @author imodm
  *
  */
-public class Punishment {
+public class Punishment implements Comparable<Punishment> {
 
 	@DataIgnore
 	private final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a");
 
-	private UUID target;
+	private UUID id, target;
 	private String staff, reason, remover, removeReason;
 
 	private long date, duration, removeDate;
@@ -49,6 +57,7 @@ public class Punishment {
 	 * @param type     {@link PunishType} type of punishment
 	 */
 	public Punishment(UUID target, String staff, String reason, long date, long duration, PunishType type) {
+		this.id = UUID.randomUUID();
 		this.target = target;
 
 		this.staff = staff;
@@ -84,13 +93,30 @@ public class Punishment {
 	 * members, kicking players, etc.) Ideally should only be run once.
 	 */
 	public void execute() {
-		Player target = Bukkit.getPlayer(this.target);
+		OfflinePlayer target = Bukkit.getOfflinePlayer(this.target);
 		kick: if (punishType.restrictsLogin()) {
-			if (target == null || !target.isOnline())
+			if (!target.isOnline())
 				break kick;
 
-			target.kickPlayer(null);
+			target.getPlayer().kickPlayer(getKickMessage());
 		}
+
+		if (punishType == PunishType.WARNING) {
+			String warning = ScorchCore.getInstance().getMessages().getMessage("warningmessage").getMessage()
+					.replace("%staff%", staff).replace("%reason%", reason);
+			for (String msg : warning.split("\\|"))
+				if (target.isOnline()) {
+					MSG.tell(target.getPlayer(), msg);
+				} else {
+					OfflineMessagesModule omm = (OfflineMessagesModule) ScorchCore.getInstance()
+							.getModule("OfflineMessagesModule");
+					omm.addMessage(new OfflineMessage("Punishments", target.getUniqueId(), msg));
+				}
+		}
+
+		MSG.announce(ScorchCore.getInstance().getMessages().getMessage("punishmessage").getMessage()
+				.replace("%staff%", staff).replace("%target%", target.getName()).replace("%reason%", reason)
+				.replace("%duration%", MSG.getTime(duration)).replace("%verb%", getVerb()));
 	}
 
 	/**
@@ -105,10 +131,28 @@ public class Punishment {
 		this.remover = remover;
 		this.removeReason = removeReason;
 		this.removeDate = System.currentTimeMillis();
+
+		update();
 	}
 
-	// TODO
 	public void update() {
+		PreparedStatement prepared = ScorchCore.getInstance().getDataManager().getConnectionManager("easytoremember")
+				.prepareStatement("UPDATE punishments SET remover =  ?, removeReason = ?, removeDate = ? WHERE id = ?");
+
+		try {
+			prepared.setString(1, remover);
+			prepared.setString(2, removeReason);
+			prepared.setLong(3, removeDate);
+			prepared.setString(4, id.toString());
+
+			prepared.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public UUID getId() {
+		return id;
 	}
 
 	public UUID getTargetUUID() {
@@ -152,31 +196,37 @@ public class Punishment {
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(MSG.color("&r" + punishType.getColored()));
 		List<String> lore = new ArrayList<>();
-		lore.add(MSG.color("&ePunisher: " + staff));
-		lore.add(MSG.color("&eReason: " + reason));
-		lore.add(MSG.color("&eDate: " + sdf.format(date)));
-		if (punishType != PunishType.WARNING && punishType != PunishType.KICK)
-			lore.add(MSG.color("&eDuration: " + (duration == -1 ? "Permanent" : MSG.getTime(duration))));
+		lore.add(MSG.color("&3Staff: &b" + staff));
+		lore.add(MSG.color("&3Reason: &b" + reason));
+		lore.add("");
+		lore.add(MSG.color("&2Date: &a" + sdf.format(date)));
+		if (punishType != PunishType.WARNING && punishType != PunishType.KICK) {
+			lore.add(MSG.color("&2Duration: &a" + (duration == -1 ? "&cPermanent" : MSG.getTime(duration))));
+			if (duration != -1 && isActive())
+				lore.add(MSG.color("&2Time Left: &a" + MSG.getTime((date + duration - System.currentTimeMillis()))));
+		}
 
 		if (isRemoved()) {
-			lore.add(MSG.color("&eRemoved By: " + remover));
-			lore.add(MSG.color("&eRemove Reason: " + removeReason));
-			lore.add(MSG.color("&eRemove Date: " + sdf.format(removeDate)));
+			lore.add("");
+			lore.add(MSG.color("&cRemoved By: &4" + remover));
+			lore.add(MSG.color("&cRemove Reason: &4" + removeReason));
+			lore.add(MSG.color("&cRemove Date: &4" + sdf.format(removeDate)));
 		}
 
 		meta.setLore(lore);
 
 		if (isActive()) {
 			meta.addEnchant(Enchantment.DURABILITY, 0, true);
-			meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
 		}
+
+		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_UNBREAKABLE);
 
 		item.setItemMeta(meta);
 		return item;
 	}
 
 	public boolean isActive() {
-		return isRemoved() || date + duration >= System.currentTimeMillis();
+		return !isRemoved() && (date + duration >= System.currentTimeMillis() || duration == -1);
 	}
 
 	public boolean isRemoved() {
@@ -198,7 +248,20 @@ public class Punishment {
 			return null;
 		}
 
-		return "&c&lYou have been " + getVerb() + " by " + staff + " for " + duration + " (Reason: " + reason + ")";
+		MessagesModule messages = ScorchCore.getInstance().getMessages();
+
+		Map<String, String> place = new HashMap<>();
+		place.put("%verb%", getVerb());
+		place.put("%staff%", staff);
+		place.put("%duration%", MSG.getTime(duration));
+		place.put("%reason%", reason);
+		place.put("%timeleft%", MSG.getTime(date + duration - System.currentTimeMillis()));
+		place.put("%appeal%", messages.getMessage("appeallink").getMessage());
+
+		CMessage msg = duration == -1 ? messages.getMessage("permbanmessage") : messages.getMessage("tempbanmessage");
+
+		msg.applyPlaceholders(place);
+		return msg.getMessage();
 	}
 
 	public String getVerb() {
@@ -223,5 +286,10 @@ public class Punishment {
 			Logger.warn("Unknown punish type: " + punishType);
 			return "punished";
 		}
+	}
+
+	@Override
+	public int compareTo(Punishment o) {
+		return o.getDate() > date ? 1 : -1;
 	}
 }

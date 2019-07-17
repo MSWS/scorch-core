@@ -1,12 +1,12 @@
 punish:
-  Title: Punishing %player%
+  Title: Punishing %punishing%
   Size: 54
   skull:
     Icon: SKULL_ITEM
-    Owner: '%player%'
+    Owner: '%punishing%'
     Data: 3
     Slot: 4
-    Name: '&r&cPunishing &4%player%'
+    Name: '&r&cPunishing &4%punishing%'
     Lore:
     - '&7Reason: &e%reason%'
   chatCategory:
@@ -46,6 +46,7 @@ punish:
     Slot: 25
     Name: '&c&lPermanent Ban'
     Type: PERM_BAN
+    Duration: -1
     Lore:
     - ''
     - '&7Certain situations such as'
@@ -64,7 +65,6 @@ punish:
     Name: '&4&lIP BAN'
     Type: IP_BAN
     Permission: rank.dev
-    BanTime: -1
     Lore:
     - ''
     - '&4Extremely rare situations'
@@ -76,6 +76,7 @@ punish:
     Slot: 34
     Name: '&c&lPermanent Mute'
     Type: PERM_MUTE
+    Duration: -1
     Lore:
     - ''
     - '&7Certain situations such as'
@@ -95,12 +96,12 @@ punish:
     Lore:
     - ''
     - '&7Kicks a player with the provided reason'
-  sev1chatmute:
+  chat1:
     Icon: INK_SACK
     Name: '&a&lSeverity 1'
     Slot: 19
     Data: 2
-    Duration: 10000
+    Duration: 1800000.0
     Type: TEMP_MUTE
     Lore:
     - ''
@@ -110,12 +111,12 @@ punish:
     - '&7 - Intentional Spam'
     - '&7 - Intentional Advertising (No; Links, IPs, and not spammed)'
     - '&7 - DM Spamming'
-  sev2chatmute:
+  chat2:
     Icon: INK_SACK
     Name: '&e&lSeverity 2'
     Slot: 28
     Data: 11
-    Duration: 20000
+    Duration: 2.592E8
     Type: TEMP_MUTE
     Lore:
     - ''
@@ -127,24 +128,24 @@ punish:
     - '&7 - Discrimination'
     - '&7 - Extremely profane language'
     Permission: rank.mod
-  sev3chatmute:
+  chat3:
     Icon: INK_SACK
     Name: '&c&lSeverity 3'
     Slot: 37
     Data: 1
-    Duration: 40000
+    Duration: 2.628E9
     Type: TEMP_MUTE
     Lore:
     - ''
     - '&7Player already has a previous severity 2 offense'
     - '&7within 3 months'
     Permission: rank.mod
-  sev1gameplayban:
+  gameplay1:
     Icon: INK_SACK
     Name: '&a&lSeverity 1'
     Slot: 21
     Data: 2
-    Duration: 180000
+    Duration: 6.048E8
     Type: TEMP_BAN
     Lore:
     - ''
@@ -152,12 +153,13 @@ punish:
     - '&7 - TP Trapping'
     - '&7 - Command Spam'
     - '&7 - Inappropriate Faction Name'
-  sev1hackingban:
+  hacking1:
     Icon: INK_SACK
     Name: '&a&lSeverity 1'
     Slot: 23
     Data: 2
-    Severity: 1
+    Duration: 2.628E9
+    Type: TEMP_BAN
     Lore:
     - ''
     - '&7Modifications that are unallowed but do not'
@@ -167,12 +169,13 @@ punish:
     - '&7 - Health Indicators'
     - '&7 - Skin Blinker'
     - '&7 - Derp'
-  sev2hackingban:
+  hacking2:
     Icon: INK_SACK
     Name: '&e&lSeverity 2'
     Slot: 32
     Data: 11
-    Severity: 2
+    Duration: 7.884E9
+    Type: TEMP_BAN
     Lore:
     - ''
     - '&7Modifications that are unallowed and provide'
@@ -183,12 +186,13 @@ punish:
     - '&7 - Auto(Eat,Soup,Armor,etc)'
     - '&7 - Any Inventory related hacks'
     - '&7 - XRay'
-  sev3hackingban:
+  hacking3:
     Icon: INK_SACK
     Name: '&c&lSeverity 3'
     Slot: 41
     Data: 1
-    Severity: 3
+    Duration: 1.577E10
+    Type: TEMP_BAN
     Lore:
     - ''
     - '&7Modifications that are unallowed and provide'

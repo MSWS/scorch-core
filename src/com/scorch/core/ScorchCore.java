@@ -1,20 +1,24 @@
 package com.scorch.core;
 
 import java.io.File;
-import java.util.*;
-
-import com.scorch.core.modules.ModulePriority;
-import com.scorch.core.modules.permissions.PermissionModule;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.scorch.core.modules.AbstractModule;
+import com.scorch.core.modules.ModulePriority;
 import com.scorch.core.modules.data.CPlayer;
 import com.scorch.core.modules.data.ConnectionManager;
 import com.scorch.core.modules.data.DataManager;
 import com.scorch.core.modules.messages.MessagesModule;
+import com.scorch.core.modules.messages.OfflineMessagesModule;
+import com.scorch.core.modules.permissions.PermissionModule;
 import com.scorch.core.modules.punish.BanwaveModule;
 import com.scorch.core.modules.punish.PunishModule;
 import com.scorch.core.utils.Logger;
@@ -60,9 +64,13 @@ public class ScorchCore extends JavaPlugin {
 		pMod = (PunishModule) registerModule(new PunishModule("PunishModule"), ModulePriority.MEDIUM);
 		registerModule(new BanwaveModule("BanwaveModule"), ModulePriority.MEDIUM);
 
-		// DO NOT load ScoreboardModule
+		registerModule(new OfflineMessagesModule("OfflineMessagesModule"), ModulePriority.LOWEST);
 
-		Arrays.stream(ModulePriority.values()).forEach(this::loadModules);
+		try {
+			Arrays.stream(ModulePriority.values()).forEach(this::loadModules);
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		}
 
 		// Other initialisation after this
 

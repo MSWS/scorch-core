@@ -5,10 +5,10 @@ import org.bukkit.Material;
 import com.scorch.core.utils.Logger;
 
 public enum PunishType {
-	IP_BAN("&d&lIP BAN", "BEDROCK", true), PERM_BAN("&4&lPERM BAN", "REDSTONE_BLOCK", true),
-	TEMP_BAN("&c&lTEMP BAN", "DIAMOND_SWORD", true), PERM_MUTE("&4&lPERM MUTE", "BOOK", false),
-	TEMP_MUTE("&c&lTEMP MUTE", "BOOK", false), WARNING("&e&lWARNING", "PAPER", false),
-	KICK("&b&lKICK", "LEATHER_BOOTS", false), OTHER("&3&lOTHER", "HOPPER", false);
+	IP_BAN("&d&lIP Ban", "BEDROCK", true), PERM_BAN("&4&lPerm Ban", "REDSTONE_BLOCK", true),
+	TEMP_BAN("&c&lTemp Ban", "DIAMOND_SWORD", true), PERM_MUTE("&4&lPerm Mute", "BOOK", false),
+	TEMP_MUTE("&c&lTemp Mute", "BOOK", false), WARNING("&e&lWarning", "PAPER", false),
+	KICK("&b&lKick", "LEATHER_BOOTS", false), OTHER("&3&lOther", "HOPPER", false);
 
 	private Material mat;
 	private boolean restrictLogin;

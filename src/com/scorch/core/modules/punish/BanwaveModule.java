@@ -30,9 +30,10 @@ public class BanwaveModule extends AbstractModule {
 
 	@Override
 	public void disable() {
-		punishments.clear();
+		if (punishments != null)
+			punishments.clear();
 
-		//getBanwave().cancel();
+		// getBanwave().cancel();
 	}
 
 	private BukkitRunnable getBanwave() {

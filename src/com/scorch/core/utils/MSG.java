@@ -257,4 +257,60 @@ public class MSG {
 		messages.forEach((str) -> builder.append(str + separator));
 		return builder.toString().substring(0, Math.max(0, builder.toString().length() - separator.length()));
 	}
+	
+	public static String hash(String msg, int length, int iterations) {
+		msg = msg.replace(" ", "");
+		if (msg.isEmpty())
+			return "";
+		String result = "", tmp = "";
+		double total = 0, avg = 0, odds = 0, evens = 0;
+		for (int i = 0; i < msg.length(); i++) {
+			total += msg.charAt(i);
+			if (i % 2 == 0) {
+				odds += msg.charAt(i);
+			} else {
+				evens += msg.charAt(i);
+			}
+		}
+		avg = total / msg.length();
+		result += "" + (msg.length() / 5.58462 * (evens + 6481.5135)) * ((double) msg.charAt(0)) * (double) total / avg
+				* odds;
+
+		result += result.length() * Math.pow(evens, odds) / result.charAt((result.length() - 1) / msg.length() / 5) + ""
+				+ Math.copySign(odds, evens * total);
+
+		for (int i = 1; i < msg.length() - 1; i += Math.ceil(msg.length() / 5.0)) {
+			result = result.substring(0, Math.min(i, result.length())) + Math.pow(avg * total, i)
+					+ Math.sqrt(odds) * Math.log(evens) + result.substring(Math.min(i, result.length()));
+		}
+
+		for (int i = (int) Math.ceil(result.length() / avg); i < result.length(); i += Math
+				.max(Math.ceil(result.length() / (length * Math.PI)), 1)) {
+			if ((result.charAt(i) + "").matches("[0-9]")) {
+				result = result.substring(0, i - 1)
+						+ (char) (Math.floor((Integer.parseInt(result.charAt(i) + "") * 2.8)) + 65)
+						+ result.substring(i, result.length() - 1);
+			}
+		}
+
+		result = result.replaceAll("[^A-Z0-9]", "");
+
+		while (result.length() < length)
+			result = hash(result, length - iterations, --iterations);
+
+		while (iterations > 0)
+			result = hash(result, length + iterations, --iterations);
+
+		for (int i = 0; i < result.length() && i < length; i++)
+			tmp += result.charAt((int) ((i + avg) % result.length()));
+
+		return tmp;
+	}
+
+	public static String hashWithSalt(String salt, String password, int length, int iterations) {
+		String result = salt + password;
+		for (int i = 0; i < iterations; i++)
+			result = hash(salt + result, length, 1);
+		return result;
+	}
 }

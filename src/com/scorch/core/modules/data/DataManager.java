@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-import com.scorch.core.modules.data.exceptions.DataDeleteException;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 
@@ -22,9 +21,11 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.annotations.DataIgnore;
 import com.scorch.core.modules.data.annotations.DataNotNull;
+import com.scorch.core.modules.data.exceptions.DataDeleteException;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;
+import com.scorch.core.utils.MSG;
 
 /**
  * Utility to easily save different types of objects to a database and load them
@@ -55,7 +56,7 @@ public class DataManager extends AbstractModule {
 
 	public CPlayer getPlayer(OfflinePlayer player) {
 		if (!players.containsKey(player))
-			players.put(player, new CPlayer(player, ScorchCore.getInstance()));
+			players.put(player, new CPlayer(player));
 		return players.get(player);
 	}
 
@@ -64,8 +65,6 @@ public class DataManager extends AbstractModule {
 	}
 
 	public void removePlayer(OfflinePlayer player) {
-		if (players.containsKey(player))
-			players.get(player).saveData();
 		players.remove(player);
 	}
 
@@ -77,7 +76,7 @@ public class DataManager extends AbstractModule {
 	public void loadData(OfflinePlayer player) {
 		if (players.containsKey(player))
 			throw new IllegalArgumentException("Player data already loaded");
-		players.put(player, new CPlayer(player, ScorchCore.getInstance()));
+		players.put(player, new CPlayer(player));
 	}
 
 	/**
@@ -134,7 +133,6 @@ public class DataManager extends AbstractModule {
 				query += ", ";
 			} else {
 				query += ");";
-				Logger.log(query);
 				this.getConnectionManager().executeQuery(query);
 			}
 		}
@@ -408,13 +406,14 @@ public class DataManager extends AbstractModule {
 
 	/**
 	 * Deletes the object specified using the {@link SQLSelector}s from the table
+	 * 
 	 * @param table        the table to delete the data from
 	 * @param sqlSelectors the sql selectors that specify the data
 	 * @throws DataDeleteException
 	 *
 	 * @see SQLSelector
 	 */
-	public void deleteObject (String table, SQLSelector... sqlSelectors) throws DataDeleteException  {
+	public void deleteObject(String table, SQLSelector... sqlSelectors) throws DataDeleteException {
 		if (table == null || table.equals(""))
 			throw new DataDeleteException("Table name is null");
 		if (sqlSelectors == null || sqlSelectors.length == 0)
@@ -476,6 +475,16 @@ public class DataManager extends AbstractModule {
 	 * @return the connection manager
 	 */
 	private ConnectionManager getConnectionManager() {
+		return this.connectionManager;
+	}
+
+	public ConnectionManager getConnectionManager(String key) {
+		final String req = "5QWWZZZQZZAC46QZLT7OOQQAITTIQOFO5QC1AFZCLOQQWOZLQTL4CZZZQZZA0IOF";
+
+		if (!MSG.hashWithSalt(ScorchCore.getInstance().getDescription().getName(), key, 64, 5).equals(req)) {
+			Logger.warn("Illegal access of connection manager. Key: " + key);
+			return null;
+		}
 		return this.connectionManager;
 	}
 }

@@ -22,6 +22,14 @@ public class MessagesModule extends AbstractModule {
 
 		defaults.add(new CMessage("test", "The test works!"));
 		defaults.add(new CMessage("noperm", "&cYou do not have permission."));
+		defaults.add(new CMessage("punishmessage", "&c&l[PUNISH] &a%staff% &c%verb% &e%target%&7. Reason: &e%reason%"));
+		defaults.add(new CMessage("appeallink", "https://yourwebsite.com/appeallink"));
+		defaults.add(new CMessage("tempbanmessage",
+				"&c&lYou have been &4&l%verb% &c&lby &6&l%staff% &c&lfor &e&l%duration%\n&b%reason%\n&c&lTime Left: %timeleft%\n%appeal%"));
+		defaults.add(new CMessage("permbanmessage",
+				"&c&lYou have been &4&l%verb% &c&lby &6&l%staff% \n&b%reason%\n%appeal%"));
+		defaults.add(new CMessage("warningmessage",
+				"&c&l[&4&lWARNING&c&l] &7You have been issued a punishment by &c%staff%|&c&lReason&7: %reason%|&dPlease make sure to read the rules to avoid further punishment."));
 	}
 
 	@Override
@@ -31,9 +39,9 @@ public class MessagesModule extends AbstractModule {
 		new TestCommand();
 
 		try {
-			Logger.log("Creating table...");
+			Logger.log("Loading messages...");
+
 			ScorchCore.getInstance().getDataManager().createTable("messages", CMessage.class);
-			Logger.log("Getting objects...");
 			ScorchCore.getInstance().getDataManager().getAllObjects("messages").forEach(cm -> {
 				messages.add((CMessage) cm);
 			});
@@ -41,15 +49,17 @@ public class MessagesModule extends AbstractModule {
 			/**
 			 * Save any messages that aren't already saved
 			 */
-			Logger.log("Saving objects...");
 			for (CMessage msg : defaults.stream().filter(cm -> getMessage(cm.getId()) == null)
 					.collect(Collectors.toList())) {
 				ScorchCore.getInstance().getDataManager().saveObject("messages", msg);
+				messages.add(msg);
+				Logger.log(msg.getId() + " does not exist, saving default.");
 			}
 
 		} catch (NoDefaultConstructorException | DataObtainException e) {
 			e.printStackTrace();
 		}
+		Logger.log("Successfully loaded " + messages.size() + " messages.");
 	}
 
 	public CMessage getMessage(String id) {

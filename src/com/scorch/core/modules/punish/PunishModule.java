@@ -1,18 +1,24 @@
 package com.scorch.core.modules.punish;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.commands.HistoryCommand;
@@ -22,6 +28,7 @@ import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.DataManager;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
+import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
 import com.scorch.core.utils.Utils;
 
@@ -75,9 +82,11 @@ public class PunishModule extends AbstractModule {
 		ScorchCore.getInstance().getDataManager().saveObject("punishments", punishment);
 	}
 
-	public Inventory getPunishGUI(OfflinePlayer player) {
-		Inventory inv = Utils.getGui(player, ScorchCore.getInstance().getGui(), "punish", 0);
+	public Inventory getPunishGUI(Player punisher, OfflinePlayer player) {
+		Inventory inv = Utils.getGui(punisher, ScorchCore.getInstance().getGui(), "punish", 0);
 		List<Punishment> history = getPunishments(player.getUniqueId());
+		Collections.sort(history);
+
 		for (int i = 0; i < 5 && i < history.size(); i++) {
 			Punishment p = history.get(i);
 			ItemStack item = p.getItem();
@@ -94,32 +103,91 @@ public class PunishModule extends AbstractModule {
 		return inv;
 	}
 
-	public Inventory getHistoryGUI(OfflinePlayer player) {
-		return null;
+	public Inventory getHistoryGUI(OfflinePlayer target, int page) {
+		Inventory hist = Bukkit.createInventory(null, 54,
+				target.getName() + "'" + (target.getName().toLowerCase().endsWith("s") ? "" : "s") + " History");
+
+		List<Punishment> history = ScorchCore.getInstance().getPunishModule().getPunishments(target.getUniqueId());
+		Collections.sort(history);
+
+		int slot = 0;
+
+		for (int i = (page * (hist.getSize() - 9)); i < (page * (hist.getSize() - 9)) + hist.getSize() - 9
+				&& i < history.size(); i++) {
+			Punishment p = history.get(i);
+			hist.setItem(slot, p.getItem());
+			slot++;
+		}
+
+		if (page > 0) {
+			ItemStack back = new ItemStack(Material.ARROW);
+			ItemMeta bMeta = back.getItemMeta();
+			bMeta.setDisplayName(MSG.color("&aPrevious Page"));
+			back.setItemMeta(bMeta);
+			hist.setItem(hist.getSize() - 9, back);
+		}
+		if (hist.getItem(hist.getSize() - 10) != null) {
+			ItemStack next = new ItemStack(Material.ARROW);
+			ItemMeta nMeta = next.getItemMeta();
+			nMeta.setDisplayName(MSG.color("&aNext Page"));
+			next.setItemMeta(nMeta);
+			hist.setItem(hist.getSize() - 1, next);
+		}
+		return hist;
 	}
 
 	public List<Punishment> getPunishments(UUID player) {
 		return linked.getOrDefault(player, new ArrayList<>());
 	}
 
+	public void deletePunishment(Punishment p) {
+		punishments.remove(p);
+		List<Punishment> active = linked.get(p.getTargetUUID());
+		active.remove(p);
+		linked.put(p.getTargetUUID(), active);
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				PreparedStatement prepared = ScorchCore.getInstance().getDataManager()
+						.getConnectionManager("easytoremember")
+						.prepareStatement("DELETE FROM punishments WHERE id = ?");
+				try {
+					prepared.setString(1, p.getId() + "");
+
+					prepared.execute();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(ScorchCore.getInstance());
+	}
+
 	public void refreshPunishments() {
 		punishments = new ArrayList<Punishment>();
 		linked = new HashMap<UUID, List<Punishment>>();
 
-		try {
-			ScorchCore.getInstance().getDataManager().createTable(table, Punishment.class);
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				Logger.log("Loading punishments...");
+				try {
+					ScorchCore.getInstance().getDataManager().createTable(table, Punishment.class);
 
-			ScorchCore.getInstance().getDataManager().getAllObjects("punishments").forEach(punish -> {
-				Punishment p = (Punishment) punish;
-				punishments.add(p);
+					ScorchCore.getInstance().getDataManager().getAllObjects("punishments").forEach(punish -> {
+						Punishment p = (Punishment) punish;
+						punishments.add(p);
 
-				List<Punishment> current = linked.getOrDefault(p.getTargetUUID(), new ArrayList<>());
-				current.add(p);
+						List<Punishment> current = linked.getOrDefault(p.getTargetUUID(), new ArrayList<>());
+						current.add(p);
 
-				linked.put(p.getTargetUUID(), current);
-			});
-		} catch (NoDefaultConstructorException | DataObtainException e) {
-			e.printStackTrace();
-		}
+						linked.put(p.getTargetUUID(), current);
+					});
+				} catch (NoDefaultConstructorException | DataObtainException e) {
+					e.printStackTrace();
+				}
+				Logger.log("Successfully loaded " + punishments.size() + " punishments.");
+			}
+		}.runTaskAsynchronously(ScorchCore.getInstance());
+
 	}
 }

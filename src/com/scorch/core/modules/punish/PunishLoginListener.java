@@ -1,7 +1,6 @@
 package com.scorch.core.modules.punish;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.utils.MSG;
@@ -32,20 +32,15 @@ public class PunishLoginListener implements Listener {
 
 		List<Punishment> punishments = ScorchCore.getInstance().getPunishModule().getPunishments(player.getUniqueId());
 
-		punishments.stream().filter(Punishment::isActive).filter(p -> p.getType().restrictsLogin())
+		punishments = punishments.stream().filter(Punishment::isActive).filter(p -> p.getType().restrictsLogin())
 				.collect(Collectors.toList());
-		
+
 		if (punishments.isEmpty())
 			return;
 
-		Collections.sort(punishments, new Comparator<Punishment>() {
-			@Override
-			public int compare(Punishment o1, Punishment o2) {
-				return o1.getDate() > o2.getDate() ? -1 : 1;
-			}
-		});
+		Collections.sort(punishments);
 
-		// event.setResult(Result.KICK_BANNED);
+		event.setResult(Result.KICK_BANNED);
 		Punishment active = punishments.get(0);
 
 		event.setKickMessage(MSG.color(active.getKickMessage()));
