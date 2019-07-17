@@ -69,6 +69,7 @@ public class PunishInventoryListener implements Listener {
 					return;
 				case SHIFT_LEFT:
 					ScorchCore.getInstance().getPunishModule().deletePunishment(p);
+					refreshHistory(player, target);
 					return;
 				default:
 					return;

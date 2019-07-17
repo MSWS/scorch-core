@@ -31,8 +31,9 @@ public class MessagesModule extends AbstractModule {
 		defaults.add(new CMessage("warningmessage",
 				"&c&l[&4&lWARNING&c&l] &7You have been issued a punishment by &c%staff%|&c&lReason&7: %reason%|&dPlease make sure to read the rules to avoid further punishment."));
 		defaults.add(new CMessage("tempmutemessage",
-				"You are muted for %timeleft% by %staff% for %reason%. (Time Left: %timeleft%)"));
-		defaults.add(new CMessage("permmutemessage", "You are Permanentely muted by %staff% for %reason%."));
+				"&cYou are muted for &e%timeleft% &7by &a%staff%&c for &e%reason%.&c &7(Time Left: &8%timeleft%&7)"));
+		defaults.add(
+				new CMessage("permmutemessage", "&cYou are &4Permanentely &cmuted by &a%staff% &cfor &e%reason%&7."));
 		defaults.add(new CMessage("offlinemessageheader", "&7You have &e%amo% &7unread message%s%."));
 		defaults.add(new CMessage("offlinemessageformat", "&1%sender%&9: &b%message% &7[&8%time%&7]"));
 	}

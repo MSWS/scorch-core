@@ -62,11 +62,12 @@ public class OfflineMessagesModule extends AbstractModule {
 	}
 
 	public List<OfflineMessage> getMessages(UUID player) {
-		return linked.get(player);
+		return linked.getOrDefault(player, new ArrayList<>());
 	}
 
 	public List<OfflineMessage> getActiveMessages(UUID player) {
-		return linked.get(player).stream().filter(r -> !r.received()).collect(Collectors.toList());
+		return linked.getOrDefault(player, new ArrayList<>()).stream().filter(r -> !r.received())
+				.collect(Collectors.toList());
 	}
 
 	@Override
