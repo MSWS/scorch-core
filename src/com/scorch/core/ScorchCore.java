@@ -11,6 +11,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.scorch.core.commands.ACommand;
+import com.scorch.core.commands.MACommand;
+import com.scorch.core.commands.RACommand;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.ModulePriority;
 import com.scorch.core.modules.chat.ChatModule;
@@ -76,6 +79,10 @@ public class ScorchCore extends JavaPlugin {
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
+
+		new ACommand();
+		new MACommand();
+		new RACommand();
 
 		// Other initialisation after this
 
@@ -207,7 +214,7 @@ public class ScorchCore extends JavaPlugin {
 	public PunishModule getPunishModule() {
 		return pMod;
 	}
-	
+
 	public FilterModule getFilter() {
 		return filter;
 	}
