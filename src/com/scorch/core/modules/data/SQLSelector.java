@@ -7,14 +7,14 @@ package com.scorch.core.modules.data;
 public class SQLSelector {
 
     private final String selector;
-    private final String value;
+    private final Object value;
 
     /**
      * Creates a SQL selector instance
      * @param selector the selector to use
      * @param value    the value for the selector
      */
-    public SQLSelector (String selector, String value){
+    public SQLSelector (String selector, Object value){
         this.selector = selector;
         this.value = value;
     }
@@ -31,7 +31,7 @@ public class SQLSelector {
      * Gets the value
      * @return the value
      */
-    public String getValue() {
+    public Object getValue() {
         return value;
     }
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.scorch.core.modules.data.SQLSelector;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -94,25 +95,11 @@ public class OfflineMessagesModule extends AbstractModule {
 	public void update(OfflineMessage old, OfflineMessage newM) {
 		offline.remove(old);
 		offline.add(newM);
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				PreparedStatement prepared = ScorchCore.getInstance().getDataManager()
-						.getConnectionManager("easytoremember").prepareStatement(
-								"UPDATE offlinemessages SET received = ? WHERE sender = ? AND receiver = ? AND message = ? AND sent = ?");
 
-				try {
-					prepared.setLong(1, newM.getReceivedTime());
-					prepared.setString(2, newM.getSender());
-					prepared.setString(3, newM.getReceiver() + "");
-					prepared.setString(4, newM.getMessage());
-					prepared.setLong(5, newM.getSentTime());
-
-					prepared.execute();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}.runTaskAsynchronously(ScorchCore.getInstance());
+		ScorchCore.getInstance().getDataManager().updateObjectAsync("offlinemessages", newM,
+				new SQLSelector("sender", newM.getSender()),
+				new SQLSelector("receiver", newM.getReceiver()),
+				new SQLSelector("message", newM.getMessage()),
+				new SQLSelector("sent", newM.getSentTime()));
 	}
 }

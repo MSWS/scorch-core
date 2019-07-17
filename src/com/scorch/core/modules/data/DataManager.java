@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
+import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 
@@ -28,6 +29,7 @@ import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.modules.data.wrappers.JSONLocation;
 import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /*
  * Utility to easily save different types of objects to a database and load them
@@ -142,8 +144,18 @@ public class DataManager extends AbstractModule {
 	}
 
 	/**
-	 * Saves the <code>object</code> to <code>table</code>
-	 * 
+	 * Saves the bject to table, automatically parses all fields of the object to their sql equivalent.
+	 * <br>Supported field types include:</b>
+	 * <br><ul>
+	 *     <li>{@link Integer}</li>
+	 *     <li>{@link String}</li>
+	 *     <li>{@link Boolean}</li>
+	 *     <li>{@link UUID}</li>
+	 *     <li>{@link Location}</li>
+	 *     <li>{@link Collection}</li>
+	 *     <li>{@link Map}</li>
+	 * </ul></br>
+	 * <br>If the type isn't listed above, it will try to convert the object to json using Google's {@link Gson}</br>
 	 * @param table  the table to save <code>object</code> to
 	 * @param object the object to save
 	 */
@@ -227,6 +239,31 @@ public class DataManager extends AbstractModule {
 		} catch (SQLException e) {
 			Logger.error("An error occurred while trying to save an object: " + e.getMessage());
 		}
+	}
+
+	/**
+	 * Saves the bject to table, automatically parses all fields of the object to their sql equivalent.
+	 * <br>Supported field types include:</b>
+	 * <br><ul>
+	 *     <li>{@link Integer}</li>
+	 *     <li>{@link String}</li>
+	 *     <li>{@link Boolean}</li>
+	 *     <li>{@link UUID}</li>
+	 *     <li>{@link Location}</li>
+	 *     <li>{@link Collection}</li>
+	 *     <li>{@link Map}</li>
+	 * </ul></br>
+	 * <br>If the type isn't listed above, it will try to convert the object to json using Google's {@link Gson}</br>
+	 * @param table  the table to save <code>object</code> to
+	 * @param object the object to save
+	 */
+	public void saveObjectAsync(String table, Object object) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				saveObject(table, object);
+			}
+		}.runTaskAsynchronously(ScorchCore.getInstance());
 	}
 
 	/**
@@ -420,27 +457,216 @@ public class DataManager extends AbstractModule {
 			throw new DataDeleteException("No sql selectors defined");
 
 		// TODO prepared statement
-		String sql = String.format("DELETE FROM %s WHERE %s='%s' ", table, sqlSelectors[0].getSelector(),
+		String sql = String.format("DELETE FROM %s WHERE %s=? ", table, sqlSelectors[0].getSelector(),
 				sqlSelectors[0].getValue());
 
 		// Strip first element from sqlSelectors because we just used it ^ there
-		SQLSelector[] remainingSelectors = IntStream.range(1, sqlSelectors.length).mapToObj(i -> sqlSelectors[i])
-				.toArray(SQLSelector[]::new);
 
-		for (int i = 0; i < remainingSelectors.length; i++) {
-			sql = sql + String.format(" AND %s='&s'", remainingSelectors[i].getSelector(),
-					remainingSelectors[i].getValue());
+		for (int i = 1; i < sqlSelectors.length; i++) {
+			sql = sql + String.format(" AND %s=?", sqlSelectors[i].getSelector(),
+					sqlSelectors[i].getValue());
 		}
 
 		sql = sql + ";";
 
 		// Built query, so execute it
 		try {
-			getConnectionManager().prepareStatement(sql).executeUpdate();
+			PreparedStatement statement = getConnectionManager().prepareStatement(sql);
+			for(int i = 0; i < sqlSelectors.length; i++) {
+				Object field = sqlSelectors[i].getValue();
+
+				if (field.getClass() == Integer.class) {
+					statement.setInt(i + 1, (int) field);
+				} else if (field.getClass() == String.class) {
+					statement.setString(i + 1, (String) field);
+				} else if (field.getClass() == long.class) {
+					statement.setLong(i + 1, (long) field);
+				} else if (field.getClass() == UUID.class) {
+					statement.setString(i + 1, ((UUID) field).toString());
+				} else if (field.getClass().isEnum()) {
+					statement.setString(i + 1, field.toString());
+				} else if (Collection.class.isAssignableFrom(field.getClass())) {
+					statement.setString(i + 1, DataManager.getGson().toJson(field));
+				} else if (Map.class.isAssignableFrom(field.getClass())) {
+					statement.setString(i + 1, DataManager.getGson().toJson(field));
+				} else if (field.getClass() == Location.class) {
+					statement.setString(i + 1, DataManager.getGson().toJson(JSONLocation.fromLocation((Location) field)));
+				} else {
+					statement.setString(i + 1, DataManager.getGson().toJson(field));
+				}
+			}
+			statement.executeUpdate();
 		} catch (SQLException e) {
 			Logger.error("An error occurred while trying to delete object from table: " + e.getMessage());
 			e.printStackTrace();
 		}
+	}
+
+
+	/**
+	 * Deletes the object specified using the {@link SQLSelector}s from the table
+	 *
+	 * @param table        the table to delete the data from
+	 * @param sqlSelectors the sql selectors that specify the data
+	 * @throws DataDeleteException
+	 *
+	 * @see SQLSelector
+	 */
+	public void deleteObjectAsync (String table, SQLSelector... sqlSelectors) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				try {
+					deleteObject(table, sqlSelectors);
+				} catch (DataDeleteException e) {
+					e.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(ScorchCore.getInstance());
+	}
+
+	/**
+	 * Updates the object in the database using {@link SQLSelector}s to select the object
+	 * @param table        the table to update data in
+	 * @param object       the object to update
+	 * @param sqlSelectors the sql selectors that specify the data
+	 */
+	public void updateObject (String table, Object object, SQLSelector... sqlSelectors) throws DataUpdateException {
+		if(table == null || table.equals("")) throw new DataUpdateException("Table name is null");
+		if(sqlSelectors == null || sqlSelectors.length == 0) throw new DataUpdateException("No sql selectors defined");
+
+		String sql = String.format("UPDATE %s SET " , table);
+
+		for(int i = 0; i < object.getClass().getDeclaredFields().length; i++){
+			Field field = object.getClass().getDeclaredFields()[i];
+			// Make sure it's accessible
+			field.setAccessible(true);
+
+			// Make sure that the field doesn't have to be ignored
+			if(field.isAnnotationPresent(DataIgnore.class)) continue;
+
+			sql = sql + field.getName() + " = ?";
+
+			if(i == object.getClass().getDeclaredFields().length-1){
+				// end of SET setup
+				sql = sql + " WHERE ";
+			}
+			else {
+				sql = sql + ", ";
+			}
+		}
+
+		sql = sql + sqlSelectors[0].getSelector() + " = ?";
+
+		// start at i = 1 since we just used index = 0
+		for (int i = 1; i < sqlSelectors.length; i++) {
+			sql = sql + String.format(" AND %s=?", sqlSelectors[i].getSelector());
+		}
+
+		sql = sql + ";";
+
+		Logger.log("sql: " + sql);
+
+		try {
+			PreparedStatement statement = this.getConnectionManager().prepareStatement(sql);
+			int parameterIndex = 1;
+
+			for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
+				Field field = object.getClass().getDeclaredFields()[i];
+
+				// Make sure the field is accessible
+				field.setAccessible(true);
+
+				// Makes sure that the field doesn't have to be ignored for serialisation
+				if (field.isAnnotationPresent(DataIgnore.class))
+					continue;
+
+				try {
+					if (field.getType() == Integer.class) {
+						statement.setInt(parameterIndex, (int) field.get(object));
+					} else if (field.getType() == String.class) {
+						statement.setString(parameterIndex, (String) field.get(object));
+					} else if (field.getType() == long.class) {
+						statement.setLong(parameterIndex, (long) field.get(object));
+					} else if (field.getType() == UUID.class) {
+						statement.setString(parameterIndex, ((UUID) field.get(object)).toString());
+					} else if (field.getType().isEnum()) {
+						statement.setString(parameterIndex, field.get(object).toString());
+					} else if (Collection.class.isAssignableFrom(field.getType())) {
+						statement.setString(parameterIndex, DataManager.getGson().toJson(field.get(object)));
+					} else if (Map.class.isAssignableFrom(field.getType())) {
+						statement.setString(parameterIndex, DataManager.getGson().toJson(field.get(object)));
+					} else if (field.getType() == Location.class) {
+						statement.setString(parameterIndex, DataManager.getGson().toJson(JSONLocation.fromLocation((Location)field.get(object))));
+					} else {
+						statement.setString(parameterIndex, DataManager.getGson().toJson(field.get(object)));
+					}
+
+					parameterIndex++;
+
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					Logger.error("An error occurred while trying to serialize a class for a prepared statement " + "("
+							+ field.getName() + " of " + field.getDeclaringClass().getName() + "): " + e.getMessage()
+							+ "\n" + sql);
+				}
+			}
+			for(int i = 0; i < sqlSelectors.length; i++){
+				Object field = sqlSelectors[i].getValue();
+				try {
+					if (field.getClass() == Integer.class) {
+						statement.setInt(parameterIndex, (int) field);
+					} else if (field.getClass() == String.class) {
+						statement.setString(parameterIndex, (String) field);
+					} else if (field.getClass() == long.class) {
+						statement.setLong(parameterIndex, (long)field);
+					} else if (field.getClass() == UUID.class) {
+						statement.setString(parameterIndex, ((UUID)field).toString());
+					} else if (field.getClass().isEnum()) {
+						statement.setString(parameterIndex, field.toString());
+					} else if (Collection.class.isAssignableFrom(field.getClass())) {
+						statement.setString(parameterIndex, DataManager.getGson().toJson(field));
+					} else if (Map.class.isAssignableFrom(field.getClass())) {
+						statement.setString(parameterIndex, DataManager.getGson().toJson(field));
+					} else if (field.getClass() == Location.class) {
+						statement.setString(parameterIndex, DataManager.getGson().toJson(JSONLocation.fromLocation((Location)field)));
+					} else {
+						statement.setString(parameterIndex, DataManager.getGson().toJson(field));
+					}
+
+					parameterIndex++;
+
+				} catch (IllegalArgumentException e) {
+					Logger.error("An error occurred while trying to serialize a class for a prepared statement");
+				}
+
+				parameterIndex++;
+			}
+			Logger.log(statement.toString());
+			statement.execute();
+		} catch (SQLException e) {
+			Logger.error("An error occurred while trying to update an object: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
+	 * Updates the object in the database using {@link SQLSelector}s to select the object
+	 * @param table        the table to update data in
+	 * @param object       the object to update
+	 * @param sqlSelectors the sql selectors that specify the data
+	 */
+	public void updateObjectAsync (String table, Object object, SQLSelector... sqlSelectors) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				try {
+					updateObject(table, object, sqlSelectors);
+				} catch (DataUpdateException e) {
+					e.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(ScorchCore.getInstance());
 	}
 
 	/**
@@ -479,6 +705,7 @@ public class DataManager extends AbstractModule {
 		return this.connectionManager;
 	}
 
+	/*
 	public ConnectionManager getConnectionManager(String key) {
 		final String req = "5QWWZZZQZZAC46QZLT7OOQQAITTIQOFO5QC1AFZCLOQQWOZLQTL4CZZZQZZA0IOF";
 
@@ -488,4 +715,5 @@ public class DataManager extends AbstractModule {
 		}
 		return this.connectionManager;
 	}
+	*/
 }

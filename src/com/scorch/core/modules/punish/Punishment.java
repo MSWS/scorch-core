@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.scorch.core.modules.data.SQLSelector;
+import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -137,17 +139,9 @@ public class Punishment implements Comparable<Punishment> {
 	}
 
 	public void update() {
-		PreparedStatement prepared = ScorchCore.getInstance().getDataManager().getConnectionManager("easytoremember")
-				.prepareStatement("UPDATE punishments SET remover =  ?, removeReason = ?, removeDate = ? WHERE id = ?");
-
 		try {
-			prepared.setString(1, remover);
-			prepared.setString(2, removeReason);
-			prepared.setLong(3, removeDate);
-			prepared.setString(4, id.toString());
-
-			prepared.execute();
-		} catch (SQLException e) {
+			ScorchCore.getInstance().getDataManager().updateObject("punishments", this, new SQLSelector("id", id));
+		} catch (DataUpdateException e) {
 			e.printStackTrace();
 		}
 	}
