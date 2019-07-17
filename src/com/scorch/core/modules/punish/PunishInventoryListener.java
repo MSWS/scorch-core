@@ -31,6 +31,9 @@ public class PunishInventoryListener implements Listener {
 		if (event.getCurrentItem() == null || event.getCurrentItem().getType() == Material.AIR)
 			return;
 
+		if (!cp.hasTempData("punishing"))
+			return;
+
 		OfflinePlayer target = Bukkit.getOfflinePlayer(UUID.fromString(cp.getTempString("punishing").split("\\|")[0]));
 		List<Punishment> history = ScorchCore.getInstance().getPunishModule().getPunishments(target.getUniqueId());
 
@@ -62,6 +65,7 @@ public class PunishInventoryListener implements Listener {
 					if (!p.isActive())
 						return;
 					p.remove(player.getName(), cp.getTempString("reason"));
+					player.closeInventory();
 					return;
 				case SHIFT_LEFT:
 					ScorchCore.getInstance().getPunishModule().deletePunishment(p);
@@ -118,16 +122,15 @@ public class PunishInventoryListener implements Listener {
 				if (!p.isActive())
 					return;
 				p.remove(player.getName(), cp.getTempString("reason"));
-				break;
+				player.closeInventory();
+				return;
 			case SHIFT_LEFT:
 				ScorchCore.getInstance().getPunishModule().deletePunishment(p);
-				refreshHistory(player, target);
-				break;
+				refreshPunish(player, target);
+				return;
 			default:
 				break;
 			}
-
-			refreshPunish(player, target);
 		}
 	}
 

@@ -17,6 +17,7 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
+import com.scorch.core.utils.Logger;
 
 public class OfflineMessagesModule extends AbstractModule {
 
@@ -40,6 +41,7 @@ public class OfflineMessagesModule extends AbstractModule {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
+				Logger.log("Loading offline messages...");
 				try {
 					ScorchCore.getInstance().getDataManager().createTable("offlinemessages", OfflineMessage.class);
 					ScorchCore.getInstance().getDataManager().getAllObjects("offlinemessages").forEach(msg -> {
@@ -52,6 +54,9 @@ public class OfflineMessagesModule extends AbstractModule {
 				} catch (DataObtainException | NoDefaultConstructorException e) {
 					e.printStackTrace();
 				}
+
+				Logger.log("Successfully loaded " + linked.size() + " offline message" + (linked.size() == 1 ? "" : "s")
+						+ ".");
 			}
 		}.runTaskAsynchronously(ScorchCore.getInstance());
 	}
@@ -88,21 +93,25 @@ public class OfflineMessagesModule extends AbstractModule {
 	public void update(OfflineMessage old, OfflineMessage newM) {
 		offline.remove(old);
 		offline.add(newM);
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				PreparedStatement prepared = ScorchCore.getInstance().getDataManager()
+						.getConnectionManager("easytoremember").prepareStatement(
+								"UPDATE offlinemessages SET received = ? WHERE sender = ? AND receiver = ? AND message = ? AND sent = ?");
 
-		PreparedStatement prepared = ScorchCore.getInstance().getDataManager().getConnectionManager("easytoremember")
-				.prepareStatement(
-						"UPDATE offlinemessages SET received = ? WHERE sender = ? AND receiver = ? AND message = ? AND sent = ?");
+				try {
+					prepared.setLong(1, newM.getReceivedTime());
+					prepared.setString(2, newM.getSender());
+					prepared.setString(3, newM.getReceiver() + "");
+					prepared.setString(4, newM.getMessage());
+					prepared.setLong(5, newM.getSentTime());
 
-		try {
-			prepared.setLong(1, newM.getReceivedTime());
-			prepared.setString(2, newM.getSender());
-			prepared.setString(3, newM.getReceiver() + "");
-			prepared.setString(4, newM.getMessage());
-			prepared.setLong(5, newM.getSentTime());
-
-			prepared.execute();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+					prepared.execute();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(ScorchCore.getInstance());
 	}
 }

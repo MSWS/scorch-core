@@ -1,7 +1,5 @@
 package com.scorch.core.modules.punish;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,6 +24,8 @@ import com.scorch.core.commands.PunishCommand;
 import com.scorch.core.commands.UnpunishCommand;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.DataManager;
+import com.scorch.core.modules.data.SQLSelector;
+import com.scorch.core.modules.data.exceptions.DataDeleteException;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;
@@ -148,14 +148,11 @@ public class PunishModule extends AbstractModule {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				PreparedStatement prepared = ScorchCore.getInstance().getDataManager()
-						.getConnectionManager("easytoremember")
-						.prepareStatement("DELETE FROM punishments WHERE id = ?");
 				try {
-					prepared.setString(1, p.getId() + "");
+					ScorchCore.getInstance().getDataManager().deleteObject("punishments",
+							new SQLSelector("id", p.getId() + ""));
 
-					prepared.execute();
-				} catch (SQLException e) {
+				} catch (DataDeleteException e) {
 					e.printStackTrace();
 				}
 			}
@@ -185,7 +182,8 @@ public class PunishModule extends AbstractModule {
 				} catch (NoDefaultConstructorException | DataObtainException e) {
 					e.printStackTrace();
 				}
-				Logger.log("Successfully loaded " + punishments.size() + " punishments.");
+				Logger.log("Successfully loaded " + punishments.size() + " punishment"
+						+ (punishments.size() == 1 ? "" : "s") + ".");
 			}
 		}.runTaskAsynchronously(ScorchCore.getInstance());
 

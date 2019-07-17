@@ -110,13 +110,14 @@ public class Punishment implements Comparable<Punishment> {
 				} else {
 					OfflineMessagesModule omm = (OfflineMessagesModule) ScorchCore.getInstance()
 							.getModule("OfflineMessagesModule");
-					omm.addMessage(new OfflineMessage("Punishments", target.getUniqueId(), msg));
+					omm.addMessage(new OfflineMessage("> ", target.getUniqueId(), msg));
 				}
 		}
 
-		MSG.announce(ScorchCore.getInstance().getMessages().getMessage("punishmessage").getMessage()
-				.replace("%staff%", staff).replace("%target%", target.getName()).replace("%reason%", reason)
-				.replace("%duration%", MSG.getTime(duration)).replace("%verb%", getVerb()));
+		MSG.tell("scorch.punish.notify",
+				ScorchCore.getInstance().getMessages().getMessage("punishmessage").getMessage()
+						.replace("%staff%", staff).replace("%target%", target.getName()).replace("%reason%", reason)
+						.replace("%duration%", MSG.getTime(duration)).replace("%verb%", getVerb()));
 	}
 
 	/**

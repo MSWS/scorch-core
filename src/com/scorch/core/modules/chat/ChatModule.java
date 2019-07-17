@@ -22,5 +22,4 @@ public class ChatModule extends AbstractModule {
 	public void disable() {
 		AsyncPlayerChatEvent.getHandlerList().unregister(chatListener);
 	}
-
 }

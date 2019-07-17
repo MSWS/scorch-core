@@ -30,13 +30,18 @@ public class MessagesModule extends AbstractModule {
 				"&c&lYou have been &4&l%verb% &c&lby &6&l%staff% \n&b%reason%\n%appeal%"));
 		defaults.add(new CMessage("warningmessage",
 				"&c&l[&4&lWARNING&c&l] &7You have been issued a punishment by &c%staff%|&c&lReason&7: %reason%|&dPlease make sure to read the rules to avoid further punishment."));
+		defaults.add(new CMessage("tempmutemessage",
+				"You are muted for %timeleft% by %staff% for %reason%. (Time Left: %timeleft%)"));
+		defaults.add(new CMessage("permmutemessage", "You are Permanentely muted by %staff% for %reason%."));
+		defaults.add(new CMessage("offlinemessageheader", "&7You have &e%amo% &7unread message%s%."));
+		defaults.add(new CMessage("offlinemessageformat", "&1%sender%&9: &b%message% &7[&8%time%&7]"));
 	}
 
 	@Override
 	public void initialize() {
-		messages = new ArrayList<CMessage>();
-
 		new TestCommand();
+
+		messages = new ArrayList<CMessage>();
 
 		try {
 			Logger.log("Loading messages...");
@@ -59,7 +64,7 @@ public class MessagesModule extends AbstractModule {
 		} catch (NoDefaultConstructorException | DataObtainException e) {
 			e.printStackTrace();
 		}
-		Logger.log("Successfully loaded " + messages.size() + " messages.");
+		Logger.log("Successfully loaded " + messages.size() + " message" + (messages.size() == 1 ? "" : "s") + ".");
 	}
 
 	public CMessage getMessage(String id) {

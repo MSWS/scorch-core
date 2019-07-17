@@ -1,6 +1,9 @@
 package com.scorch.core.utils;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -257,7 +260,7 @@ public class MSG {
 		messages.forEach((str) -> builder.append(str + separator));
 		return builder.toString().substring(0, Math.max(0, builder.toString().length() - separator.length()));
 	}
-	
+
 	public static String hash(String msg, int length, int iterations) {
 		msg = msg.replace(" ", "");
 		if (msg.isEmpty())
@@ -312,5 +315,58 @@ public class MSG {
 		for (int i = 0; i < iterations; i++)
 			result = hash(salt + result, length, 1);
 		return result;
+	}
+
+	public static String filter(String msg, List<String> swears) {
+		String raw = msg; /** plugin.getSwears() is a List of all words that should be filtered */
+		for (String word : swears) {
+			char[] letters = raw.toCharArray();
+			for (int i = 0; i < raw.length() && i < letters.length; i++) {
+				String tmp = "";
+				String w = "";
+				int p = 0;
+				while (p + i < letters.length && tmp.length() < word.length()) {
+					tmp += (letters[p + i] + "").replaceAll("[^a-zA-Z]", "").toLowerCase();
+					w += letters[p + i] + "";
+					p++;
+				}
+
+				w = w.trim();
+				if (tmp.toLowerCase().contains(word.toLowerCase())) {
+					String r = "";
+					for (int ii = 0; ii < w.trim().length(); ii++)
+						r += "*";
+					raw = raw.replace(w.trim(), r);
+					break;
+				}
+			}
+		}
+
+		Pattern p = Pattern.compile(
+				"(.+(.|,|dot|)(com|net|org|me|edu|info)|[0-9]+(.|,|dot|)[0-9]+(.|,|dot|)[0-9]+(.|,|dot|)[0-9]+)");
+		Matcher m = p.matcher(raw);
+
+		/**
+		 * This part filters any URLs that you do not want. You can change [YOUR URL] to
+		 * allow your own server's URL
+		 */
+		if (m.matches() && !m.group(0).matches("(https:\\/\\/)?(www\\.)?scorchgamez\\.com")) {
+			String r = "";
+			for (int i = 0; i < m.group(0).length(); i++)
+				r += "*";
+			raw = raw.replace(m.group(0), r);
+		}
+
+		String result = "";
+
+		/**
+		 * This filters any non regular ascii characters from the message
+		 */
+		for (char c : raw.toCharArray()) {
+			if (c >= 32 && c <= 127)
+				result += c;
+		}
+		return result;
+
 	}
 }

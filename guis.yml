@@ -65,6 +65,7 @@ punish:
     Name: '&4&lIP BAN'
     Type: IP_BAN
     Permission: rank.dev
+    Duration: -1
     Lore:
     - ''
     - '&4Extremely rare situations'
