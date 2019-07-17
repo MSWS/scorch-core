@@ -1,22 +1,18 @@
 package com.scorch.core.modules.permissions;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import org.bukkit.entity.Player;
-import org.bukkit.permissions.PermissionAttachment;
-
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
+import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachment;
+
+import java.io.File;
+import java.util.*;
 
 /**
- * A permissions handler TODO Implement a way to add default groups/permissions
- * and a proper addPlayer method
+ * A permissions handler
+ * TODO Implement a way to add default groups/permissions
  */
 public class PermissionModule extends AbstractModule {
 
@@ -26,9 +22,11 @@ public class PermissionModule extends AbstractModule {
 
 	private PermissionListener permissionListener;
 
-	public PermissionModule(String id) {
-		super(id);
-	}
+    private final File permissionsFile = new File(ScorchCore.getInstance().getDataFolder(), "permissions.yml");
+
+    public PermissionModule(String id) {
+        super(id);
+    }
 
 	@Override
 	public void initialize() {
@@ -56,8 +54,12 @@ public class PermissionModule extends AbstractModule {
 			this.groupList = new ArrayList<>();
 		}
 
-		this.permissionListener = new PermissionListener(this);
-	}
+        if(this.permissionsFile.exists()){
+            // Found configuration server, parse permissions.yml and update database if necessary
+        }
+
+        this.permissionListener = new PermissionListener(this);
+    }
 
 	@Override
 	public void disable() {

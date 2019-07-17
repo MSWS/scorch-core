@@ -17,6 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.annotations.DataIgnore;
@@ -24,17 +25,18 @@ import com.scorch.core.modules.data.annotations.DataNotNull;
 import com.scorch.core.modules.data.exceptions.DataDeleteException;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
+import com.scorch.core.modules.data.wrappers.JSONLocation;
 import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
-
-/**
+/*
  * Utility to easily save different types of objects to a database and load them
  *
  * @author Gijs de Jong
  */
 public class DataManager extends AbstractModule {
 
-	private static Gson gson = new Gson();
+	// Maybe change the gson configuration sometime in the future.
+	private static Gson gson = new GsonBuilder().create();
 
 	private ConnectionManager connectionManager;
 
@@ -208,8 +210,7 @@ public class DataManager extends AbstractModule {
 					} else if (Map.class.isAssignableFrom(field.getType())) {
 						statement.setString(parameterIndex, DataManager.getGson().toJson(field.get(object)));
 					} else if (field.getType() == Location.class) {
-						// TODO Write JSON wrapper for Location
-						statement.setString(parameterIndex, DataManager.getGson().toJson(field.get(object)));
+						statement.setString(parameterIndex, DataManager.getGson().toJson(JSONLocation.fromLocation((Location)field.get(object))));
 					} else {
 						statement.setString(parameterIndex, DataManager.getGson().toJson(field.get(object)));
 					}
@@ -307,8 +308,7 @@ public class DataManager extends AbstractModule {
 					} else if (Map.class.isAssignableFrom(field.getType())) {
 						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), Map.class));
 					} else if (field.getType() == Location.class) {
-						// TODO Write JSON wrapper for Location
-						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), Location.class));
+						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), JSONLocation.class).toBukkitLocation());
 					} else {
 						field.set(dataObject, field.getType().cast(res.getObject(columnIndex)));
 					}
@@ -385,8 +385,7 @@ public class DataManager extends AbstractModule {
 					} else if (Map.class.isAssignableFrom(field.getType())) {
 						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), Map.class));
 					} else if (field.getType() == Location.class) {
-						// TODO Write JSON wrapper for Location
-						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), Location.class));
+						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), JSONLocation.class).toBukkitLocation());
 					} else {
 						field.set(dataObject, field.getType().cast(res.getObject(columnIndex)));
 					}
@@ -419,6 +418,7 @@ public class DataManager extends AbstractModule {
 		if (sqlSelectors == null || sqlSelectors.length == 0)
 			throw new DataDeleteException("No sql selectors defined");
 
+		// TODO prepared statement
 		String sql = String.format("DELETE FROM %s WHERE %s='%s' ", table, sqlSelectors[0].getSelector(),
 				sqlSelectors[0].getValue());
 

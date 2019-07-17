@@ -1,0 +1,17 @@
+groups:
+   default:
+      inherits:
+      default: true
+      prefix: '&7Commoner'
+      permissions:
+         - "hub.item.superhorse"
+         - "server"
+   gamer:
+      inherits: default
+      default: false
+      prefix: '&7Gamer'
+      permission:
+         - "gamer.game.juice"
+         - "gamer.girl.bathwater.use"
+      
+      

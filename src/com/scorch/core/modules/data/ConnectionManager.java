@@ -1,15 +1,10 @@
 package com.scorch.core.modules.data;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.utils.Logger;
+
+import java.sql.*;
 
 /**
  * ConnectionManager that handles SQL connections to the database heavily used
@@ -42,7 +37,14 @@ public class ConnectionManager extends AbstractModule {
 
 	@Override
 	public void disable() {
-		// TODO Auto-generated method stub
+		if(this.isConnected()){
+			try {
+				this.getConnection().close();
+			} catch (SQLException e) {
+				Logger.error("Error while trying to close connection:" + e.getMessage());
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**
