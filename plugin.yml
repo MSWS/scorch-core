@@ -19,3 +19,5 @@ commands:
     - phistory
   unpunish:
     description: remove punishments from console
+  fly:
+    description: enable or disable flight
