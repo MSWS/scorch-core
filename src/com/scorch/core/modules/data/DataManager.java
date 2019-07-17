@@ -28,6 +28,7 @@ import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.modules.data.wrappers.JSONLocation;
 import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
+
 /*
  * Utility to easily save different types of objects to a database and load them
  *
@@ -210,20 +211,18 @@ public class DataManager extends AbstractModule {
 					} else if (Map.class.isAssignableFrom(field.getType())) {
 						statement.setString(parameterIndex, DataManager.getGson().toJson(field.get(object)));
 					} else if (field.getType() == Location.class) {
-						statement.setString(parameterIndex, DataManager.getGson().toJson(JSONLocation.fromLocation((Location)field.get(object))));
+						statement.setString(parameterIndex,
+								DataManager.getGson().toJson(JSONLocation.fromLocation((Location) field.get(object))));
 					} else {
 						statement.setString(parameterIndex, DataManager.getGson().toJson(field.get(object)));
 					}
-
 					parameterIndex++;
-
 				} catch (IllegalArgumentException | IllegalAccessException e) {
 					Logger.error("An error occurred while trying to serialize a class for a prepared statement " + "("
 							+ field.getName() + " of " + field.getDeclaringClass().getName() + "): " + e.getMessage()
 							+ "\n" + query);
 				}
 			}
-			Logger.log(statement.toString());
 			statement.execute();
 		} catch (SQLException e) {
 			Logger.error("An error occurred while trying to save an object: " + e.getMessage());
@@ -308,7 +307,8 @@ public class DataManager extends AbstractModule {
 					} else if (Map.class.isAssignableFrom(field.getType())) {
 						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), Map.class));
 					} else if (field.getType() == Location.class) {
-						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), JSONLocation.class).toBukkitLocation());
+						field.set(dataObject,
+								getGson().fromJson(res.getString(columnIndex), JSONLocation.class).toBukkitLocation());
 					} else {
 						field.set(dataObject, field.getType().cast(res.getObject(columnIndex)));
 					}
@@ -385,7 +385,8 @@ public class DataManager extends AbstractModule {
 					} else if (Map.class.isAssignableFrom(field.getType())) {
 						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), Map.class));
 					} else if (field.getType() == Location.class) {
-						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), JSONLocation.class).toBukkitLocation());
+						field.set(dataObject,
+								getGson().fromJson(res.getString(columnIndex), JSONLocation.class).toBukkitLocation());
 					} else {
 						field.set(dataObject, field.getType().cast(res.getObject(columnIndex)));
 					}
