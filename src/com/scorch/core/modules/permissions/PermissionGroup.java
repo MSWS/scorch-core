@@ -1,6 +1,7 @@
 package com.scorch.core.modules.permissions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PermissionGroup {
@@ -32,6 +33,22 @@ public class PermissionGroup {
 		this.isDefault = isDefault;
 		this.prefix = prefix;
 		this.permissions = permissions;
+	}
+
+	/**
+	 * Creates a new PermissionGroup with the name, display name and permissions
+	 * given
+	 *
+	 * @param groupName   the name of the group (used for internal purposes)
+	 * @param prefix      the display name of the group
+	 * @param isDefault   whether the group is a default group
+	 * @param permissions the permissions of the group
+	 */
+	public PermissionGroup(String groupName, boolean isDefault, String prefix, String... permissions) {
+		this.groupName = groupName;
+		this.isDefault = isDefault;
+		this.prefix = prefix;
+		this.permissions = Arrays.asList(permissions);
 	}
 
 	/**
@@ -97,6 +114,15 @@ public class PermissionGroup {
 	 */
 	public List<String> getPermissions() {
 		return permissions;
+	}
+
+	/**
+	 * Sets whether the group is the default group players receive
+	 * @apiNote only used internally for me to test stuff
+	 * @param isDefault the new isDefault value
+	 */
+	public void setDefault (boolean isDefault){
+		this.isDefault = isDefault;
 	}
 
 	public boolean isDefault() {

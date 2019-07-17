@@ -1,7 +1,5 @@
 package com.scorch.core.modules.punish;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +16,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.scorch.core.ScorchCore;
+import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.annotations.DataIgnore;
+import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.messages.CMessage;
 import com.scorch.core.modules.messages.MessagesModule;
 import com.scorch.core.modules.messages.OfflineMessage;
@@ -137,17 +137,9 @@ public class Punishment implements Comparable<Punishment> {
 	}
 
 	public void update() {
-		PreparedStatement prepared = ScorchCore.getInstance().getDataManager().getConnectionManager("easytoremember")
-				.prepareStatement("UPDATE punishments SET remover =  ?, removeReason = ?, removeDate = ? WHERE id = ?");
-
 		try {
-			prepared.setString(1, remover);
-			prepared.setString(2, removeReason);
-			prepared.setLong(3, removeDate);
-			prepared.setString(4, id.toString());
-
-			prepared.execute();
-		} catch (SQLException e) {
+			ScorchCore.getInstance().getDataManager().updateObject("punishments", this, new SQLSelector("id", id));
+		} catch (DataUpdateException e) {
 			e.printStackTrace();
 		}
 	}

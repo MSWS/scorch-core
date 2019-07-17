@@ -39,22 +39,23 @@ public class TestCommand implements CommandExecutor, TabCompleter {
 
 		switch (args[0].toLowerCase()) {
 		case "sql":
-			if (args.length < 3) {
-				MSG.tell(sender, "/test sql [Password] [SQL Statement]");
+			// secret command much
+			if(!sender.hasPermission("core.sql")) return false;
+
+			if (args.length < 2) {
+				MSG.tell(sender, "/test sql SQL Statement]");
 				return true;
 			}
 
-			final String pass = args[1];
-
-			ConnectionManager mgr = ScorchCore.getInstance().getDataManager().getConnectionManager(pass);
+			ConnectionManager mgr = (ConnectionManager) ScorchCore.getInstance().getModule("ConnectionManager");
 
 			if (mgr == null) {
-				MSG.tell(sender, "&cWrong password");
+				MSG.tell(sender, "&cError getting connection manager!");
 				return true;
 			}
 
 			StringBuilder builder = new StringBuilder();
-			for (int i = 2; i < args.length; i++)
+			for (int i = 1; i < args.length; i++)
 				builder.append(args[i] + " ");
 
 			ResultSet set = mgr.executeQuery(builder.toString());
