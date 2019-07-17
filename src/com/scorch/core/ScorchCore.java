@@ -13,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.ModulePriority;
+import com.scorch.core.modules.chat.ChatModule;
 import com.scorch.core.modules.data.CPlayer;
 import com.scorch.core.modules.data.ConnectionManager;
 import com.scorch.core.modules.data.DataManager;
@@ -65,6 +66,7 @@ public class ScorchCore extends JavaPlugin {
 		registerModule(new BanwaveModule("BanwaveModule"), ModulePriority.MEDIUM);
 
 		registerModule(new OfflineMessagesModule("OfflineMessagesModule"), ModulePriority.LOWEST);
+		registerModule(new ChatModule("ChatModule"), ModulePriority.LOW);
 
 		try {
 			Arrays.stream(ModulePriority.values()).forEach(this::loadModules);

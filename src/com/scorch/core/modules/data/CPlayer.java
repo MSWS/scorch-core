@@ -22,7 +22,6 @@ public class CPlayer {
 	 * 
 	 * @param player OfflinePlayer to get data of, files are stored using UUID's
 	 *               stripped of -'s
-	 * @param plugin FreakyEnchants instance
 	 */
 	public CPlayer(OfflinePlayer player) {
 		this.player = player;
