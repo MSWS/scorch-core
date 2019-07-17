@@ -26,10 +26,13 @@ public class OfflineJoinListener implements Listener {
 		if (messages.isEmpty())
 			return;
 
-		MSG.tell(player, "&7You have " + messages.size() + " unread message" + (messages.size() == 1 ? "" : "s") + ".");
+		MSG.tell(player,
+				"&7You have &e" + messages.size() + "&7 unread message" + (messages.size() == 1 ? "" : "s") + ".");
 
-		for (OfflineMessage off : messages)
-			MSG.tell(player, off.getSender() + " " + off.getMessage() + " [&e"
+		for (OfflineMessage off : messages) {
+			MSG.tell(player, "&8" + off.getSender() + ": &7" + off.getMessage() + " [&e"
 					+ MSG.getTime(System.currentTimeMillis() - off.getSentTime()) + "&7]");
+			om.update(off, off.read());
+		}
 	}
 }

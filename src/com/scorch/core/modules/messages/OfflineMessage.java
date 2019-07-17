@@ -17,6 +17,7 @@ public class OfflineMessage implements Comparable<OfflineMessage> {
 		this.sender = sender;
 		this.receiver = receiver;
 		this.message = message;
+		this.sent = System.currentTimeMillis();
 	}
 
 	public OfflineMessage(String sender, UUID receiver, String message, long sent, long received) {
