@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 
+import com.scorch.core.ScorchCore;
 import com.scorch.core.commands.ACommand;
 import com.scorch.core.commands.MACommand;
 import com.scorch.core.commands.RACommand;
@@ -32,7 +33,6 @@ public class CommandModule extends AbstractModule {
 		commands = new HashMap<>();
 
 		try {
-
 			final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
 			bukkitCommandMap.setAccessible(true);
 			map = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
@@ -54,7 +54,7 @@ public class CommandModule extends AbstractModule {
 	}
 
 	public void enableCommand(Command command) {
-		map.register(command.getName(), command);
+		map.register(ScorchCore.getInstance().getName().toLowerCase(), command);
 	}
 
 	public void disableCommands(List<Command> commands) {
@@ -64,8 +64,8 @@ public class CommandModule extends AbstractModule {
 	public void disableCommand(Command command) {
 		commands.put(command, false);
 		map.clearCommands();
-		map.registerAll(":", this.commands.entrySet().stream().filter(ent -> ent.getValue()).map(e -> e.getKey())
-				.collect(Collectors.toList()));
+		map.registerAll(ScorchCore.getInstance().getName().toLowerCase(), this.commands.entrySet().stream()
+				.filter(ent -> ent.getValue()).map(e -> e.getKey()).collect(Collectors.toList()));
 	}
 
 	public Command getCommand(String command) {
