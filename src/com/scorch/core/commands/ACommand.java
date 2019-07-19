@@ -2,23 +2,26 @@ package com.scorch.core.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.utils.MSG;
 
-public class ACommand extends BukkitCommand {
+public class ACommand implements CommandExecutor {
 
-	public ACommand(String name) {
-		super(name);
-		this.setPermission("scorch.command.a");
-		this.setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").getMessage());
+	public ACommand() {
+		PluginCommand cmd = ScorchCore.getInstance().getCommand("a");
+		cmd.setExecutor(this);
+		cmd.setPermission("scorch.command.a");
+		cmd.setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").getMessage());
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (args.length < 1) {
 			MSG.tell(sender, "/a [message]");
 			return true;

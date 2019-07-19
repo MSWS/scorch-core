@@ -4,24 +4,27 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.CPlayer;
 import com.scorch.core.utils.MSG;
 
-public class RACommand extends BukkitCommand {
+public class RACommand implements CommandExecutor {
 
-	public RACommand(String name) {
-		super(name);
-		this.setPermission("scorch.command.ra");
-		this.setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").getMessage());
+	public RACommand() {
+		PluginCommand cmd = ScorchCore.getInstance().getCommand("ra");
+		cmd.setExecutor(this);
+		cmd.setPermission("scorch.command.ra");
+		cmd.setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").getMessage());
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, String label, String[] args) {
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (args.length < 1) {
 			MSG.tell(sender, "/ra [message]");
 			return true;
