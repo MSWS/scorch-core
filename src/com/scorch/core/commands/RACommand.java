@@ -22,6 +22,11 @@ public class RACommand extends BukkitCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String label, String[] args) {
+		if (!sender.hasPermission(getPermission())) {
+			MSG.tell(sender, getPermissionMessage());
+			return true;
+		}
+		
 		if (args.length < 1) {
 			MSG.tell(sender, "/ra [message]");
 			return true;

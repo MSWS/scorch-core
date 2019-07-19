@@ -19,6 +19,11 @@ public class ACommand extends BukkitCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+		if (!sender.hasPermission(getPermission())) {
+			MSG.tell(sender, getPermissionMessage());
+			return true;
+		}
+		
 		if (args.length < 1) {
 			MSG.tell(sender, "/a [message]");
 			return true;

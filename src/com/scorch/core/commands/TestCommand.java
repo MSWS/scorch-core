@@ -29,6 +29,11 @@ public class TestCommand extends BukkitCommand {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean execute(CommandSender sender, String label, String[] args) {
+		if (!sender.hasPermission(getPermission())) {
+			MSG.tell(sender, getPermissionMessage());
+			return true;
+		}
+		
 		if (args.length == 0) {
 			MSG.tell(sender, "/test [func] <args>");
 			return true;
@@ -110,9 +115,9 @@ public class TestCommand extends BukkitCommand {
 
 			om.addMessage(off);
 			break;
-		case "cmdenable":
+		case "enablecmd":
 			if (args.length < 2) {
-				MSG.tell(sender, "/test cmdenable [command]");
+				MSG.tell(sender, "/test enablecmd [command]");
 				return true;
 			}
 
@@ -123,9 +128,9 @@ public class TestCommand extends BukkitCommand {
 			}
 			ScorchCore.getInstance().getCommands().enableCommand(cmd);
 			break;
-		case "cmddisable":
+		case "disablecmd":
 			if (args.length < 2) {
-				MSG.tell(sender, "/test cmddisable [command]");
+				MSG.tell(sender, "/test disablecmd [command]");
 				return true;
 			}
 
@@ -139,12 +144,12 @@ public class TestCommand extends BukkitCommand {
 		}
 		return true;
 	}
-	
+
 	@Override
 	public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
 		List<String> result = new ArrayList<String>();
 		if (args.length <= 1) {
-			for (String res : new String[] { "sql", "message", "perm", "offline", "cmdenable", "cmddisable" }) {
+			for (String res : new String[] { "sql", "message", "perm", "offline", "enablecmd", "disablecmd" }) {
 				if (res.toLowerCase().startsWith(args[0].toLowerCase()))
 					result.add(res);
 			}

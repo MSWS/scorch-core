@@ -24,6 +24,11 @@ public class PunishCommand extends BukkitCommand {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean execute(CommandSender sender, String label, String[] args) {
+		if (!sender.hasPermission(getPermission())) {
+			MSG.tell(sender, getPermissionMessage());
+			return true;
+		}
+		
 		if (!(sender instanceof Player)) {
 			MSG.tell(sender, "You must be a player");
 			return true;
