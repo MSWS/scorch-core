@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -45,6 +46,7 @@ public class ScorchCore extends JavaPlugin {
 	private PunishModule pMod;
 	private FilterModule filter;
 	private CommandModule commands;
+	private PermissionModule perms;
 
 	private File guiYml = new File(getDataFolder(), "guis.yml");
 	private YamlConfiguration gui;
@@ -65,7 +67,7 @@ public class ScorchCore extends JavaPlugin {
 				ModulePriority.HIGHEST);
 
 		messages = (MessagesModule) registerModule(new MessagesModule("MessagesModule"), ModulePriority.HIGH);
-		registerModule(new PermissionModule("PermissionModule"), ModulePriority.HIGH);
+		perms = (PermissionModule) registerModule(new PermissionModule("PermissionModule"), ModulePriority.HIGH);
 
 		pMod = (PunishModule) registerModule(new PunishModule("PunishModule"), ModulePriority.MEDIUM);
 		registerModule(new BanwaveModule("BanwaveModule"), ModulePriority.MEDIUM);
@@ -216,6 +218,19 @@ public class ScorchCore extends JavaPlugin {
 
 	public CommandModule getCommands() {
 		return commands;
+	}
+
+	public PermissionModule getPerms() {
+		return perms;
+	}
+
+	public String getPrefix(UUID player) {
+		return ScorchCore.getInstance().getPerms().getGroup(perms.getPermissionPlayer(player).getGroups().get(0))
+				.getPrefix();
+	}
+
+	public String getPrefix(OfflinePlayer player) {
+		return getPrefix(player.getUniqueId());
 	}
 
 	/**

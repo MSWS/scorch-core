@@ -35,6 +35,11 @@ public class MessagesModule extends AbstractModule {
 				new CMessage("permmutemessage", "&cYou are &4Permanentely &cmuted by &a%staff% &cfor &e%reason%&7."));
 		defaults.add(new CMessage("offlinemessageheader", "&7You have &e%amo% &7unread message%s%."));
 		defaults.add(new CMessage("offlinemessageformat", "&1%sender%&9: &b%message% &7[&8%time%&7]"));
+		defaults.add(new CMessage("aformat", "%prefix%%player%&d %message%"));
+		defaults.add(new CMessage("maformat-receiver", "&5<- &r%group%%player%&d %message%"));
+		defaults.add(new CMessage("maformat-sender", "&5-> &r%group%%player%&d %message%"));
+		defaults.add(new CMessage("maformat-spec",
+				"%senderprefix%%sendername% &5-> &r%receiverprefix%%receivername% &d%message%"));
 	}
 
 	@Override

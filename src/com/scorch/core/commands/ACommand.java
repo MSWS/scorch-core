@@ -1,6 +1,7 @@
 package com.scorch.core.commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -23,7 +24,7 @@ public class ACommand extends BukkitCommand {
 			MSG.tell(sender, getPermissionMessage());
 			return true;
 		}
-		
+
 		if (args.length < 1) {
 			MSG.tell(sender, "/a [message]");
 			return true;
@@ -33,10 +34,17 @@ public class ACommand extends BukkitCommand {
 		for (int i = 0; i < args.length; i++)
 			builder.append(args[i] + " ");
 
-		MSG.tell("scorch.command.a.receive", "&6" + sender.getName() + "&d " + builder.toString().trim());
+		String msg = ScorchCore.getInstance().getMessages().getMessage("aformat").getMessage();
+		msg = msg
+				.replace("%prefix%",
+						(sender instanceof Player) ? ScorchCore.getInstance().getPrefix((OfflinePlayer) sender) : "&4")
+				.replace("%player%", sender.getName()).replace("%message%", builder.toString().trim());
+
 		for (Player p : Bukkit.getOnlinePlayers())
-			if (p.hasPermission("scorch.command.a.receive"))
+			if (p.hasPermission("scorch.command.a.receive") || p.equals(sender)) {
 				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 2, 2);
+				MSG.tell(p, msg);
+			}
 		return true;
 	}
 
