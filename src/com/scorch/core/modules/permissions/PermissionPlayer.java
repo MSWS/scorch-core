@@ -97,28 +97,6 @@ public class PermissionPlayer {
 		this(player.getUniqueId(), groups);
 	}
 
-	/**
-	 * Creates the permission attachment for the player, this used by Spigot to make
-	 * sure the {@link Player#hasPermission(String)} api works This also adds the
-	 * player's extra permissions and group permissions to the PermissionAttachment
-	 * object <br>
-	 * <b>THIS SHOULD ONLY BE CALLED ONCE!</b></br>
-	 * 
-	 * @param player the player
-	 * @return the {@link PermissionAttachment} for the player
-	 *
-	 * @see PermissionAttachment
-	 */
-	public PermissionAttachment createAttachment(Player player) {
-		PermissionAttachment attachment = player.addAttachment(ScorchCore.getInstance());
-		getPermissions().forEach(node -> attachment.setPermission(node, true));
-		getGroups().forEach(group -> {
-			((PermissionModule) ScorchCore.getInstance().getModule("PermissionModule")).getGroup(group).getPermissions()
-					.forEach(node -> attachment.setPermission(node, true));
-		});
-		return attachment;
-	}
-
     /**
      * Creates the permission attachment for the player, this used by Spigot to make
      * sure the {@link Player#hasPermission(String)} api works
@@ -216,14 +194,6 @@ public class PermissionPlayer {
     }
 
     /**
-     * Gets the player's UUID.
-     * @return the uuid
-     */
-    public UUID getUniqueId() {
-        return uniqueId;
-    }
-
-    /**
      * Gets the player's groups.
      * @return the groups
      */
@@ -255,18 +225,14 @@ public class PermissionPlayer {
     }
 
 	/**
-	 * Gets the player's permission attachment This is what handles the permissions
-	 * on Spigot's side
-	 * 
-	 * @return the {@link PermissionAttachment} of the player.
-	 *
-	 * @see PermissionAttachment
+	 * Gets the player's permissions
+	 * @return
 	 */
-	public PermissionAttachment getAttachment() {
-		return attachment;
+	public List<String> getPermissions() {
+		return permissions;
 	}
 
-    /**
+	/**
      * Gets the player's permission attachment
      * This is what handles the permissions on Spigot's side
      * @return the {@link PermissionAttachment} of the player.
