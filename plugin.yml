@@ -19,9 +19,9 @@ commands:
     - phistory
   unpunish:
     description: remove punishments from console
-  a:
-    description: staff chat
-  ma:
-    description: message staff chat
-  ra:
-    description: reply staff chat
+#  a:
+#    description: staff chat
+#  ma:
+#    description: message staff chat
+#  ra:
+#    description: reply staff chat

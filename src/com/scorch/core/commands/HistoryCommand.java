@@ -2,28 +2,25 @@ package com.scorch.core.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
+import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.CPlayer;
 import com.scorch.core.utils.MSG;
 
-public class HistoryCommand implements CommandExecutor {
+public class HistoryCommand extends BukkitCommand {
 
-	public HistoryCommand() {
-		PluginCommand cmd = Bukkit.getPluginCommand("history");
-		cmd.setExecutor(this);
-		cmd.setPermission("scorch.command.history");
-		cmd.setPermissionMessage("NOPE");
+	public HistoryCommand(String name) {
+		super(name);
+		this.setPermission("scorch.command.history");
+		this.setPermissionMessage("NOPE");
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	public boolean execute(CommandSender sender, String label, String[] args) {
 		if (!(sender instanceof Player)) {
 			MSG.tell(sender, "you must be a player");
 			return true;

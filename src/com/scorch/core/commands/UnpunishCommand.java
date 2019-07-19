@@ -2,27 +2,24 @@ package com.scorch.core.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
+import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.punish.Punishment;
 import com.scorch.core.utils.MSG;
 
-public class UnpunishCommand implements CommandExecutor {
+public class UnpunishCommand extends BukkitCommand {
 
-	public UnpunishCommand() {
-		PluginCommand cmd = Bukkit.getPluginCommand("unpunish");
-		cmd.setExecutor(this);
-		cmd.setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").toString());
+	public UnpunishCommand(String name) {
+		super(name);
+		this.setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").toString());
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	public boolean execute(CommandSender sender, String label, String[] args) {
 		if (sender instanceof Player) {
 			MSG.tell(sender, ScorchCore.getInstance().getMessages().getMessage("noperm").toString());
 			return true;

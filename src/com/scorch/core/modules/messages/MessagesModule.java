@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.commands.TestCommand;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
@@ -40,8 +39,6 @@ public class MessagesModule extends AbstractModule {
 
 	@Override
 	public void initialize() {
-		new TestCommand();
-
 		messages = new ArrayList<CMessage>();
 
 		try {

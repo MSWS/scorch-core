@@ -8,10 +8,8 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
@@ -20,27 +18,29 @@ import com.scorch.core.modules.messages.OfflineMessage;
 import com.scorch.core.modules.messages.OfflineMessagesModule;
 import com.scorch.core.utils.MSG;
 
-public class TestCommand implements CommandExecutor, TabCompleter {
+public class TestCommand extends BukkitCommand {
 
-	public TestCommand() {
-		PluginCommand cmd = Bukkit.getPluginCommand("test");
-		cmd.setExecutor(this);
-		cmd.setPermission("scorch.command.test");
-		cmd.setPermissionMessage("NOPE");
+	public TestCommand(String name) {
+		super(name);
+		this.setPermission("scorch.command.test");
+		this.setPermissionMessage("NOPE");
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	public boolean execute(CommandSender sender, String label, String[] args) {
 		if (args.length == 0) {
 			MSG.tell(sender, "/test [func] <args>");
 			return true;
 		}
 
+		Command cmd;
+
 		switch (args[0].toLowerCase()) {
 		case "sql":
 			// secret command much
-			if(!sender.hasPermission("core.sql")) return false;
+			if (!sender.hasPermission("core.sql"))
+				return false;
 
 			if (args.length < 2) {
 				MSG.tell(sender, "/test sql SQL Statement]");
@@ -110,20 +110,45 @@ public class TestCommand implements CommandExecutor, TabCompleter {
 
 			om.addMessage(off);
 			break;
+		case "cmdenable":
+			if (args.length < 2) {
+				MSG.tell(sender, "/test cmdenable [command]");
+				return true;
+			}
+
+			cmd = ScorchCore.getInstance().getCommands().getCommand(args[1]);
+			if (cmd == null) {
+				MSG.tell(sender, "unknown command");
+				return true;
+			}
+			ScorchCore.getInstance().getCommands().enableCommand(cmd);
+			break;
+		case "cmddisable":
+			if (args.length < 2) {
+				MSG.tell(sender, "/test cmddisable [command]");
+				return true;
+			}
+
+			cmd = ScorchCore.getInstance().getCommands().getCommand(args[1]);
+			if (cmd == null) {
+				MSG.tell(sender, "unknown command");
+				return true;
+			}
+			ScorchCore.getInstance().getCommands().disableCommand(cmd);
+			break;
 		}
 		return true;
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+	public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
 		List<String> result = new ArrayList<String>();
 		if (args.length <= 1) {
-			for (String res : new String[] { "sql", "message", "perm", "offline" }) {
+			for (String res : new String[] { "sql", "message", "perm", "offline", "cmdenable", "cmddisable" }) {
 				if (res.toLowerCase().startsWith(args[0].toLowerCase()))
 					result.add(res);
 			}
 		}
 		return result;
 	}
-
 }

@@ -15,6 +15,7 @@ import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.ModulePriority;
 import com.scorch.core.modules.chat.ChatModule;
 import com.scorch.core.modules.chat.FilterModule;
+import com.scorch.core.modules.commands.CommandModule;
 import com.scorch.core.modules.data.CPlayer;
 import com.scorch.core.modules.data.ConnectionManager;
 import com.scorch.core.modules.data.DataManager;
@@ -43,6 +44,7 @@ public class ScorchCore extends JavaPlugin {
 	private MessagesModule messages;
 	private PunishModule pMod;
 	private FilterModule filter;
+	private CommandModule commands;
 
 	private File guiYml = new File(getDataFolder(), "guis.yml");
 	private YamlConfiguration gui;
@@ -67,10 +69,11 @@ public class ScorchCore extends JavaPlugin {
 
 		pMod = (PunishModule) registerModule(new PunishModule("PunishModule"), ModulePriority.MEDIUM);
 		registerModule(new BanwaveModule("BanwaveModule"), ModulePriority.MEDIUM);
+		commands = (CommandModule) registerModule(new CommandModule("CommandModule"), ModulePriority.MEDIUM);
 
 		registerModule(new ChatModule("ChatModule"), ModulePriority.LOW);
+
 		filter = (FilterModule) registerModule(new FilterModule("FilterModule"), ModulePriority.LOW);
-		
 		registerModule(new OfflineMessagesModule("OfflineMessagesModule"), ModulePriority.LOWEST);
 
 		try {
@@ -209,6 +212,10 @@ public class ScorchCore extends JavaPlugin {
 
 	public FilterModule getFilter() {
 		return filter;
+	}
+
+	public CommandModule getCommands() {
+		return commands;
 	}
 
 	/**

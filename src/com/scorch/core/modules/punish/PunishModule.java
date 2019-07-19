@@ -19,9 +19,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.commands.HistoryCommand;
-import com.scorch.core.commands.PunishCommand;
-import com.scorch.core.commands.UnpunishCommand;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.DataManager;
 import com.scorch.core.modules.data.SQLSelector;
@@ -55,10 +52,6 @@ public class PunishModule extends AbstractModule {
 
 	@Override
 	public void initialize() {
-		new PunishCommand();
-		new HistoryCommand();
-		new UnpunishCommand();
-
 		joinListener = new PunishLoginListener();
 		clickListener = new PunishInventoryListener();
 
