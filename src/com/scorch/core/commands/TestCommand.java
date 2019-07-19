@@ -139,7 +139,7 @@ public class TestCommand extends BukkitCommand {
 		}
 		return true;
 	}
-
+	
 	@Override
 	public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
 		List<String> result = new ArrayList<String>();

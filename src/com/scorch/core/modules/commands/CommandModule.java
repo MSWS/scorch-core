@@ -9,8 +9,9 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandMap;
+import org.bukkit.command.SimpleCommandMap;
 
+import com.scorch.core.ScorchCore;
 import com.scorch.core.commands.ACommand;
 import com.scorch.core.commands.HistoryCommand;
 import com.scorch.core.commands.MACommand;
@@ -25,7 +26,7 @@ public class CommandModule extends AbstractModule {
 
 	private Map<Command, Boolean> commands;
 
-	private CommandMap map;
+	private SimpleCommandMap map;
 
 	public CommandModule(String id) {
 		super(id);
@@ -39,14 +40,12 @@ public class CommandModule extends AbstractModule {
 
 			final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
 			bukkitCommandMap.setAccessible(true);
-			map = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
+			map = (SimpleCommandMap) bukkitCommandMap.get(Bukkit.getServer());
 		} catch (NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
 			Logger.error("Unable to get CommandMap");
 			e.printStackTrace();
 			return;
 		}
-
-		map.clearCommands();
 
 		commands.put(new ACommand("a"), true);
 		commands.put(new MACommand("ma"), true);
@@ -64,18 +63,15 @@ public class CommandModule extends AbstractModule {
 	}
 
 	public void enableCommand(Command command) {
-		map.register(command.getName(), command);
+		map.register(ScorchCore.getInstance().getName(), command);
 	}
 
 	public void disableCommands(List<Command> commands) {
 		commands.forEach(cmd -> disableCommand(cmd));
 	}
 
-	public void disableCommand(Command command) {
-		commands.put(command, false);
-		map.clearCommands();
-		map.registerAll(command.getName(), this.commands.entrySet().stream().filter(ent -> ent.getValue())
-				.map(e -> e.getKey()).collect(Collectors.toList()));
+	public void disableCommand(Command cmd) {
+		// TODO
 	}
 
 	public Command getCommand(String command) {

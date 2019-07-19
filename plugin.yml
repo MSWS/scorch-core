@@ -5,20 +5,20 @@ version: 0.0.1
 authors:
 - MSWS
 - kitsune
-commands:
-  punish:
-    description: general punish command
-    aliases:
-    - p
-  test:
-    description: for testing database
-  history:
-    description: get player history
-    aliases:
-    - ph
-    - phistory
-  unpunish:
-    description: remove punishments from console
+#commands:
+#  punish:
+#    description: general punish command
+#    aliases:
+#    - p
+#  test:
+#    description: for testing database
+#  history:
+#    description: get player history
+#    aliases:
+#    - ph
+#    - phistory
+#  unpunish:
+#    description: remove punishments from console
 #  a:
 #    description: staff chat
 #  ma:

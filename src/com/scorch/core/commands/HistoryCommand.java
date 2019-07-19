@@ -1,5 +1,7 @@
 package com.scorch.core.commands;
 
+import java.util.Arrays;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -16,6 +18,7 @@ public class HistoryCommand extends BukkitCommand {
 		super(name);
 		this.setPermission("scorch.command.history");
 		this.setPermissionMessage("NOPE");
+		this.setAliases(Arrays.asList("ph", "punishhistory"));
 	}
 
 	@SuppressWarnings("deprecation")

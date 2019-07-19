@@ -1,5 +1,7 @@
 package com.scorch.core.commands;
 
+import java.util.Arrays;
+
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -16,6 +18,7 @@ public class PunishCommand extends BukkitCommand {
 		super(name);
 		this.setPermission("scorch.command.punish");
 		this.setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").toString());
+		this.setAliases(Arrays.asList("p"));
 	}
 
 	@SuppressWarnings("deprecation")
