@@ -42,6 +42,7 @@ public class ScorchCore extends JavaPlugin {
 	private Set<AbstractModule> modules;
 
 	private DataManager dataManager;
+	private PermissionModule permissionModule;
 	private MessagesModule messages;
 	private PunishModule pMod;
 	private FilterModule filter;
@@ -62,21 +63,21 @@ public class ScorchCore extends JavaPlugin {
 
 		// Data modules
 		registerModule(new ConnectionManager("ConnectionManager"), ModulePriority.HIGHEST);
-		dataManager = (DataManager) registerModule(
+		this.dataManager = (DataManager) registerModule(
 				new DataManager("DataManager", (ConnectionManager) getModule("ConnectionManager")),
 				ModulePriority.HIGHEST);
 
-		messages = (MessagesModule) registerModule(new MessagesModule("MessagesModule"), ModulePriority.HIGH);
-		perms = (PermissionModule) registerModule(new PermissionModule("PermissionModule"), ModulePriority.HIGH);
+		this.messages = (MessagesModule) registerModule(new MessagesModule("MessagesModule"), ModulePriority.HIGH);
 
-		pMod = (PunishModule) registerModule(new PunishModule("PunishModule"), ModulePriority.MEDIUM);
+
+		this.permissionModule = (PermissionModule) registerModule(new PermissionModule("PermissionModule"),
+				ModulePriority.HIGH);
+		this.pMod = (PunishModule) registerModule(new PunishModule("PunishModule"), ModulePriority.MEDIUM);
 		registerModule(new BanwaveModule("BanwaveModule"), ModulePriority.MEDIUM);
 		commands = (CommandModule) registerModule(new CommandModule("CommandModule"), ModulePriority.MEDIUM);
 
 		registerModule(new ChatModule("ChatModule"), ModulePriority.LOW);
-
-		filter = (FilterModule) registerModule(new FilterModule("FilterModule"), ModulePriority.LOW);
-		registerModule(new OfflineMessagesModule("OfflineMessagesModule"), ModulePriority.LOWEST);
+		this.filter = (FilterModule) registerModule(new FilterModule("FilterModule"), ModulePriority.LOW);
 
 		try {
 			Arrays.stream(ModulePriority.values()).forEach(this::loadModules);
@@ -183,21 +184,32 @@ public class ScorchCore extends JavaPlugin {
 	/**
 	 * Returns the {@link DataManager} object without having to use
 	 * {@link ScorchCore#getModule(String)} and cast it This is purely to make it
-	 * easier to write code using the dataManager manager
-	 * 
-	 * @return
+	 * easier to write code using the {@link DataManager}
+	 * @see DataManager
+	 *
+	 * @return the datamanager
 	 */
 	public DataManager getDataManager() {
 		return dataManager;
 	}
 
 	/**
-	 * @see getDataManager
+	 * @see ScorchCore#getDataManager
 	 * @return
 	 */
 	public MessagesModule getMessages() {
 		return messages;
 	}
+
+	/**
+	 * Returns the {@link PermissionModule} object without having to use
+	 * {@link ScorchCore#getModule(String)} and cast it. This is purely to make it
+	 * easier to write code using the {@link PermissionModule}
+	 * @see PermissionModule
+	 *
+	 * @return the permission module
+	 */
+	public PermissionModule getPermissionModule () { return permissionModule; }
 
 	/**
 	 * Gets the GUI yml configuration

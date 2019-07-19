@@ -93,6 +93,8 @@ public class DataManager extends AbstractModule {
 	 */
 	public void createTable(String name, Class<?> storageType) throws NoDefaultConstructorException {
 
+		Logger.log("Creating table if it doesn't exist: %s", name);
+
 		if (!hasDefaultConstructor(storageType)) {
 			throw new NoDefaultConstructorException();
 		}
@@ -100,12 +102,24 @@ public class DataManager extends AbstractModule {
 		String query = "CREATE TABLE IF NOT EXISTS " + name
 				+ " (local_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, object_type TEXT NOT NULL, ";
 
+
+
+
 		for (int i = 0; i < storageType.getDeclaredFields().length; i++) {
 			Field field = storageType.getDeclaredFields()[i];
 
 			// Makes sure that the field doesn't have to be ignored for serialization
-			if (field.isAnnotationPresent(DataIgnore.class))
+			if (field.isAnnotationPresent(DataIgnore.class)){
+				if(i == storageType.getDeclaredFields().length-1){
+					if(query.endsWith(", ")){
+						query = query.substring(0, query.length()-2);
+					}
+					query += ");";
+					this.getConnectionManager().executeQuery(query);
+				}
 				continue;
+			}
+
 
 			query += field.getName();
 
@@ -113,6 +127,8 @@ public class DataManager extends AbstractModule {
 				query += " INT";
 			} else if (field.getType() == String.class) {
 				query += " TEXT";
+			} else if (field.getType() == boolean.class){
+				query += " BOOLEAN ";
 			} else if (field.getType() == long.class) {
 				query += " BIGINT";
 			} else if (field.getType() == UUID.class) {
@@ -149,6 +165,7 @@ public class DataManager extends AbstractModule {
 	 *     <li>{@link Integer}</li>
 	 *     <li>{@link String}</li>
 	 *     <li>{@link Boolean}</li>
+	 *     <li>{@link Long}</li>
 	 *     <li>{@link UUID}</li>
 	 *     <li>{@link Location}</li>
 	 *     <li>{@link Collection}</li>
@@ -211,6 +228,8 @@ public class DataManager extends AbstractModule {
 						statement.setInt(parameterIndex, (int) field.get(object));
 					} else if (field.getType() == String.class) {
 						statement.setString(parameterIndex, (String) field.get(object));
+					} else if (field.getType() == boolean.class){
+						statement.setBoolean(parameterIndex, (boolean) field.get(object));
 					} else if (field.getType() == long.class) {
 						statement.setLong(parameterIndex, (long) field.get(object));
 					} else if (field.getType() == UUID.class) {
@@ -331,6 +350,8 @@ public class DataManager extends AbstractModule {
 						field.set(dataObject, res.getInt(columnIndex));
 					} else if (field.getType() == String.class) {
 						field.set(dataObject, res.getString(columnIndex));
+					} else if (field.getType() == boolean.class){
+						field.set(dataObject, res.getBoolean(columnIndex));
 					} else if (field.getType() == long.class) {
 						field.set(dataObject, res.getLong(columnIndex));
 					} else if (field.getType() == UUID.class) {
@@ -409,6 +430,8 @@ public class DataManager extends AbstractModule {
 						field.set(dataObject, res.getInt(columnIndex));
 					} else if (field.getType() == String.class) {
 						field.set(dataObject, res.getString(columnIndex));
+					} else if (field.getType() == boolean.class){
+						field.set(dataObject, res.getBoolean(columnIndex));
 					} else if (field.getType() == long.class) {
 						field.set(dataObject, res.getLong(columnIndex));
 					} else if (field.getType() == UUID.class) {
@@ -429,6 +452,11 @@ public class DataManager extends AbstractModule {
 
 					columnIndex++;
 				}
+
+				if(dataObject.getClass() != clazz){
+					Logger.warn("OBJECT ISN'T A %s", clazz);
+				}
+
 				collection.add((T) dataObject);
 			}
 			return collection;
@@ -472,26 +500,28 @@ public class DataManager extends AbstractModule {
 		try {
 			PreparedStatement statement = getConnectionManager().prepareStatement(sql);
 			for(int i = 0; i < sqlSelectors.length; i++) {
-				Object field = sqlSelectors[i].getValue();
+				Object selectorValue = sqlSelectors[i].getValue();
 
-				if (field.getClass() == Integer.class) {
-					statement.setInt(i + 1, (int) field);
-				} else if (field.getClass() == String.class) {
-					statement.setString(i + 1, (String) field);
-				} else if (field.getClass() == long.class) {
-					statement.setLong(i + 1, (long) field);
-				} else if (field.getClass() == UUID.class) {
-					statement.setString(i + 1, ((UUID) field).toString());
-				} else if (field.getClass().isEnum()) {
-					statement.setString(i + 1, field.toString());
-				} else if (Collection.class.isAssignableFrom(field.getClass())) {
-					statement.setString(i + 1, DataManager.getGson().toJson(field));
-				} else if (Map.class.isAssignableFrom(field.getClass())) {
-					statement.setString(i + 1, DataManager.getGson().toJson(field));
-				} else if (field.getClass() == Location.class) {
-					statement.setString(i + 1, DataManager.getGson().toJson(JSONLocation.fromLocation((Location) field)));
+				if (selectorValue.getClass() == Integer.class) {
+					statement.setInt(i + 1, (int) selectorValue);
+				} else if (selectorValue.getClass() == String.class) {
+					statement.setString(i + 1, (String) selectorValue);
+				} else if (selectorValue.getClass() == boolean.class){
+					statement.setBoolean(i + 1, (boolean) selectorValue);
+				} else if (selectorValue.getClass() == long.class) {
+					statement.setLong(i + 1, (long) selectorValue);
+				} else if (selectorValue.getClass() == UUID.class) {
+					statement.setString(i + 1, ((UUID) selectorValue).toString());
+				} else if (selectorValue.getClass().isEnum()) {
+					statement.setString(i + 1, selectorValue.toString());
+				} else if (Collection.class.isAssignableFrom(selectorValue.getClass())) {
+					statement.setString(i + 1, DataManager.getGson().toJson(selectorValue));
+				} else if (Map.class.isAssignableFrom(selectorValue.getClass())) {
+					statement.setString(i + 1, DataManager.getGson().toJson(selectorValue));
+				} else if (selectorValue.getClass() == Location.class) {
+					statement.setString(i + 1, DataManager.getGson().toJson(JSONLocation.fromLocation((Location) selectorValue)));
 				} else {
-					statement.setString(i + 1, DataManager.getGson().toJson(field));
+					statement.setString(i + 1, DataManager.getGson().toJson(selectorValue));
 				}
 			}
 			statement.executeUpdate();
@@ -564,8 +594,6 @@ public class DataManager extends AbstractModule {
 
 		sql = sql + ";";
 
-		Logger.log("sql: " + sql);
-
 		try {
 			PreparedStatement statement = this.getConnectionManager().prepareStatement(sql);
 			int parameterIndex = 1;
@@ -585,6 +613,8 @@ public class DataManager extends AbstractModule {
 						statement.setInt(parameterIndex, (int) field.get(object));
 					} else if (field.getType() == String.class) {
 						statement.setString(parameterIndex, (String) field.get(object));
+					} else if (field.getType() == boolean.class){
+						statement.setBoolean(parameterIndex, (boolean) field.get(object));
 					} else if (field.getType() == long.class) {
 						statement.setLong(parameterIndex, (long) field.get(object));
 					} else if (field.getType() == UUID.class) {
@@ -610,26 +640,28 @@ public class DataManager extends AbstractModule {
 				}
 			}
 			for(int i = 0; i < sqlSelectors.length; i++){
-				Object field = sqlSelectors[i].getValue();
+				Object selectorValue = sqlSelectors[i].getValue();
 				try {
-					if (field.getClass() == Integer.class) {
-						statement.setInt(parameterIndex, (int) field);
-					} else if (field.getClass() == String.class) {
-						statement.setString(parameterIndex, (String) field);
-					} else if (field.getClass() == long.class) {
-						statement.setLong(parameterIndex, (long)field);
-					} else if (field.getClass() == UUID.class) {
-						statement.setString(parameterIndex, ((UUID)field).toString());
-					} else if (field.getClass().isEnum()) {
-						statement.setString(parameterIndex, field.toString());
-					} else if (Collection.class.isAssignableFrom(field.getClass())) {
-						statement.setString(parameterIndex, DataManager.getGson().toJson(field));
-					} else if (Map.class.isAssignableFrom(field.getClass())) {
-						statement.setString(parameterIndex, DataManager.getGson().toJson(field));
-					} else if (field.getClass() == Location.class) {
-						statement.setString(parameterIndex, DataManager.getGson().toJson(JSONLocation.fromLocation((Location)field)));
+					if (selectorValue.getClass() == Integer.class) {
+						statement.setInt(parameterIndex, (int) selectorValue);
+					} else if (selectorValue.getClass() == String.class) {
+						statement.setString(parameterIndex, (String) selectorValue);
+					} else if (selectorValue.getClass() == boolean.class){
+						statement.setBoolean(parameterIndex, (boolean) selectorValue);
+					} else if (selectorValue.getClass() == long.class) {
+						statement.setLong(parameterIndex, (long)selectorValue);
+					} else if (selectorValue.getClass() == UUID.class) {
+						statement.setString(parameterIndex, ((UUID)selectorValue).toString());
+					} else if (selectorValue.getClass().isEnum()) {
+						statement.setString(parameterIndex, selectorValue.toString());
+					} else if (Collection.class.isAssignableFrom(selectorValue.getClass())) {
+						statement.setString(parameterIndex, DataManager.getGson().toJson(selectorValue));
+					} else if (Map.class.isAssignableFrom(selectorValue.getClass())) {
+						statement.setString(parameterIndex, DataManager.getGson().toJson(selectorValue));
+					} else if (selectorValue.getClass() == Location.class) {
+						statement.setString(parameterIndex, DataManager.getGson().toJson(JSONLocation.fromLocation((Location)selectorValue)));
 					} else {
-						statement.setString(parameterIndex, DataManager.getGson().toJson(field));
+						statement.setString(parameterIndex, DataManager.getGson().toJson(selectorValue));
 					}
 
 					parameterIndex++;
@@ -640,7 +672,6 @@ public class DataManager extends AbstractModule {
 
 				parameterIndex++;
 			}
-			Logger.log(statement.toString());
 			statement.execute();
 		} catch (SQLException e) {
 			Logger.error("An error occurred while trying to update an object: " + e.getMessage());

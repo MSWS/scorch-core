@@ -2,9 +2,15 @@ package com.scorch.core.modules.permissions;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
+import com.scorch.core.modules.data.SQLSelector;
+import com.scorch.core.modules.data.exceptions.DataDeleteException;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
+import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
+import com.scorch.core.utils.Logger;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 
 import java.io.File;
@@ -18,7 +24,8 @@ public class PermissionModule extends AbstractModule {
 
 	private Map<UUID, PermissionAttachment> permissionAttachments;
 	private Map<UUID, PermissionPlayer> playerPermissions;
-	private Collection<PermissionGroup> groupList;
+	// Changed to List from Collection since i need List#get(int)
+	private List<PermissionGroup> groupList;
 
 	private PermissionListener permissionListener;
 
@@ -31,9 +38,12 @@ public class PermissionModule extends AbstractModule {
 	@Override
 	public void initialize() {
 
+    	Logger.info("&6Initialising permissions...");
+
 		// Order doesn't really matter so using HashMap
 		this.permissionAttachments = new HashMap<>();
 		this.playerPermissions = new HashMap<>();
+		List<PermissionGroup> ymlGroups = new ArrayList<>();
 
 		// Setup database stuff
 		try {
@@ -45,7 +55,7 @@ public class PermissionModule extends AbstractModule {
 				playerPermissions.put(player.getUniqueId(), player);
 			});
 
-			this.groupList = ScorchCore.getInstance().getDataManager().getAllObjects("groups");
+			this.groupList = new ArrayList<>(ScorchCore.getInstance().getDataManager().getAllObjects("groups"));
 		} catch (NoDefaultConstructorException | DataObtainException e) {
 			e.printStackTrace();
 		}
@@ -54,16 +64,104 @@ public class PermissionModule extends AbstractModule {
 			this.groupList = new ArrayList<>();
 		}
 
+		Logger.log("&6Loaded %s groups from database", groupList.size());
+
+		// Checking if permissions.yml file exists
         if(this.permissionsFile.exists()){
             // Found configuration server, parse permissions.yml and update database if necessary
+			Logger.log("&6Found permissions.yml file, checking for changes...");
+			YamlConfiguration permissions = YamlConfiguration.loadConfiguration(permissionsFile);
+			for(String group : permissions.getConfigurationSection("groups").getKeys(false)){
+				// Load group from config
+				Logger.log("&6   - Parsing &e%s", group);
+				String groupPath = "groups." + group;
+				List<String> inherits = permissions.getStringList(groupPath + ".inherits");
+				boolean isDefault = permissions.getBoolean(groupPath + ".default");
+				String prefix = permissions.getString(groupPath + ".prefix");
+				int weight = permissions.getInt(groupPath + ".weight");
+				List<String> permissionList = permissions.getStringList(groupPath + ".permissions");
+
+				PermissionGroup groupObject = new PermissionGroup(group, isDefault, prefix, weight, inherits, permissionList);
+				ymlGroups.add(groupObject);
+				Logger.log("&a       SUCCESS");
+			}
         }
+
+
+        if(groupList == null || groupList.isEmpty()){
+        	// database is empty, save ymlGroups
+			Logger.log("&6Database was empty, saving all groups to database...");
+			groupList = new ArrayList<>(ymlGroups);
+			groupList.forEach(group -> {
+				ScorchCore.getInstance().getDataManager().saveObject("groups", group);
+			});
+			Logger.log("&6Done!");
+		}
+        else {
+			Logger.log("&6Checking for any required updates to database...");
+			for (int i = 0; i < groupList.size(); i++) {
+				PermissionGroup group = groupList.get(i);
+				Logger.log("&6   - Checking &e%s", group.getGroupName());
+				for (PermissionGroup ymlGroup : ymlGroups) {
+					if(group.getGroupName().equals(ymlGroup.getGroupName())){
+						// group exists
+						if (!group.equals(ymlGroup)) {
+							Logger.log("      &eCHANGED");
+							try {
+								ScorchCore.getInstance().getDataManager().updateObject("groups", ymlGroup, new SQLSelector("groupName", ymlGroup.getGroupName()));
+							} catch (DataUpdateException e) {
+								e.printStackTrace();
+							}
+							groupList.set(i, ymlGroup);
+						}
+						else {
+							Logger.log("      &aNO CHANGES");
+						}
+					}
+				}
+			}
+
+			Logger.log("&6Checking for new groups...");
+			for (PermissionGroup ymlGroup : ymlGroups) {
+				boolean exists = false;
+				for(int i = 0; i < groupList.size(); i++){
+					PermissionGroup group = groupList.get(i);
+					if(group.getGroupName().equals(ymlGroup.getGroupName())){
+						// Group exists
+						exists = true;
+						break;
+					}
+				}
+				if(!exists){
+					groupList.add(ymlGroup);
+					ScorchCore.getInstance().getDataManager().saveObject("groups", ymlGroup);
+					Logger.log("   - &6New group: &e%s", ymlGroup.getGroupName());
+				}
+			}
+
+			Logger.log("&6Checking if there's any groups to delete...");
+			for(int i = 0; i < groupList.size(); i++){
+				PermissionGroup group = groupList.get(i);
+				if(!ymlGroups.contains(group)){
+					Logger.log("&6   - &e%s &6doesn't exist in .yml file anymore, deleting", group.getGroupName());
+					try {
+						ScorchCore.getInstance().getDataManager().deleteObject("groups", new SQLSelector("groupName", group.getGroupName()));
+						Logger.log("&a       SUCCESS");
+					} catch (DataDeleteException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
+		Logger.log("&6Done!");
 
         this.permissionListener = new PermissionListener(this);
     }
 
 	@Override
 	public void disable() {
-
+    	// Nothing to do really...
 	}
 
 	/**
@@ -149,7 +247,7 @@ public class PermissionModule extends AbstractModule {
 	 */
 	public PermissionGroup getGroup(String groupName) {
 		for (PermissionGroup group : groupList) {
-			if (group.getGroupName().equalsIgnoreCase(groupName)) {
+			if (group.getGroupName().equals(groupName)) {
 				return group;
 			}
 		}
