@@ -11,9 +11,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.scorch.core.commands.ACommand;
-import com.scorch.core.commands.MACommand;
-import com.scorch.core.commands.RACommand;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.ModulePriority;
 import com.scorch.core.modules.chat.ChatModule;
@@ -64,28 +61,23 @@ public class ScorchCore extends JavaPlugin {
 		dataManager = (DataManager) registerModule(
 				new DataManager("DataManager", (ConnectionManager) getModule("ConnectionManager")),
 				ModulePriority.HIGHEST);
-		messages = (MessagesModule) registerModule(new MessagesModule("MessagesModule"), ModulePriority.HIGH);
 
+		messages = (MessagesModule) registerModule(new MessagesModule("MessagesModule"), ModulePriority.HIGH);
 		registerModule(new PermissionModule("PermissionModule"), ModulePriority.HIGH);
+
 		pMod = (PunishModule) registerModule(new PunishModule("PunishModule"), ModulePriority.MEDIUM);
 		registerModule(new BanwaveModule("BanwaveModule"), ModulePriority.MEDIUM);
 
-		registerModule(new OfflineMessagesModule("OfflineMessagesModule"), ModulePriority.LOWEST);
 		registerModule(new ChatModule("ChatModule"), ModulePriority.LOW);
 		filter = (FilterModule) registerModule(new FilterModule("FilterModule"), ModulePriority.LOW);
+		
+		registerModule(new OfflineMessagesModule("OfflineMessagesModule"), ModulePriority.LOWEST);
 
 		try {
 			Arrays.stream(ModulePriority.values()).forEach(this::loadModules);
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
-
-		new ACommand();
-		new MACommand();
-		new RACommand();
-
-		// Other initialisation after this
-
 	}
 
 	@Override
