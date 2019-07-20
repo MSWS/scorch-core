@@ -1,11 +1,16 @@
 package com.scorch.core.modules.permissions;
 
-import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.data.annotations.DataIgnore;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 
-import java.util.*;
+import com.scorch.core.ScorchCore;
+import com.scorch.core.modules.data.annotations.DataIgnore;
 
 /**
  * PermissionPlayer is a data class that contains all the data needed for the
@@ -97,75 +102,79 @@ public class PermissionPlayer {
 		this(player.getUniqueId(), groups);
 	}
 
-    /**
-     * Creates the permission attachment for the player, this used by Spigot to make
-     * sure the {@link Player#hasPermission(String)} api works
-     * This also adds the player's extra permissions and group permissions to the PermissionAttachment object
-     * @param player the player
-     * @return the {@link PermissionAttachment} for the player
-     *
-     * @see PermissionAttachment
-     */
-    public PermissionAttachment createAttachment (Player player) {
-        // Create permission attachment object through bukkit api
-        PermissionAttachment attachment = player.addAttachment(ScorchCore.getInstance());
+	/**
+	 * Creates the permission attachment for the player, this used by Spigot to make
+	 * sure the {@link Player#hasPermission(String)} api works This also adds the
+	 * player's extra permissions and group permissions to the PermissionAttachment
+	 * object
+	 * 
+	 * @param player the player
+	 * @return the {@link PermissionAttachment} for the player
+	 *
+	 * @see PermissionAttachment
+	 */
+	public PermissionAttachment createAttachment(Player player) {
+		// Create permission attachment object through bukkit api
+		PermissionAttachment attachment = player.addAttachment(ScorchCore.getInstance());
 
-        // Loop through the groups and add them to the attachment
-        getGroups().forEach(group ->{
-            addGroupPermissions(group, attachment);
-        });
+		// Loop through the groups and add them to the attachment
+		getGroups().forEach(group -> {
+			addGroupPermissions(group, attachment);
+		});
 
-        // Add the player's own custom permissions
-        getPermissions().forEach(node -> {
-            if(!attachment.getPermissions().containsKey(node) || !attachment.getPermissions().get(node)){
-                attachment.setPermission(node, true);
-            }
-        });
+		// Add the player's own custom permissions
+		getPermissions().forEach(node -> {
+			if (!attachment.getPermissions().containsKey(node) || !attachment.getPermissions().get(node)) {
+				attachment.setPermission(node, true);
+			}
+		});
 
-        return attachment;
-    }
+		return attachment;
+	}
 
-    /**
-     * This method adds all the permissions of the group to the {@link PermissionAttachment}
-     * This method is required since adding all the inherited groups for each group cannot be done without
-     * recursion.
-     * @param group      the group
-     * @param attachment the attachment to add the permissions to
-     */
-    private void addGroupPermissions (PermissionGroup group, PermissionAttachment attachment){
-        // Add the permissions for the parent groups first
-        group.getInheritedGroups().forEach(parent -> {
-            addGroupPermissions(parent, attachment);
-        });
+	/**
+	 * This method adds all the permissions of the group to the
+	 * {@link PermissionAttachment} This method is required since adding all the
+	 * inherited groups for each group cannot be done without recursion.
+	 * 
+	 * @param group      the group
+	 * @param attachment the attachment to add the permissions to
+	 */
+	private void addGroupPermissions(PermissionGroup group, PermissionAttachment attachment) {
+		// Add the permissions for the parent groups first
+		group.getInheritedGroups().forEach(parent -> {
+			addGroupPermissions(parent, attachment);
+		});
 
-        // Add own group's permissions
-        group.getPermissions().forEach(permission -> {
-            if(!attachment.getPermissions().containsKey(permission) || !attachment.getPermissions().get(permission)){
-                attachment.setPermission(permission, true);
-            }
-        });
-    }
+		// Add own group's permissions
+		group.getPermissions().forEach(permission -> {
+			if (!attachment.getPermissions().containsKey(permission) || !attachment.getPermissions().get(permission)) {
+				attachment.setPermission(permission, true);
+			}
+		});
+	}
 
-    /**
-     * Adds the permission node to the player's permissions
-     * @param node the node to add
-     */
-    public void addPermission (String node) {
-        if(!getPermissions().contains(node)){
-            getPermissions().add(node);
-            updatePermissions();
-        }
-    }
+	/**
+	 * Adds the permission node to the player's permissions
+	 * 
+	 * @param node the node to add
+	 */
+	public void addPermission(String node) {
+		if (!getPermissions().contains(node)) {
+			getPermissions().add(node);
+			updatePermissions();
+		}
+	}
 
-    /**
-     * Updates the a permissions for the player, removes the {@link PermissionAttachment} and adds it again using
-     * the updated permissions
-     */
-    public void updatePermissions () {
-        Player player = (Player) getAttachment().getPermissible();
-        player.removeAttachment(getAttachment());
-        this.createAttachment(player);
-    }
+	/**
+	 * Updates the a permissions for the player, removes the
+	 * {@link PermissionAttachment} and adds it again using the updated permissions
+	 */
+	public void updatePermissions() {
+		Player player = (Player) getAttachment().getPermissible();
+		player.removeAttachment(getAttachment());
+		this.createAttachment(player);
+	}
 
 	/**
 	 * Gets the player's UUID.
@@ -176,56 +185,61 @@ public class PermissionPlayer {
 		return uniqueId;
 	}
 
-    /**
-     * Returns true if the player is a member of the group
-     * @param group the group to check
-     * @return      whether the player is a member of the group
-     */
-    public boolean hasGroup (PermissionGroup group){
-        return getGroups().contains(group);
-    }
+	/**
+	 * Returns true if the player is a member of the group
+	 * 
+	 * @param group the group to check
+	 * @return whether the player is a member of the group
+	 */
+	public boolean hasGroup(PermissionGroup group) {
+		return getGroups().contains(group);
+	}
 
-    public PermissionGroup getPrimaryGroup (){
-        if(getGroups().size() > 0) return null;
-        PermissionGroup[] permissionGroups = new PermissionGroup[getGroups().size()];
-        getGroups().toArray(permissionGroups);
-        Arrays.sort(permissionGroups);
-        return permissionGroups[0];
-    }
+	public PermissionGroup getPrimaryGroup() {
+		if (getGroups().size() > 0)
+			return null;
+		List<PermissionGroup> groups = getGroups();
+		Collections.sort(groups);
+		return groups.get(0);
+	}
 
-    /**
-     * Gets the player's groups.
-     * @return the groups
-     */
-    public List<PermissionGroup> getGroups() {
-        List<PermissionGroup> permissionGroups = new ArrayList<>();
-        this.groups.forEach(group -> {
-            if(ScorchCore.getInstance().getPermissionModule().getGroup(group) != null){
-                permissionGroups.add(ScorchCore.getInstance().getPermissionModule().getGroup(group));
-            }
-        });
-        return permissionGroups;
-    }
+	/**
+	 * Gets the player's groups.
+	 * 
+	 * @return the groups
+	 */
+	public List<PermissionGroup> getGroups() {
+		List<PermissionGroup> permissionGroups = new ArrayList<>();
+		this.groups.forEach(group -> {
+			if (ScorchCore.getInstance().getPermissionModule().getGroup(group) != null) {
+				permissionGroups.add(ScorchCore.getInstance().getPermissionModule().getGroup(group));
+			}
+		});
+		return permissionGroups;
+	}
 
-    /**
-     * Returns a list of the names of the player's groups
-     * @return the group names
-     */
-    public List<String> getGroupNames () {
-        return this.groups;
-    }
+	/**
+	 * Returns a list of the names of the player's groups
+	 * 
+	 * @return the group names
+	 */
+	public List<String> getGroupNames() {
+		return this.groups;
+	}
 
-    /**
-     * Returns true if the player is in the group
-     * @param group the group to check
-     * @return      whether the player is in the group
-     */
-    public boolean hasGroup (String group) {
-        return getGroups().contains(group);
-    }
+	/**
+	 * Returns true if the player is in the group
+	 * 
+	 * @param group the group to check
+	 * @return whether the player is in the group
+	 */
+	public boolean hasGroup(String group) {
+		return groups.contains(group);
+	}
 
 	/**
 	 * Gets the player's permissions
+	 * 
 	 * @return
 	 */
 	public List<String> getPermissions() {
@@ -233,24 +247,27 @@ public class PermissionPlayer {
 	}
 
 	/**
-     * Gets the player's permission attachment
-     * This is what handles the permissions on Spigot's side
-     * @return the {@link PermissionAttachment} of the player.
-     *
-     * @see PermissionAttachment
-     */
-    private PermissionAttachment getAttachment() {
-        return attachment;
-    }
+	 * Gets the player's permission attachment This is what handles the permissions
+	 * on Spigot's side
+	 * 
+	 * @return the {@link PermissionAttachment} of the player.
+	 *
+	 * @see PermissionAttachment
+	 */
+	private PermissionAttachment getAttachment() {
+		return attachment;
+	}
 
-    /**
-     * Sets the player's permission attachment
-     * This is what handles the permissions on Spigot's side.
-     * @param attachment the new {@link PermissionAttachment} to set
-     *
-     * @see PermissionAttachment
-     */
-    private void setAttachment(PermissionAttachment attachment) {
-        this.attachment = attachment;
-    }
+	/**
+	 * Sets the player's permission attachment This is what handles the permissions
+	 * on Spigot's side.
+	 * 
+	 * @param attachment the new {@link PermissionAttachment} to set
+	 *
+	 * @see PermissionAttachment
+	 */
+	@SuppressWarnings("unused")
+	private void setAttachment(PermissionAttachment attachment) {
+		this.attachment = attachment;
+	}
 }

@@ -37,7 +37,8 @@ public class ACommand extends BukkitCommand {
 		String msg = ScorchCore.getInstance().getMessages().getMessage("aformat").getMessage();
 		msg = msg
 				.replace("%prefix%",
-						(sender instanceof Player) ? ScorchCore.getInstance().getPrefix((OfflinePlayer) sender) : "&4")
+						(sender instanceof Player) ? ScorchCore.getInstance().getPrefix((OfflinePlayer) sender) + ""
+								: "&4")
 				.replace("%player%", sender.getName()).replace("%message%", builder.toString().trim());
 
 		for (Player p : Bukkit.getOnlinePlayers())

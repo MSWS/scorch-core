@@ -21,7 +21,6 @@ import com.scorch.core.modules.data.CPlayer;
 import com.scorch.core.modules.data.ConnectionManager;
 import com.scorch.core.modules.data.DataManager;
 import com.scorch.core.modules.messages.MessagesModule;
-import com.scorch.core.modules.messages.OfflineMessagesModule;
 import com.scorch.core.modules.permissions.PermissionModule;
 import com.scorch.core.modules.punish.BanwaveModule;
 import com.scorch.core.modules.punish.PunishModule;
@@ -47,7 +46,6 @@ public class ScorchCore extends JavaPlugin {
 	private PunishModule pMod;
 	private FilterModule filter;
 	private CommandModule commands;
-	private PermissionModule perms;
 
 	private File guiYml = new File(getDataFolder(), "guis.yml");
 	private YamlConfiguration gui;
@@ -68,7 +66,6 @@ public class ScorchCore extends JavaPlugin {
 				ModulePriority.HIGHEST);
 
 		this.messages = (MessagesModule) registerModule(new MessagesModule("MessagesModule"), ModulePriority.HIGH);
-
 
 		this.permissionModule = (PermissionModule) registerModule(new PermissionModule("PermissionModule"),
 				ModulePriority.HIGH);
@@ -185,6 +182,7 @@ public class ScorchCore extends JavaPlugin {
 	 * Returns the {@link DataManager} object without having to use
 	 * {@link ScorchCore#getModule(String)} and cast it This is purely to make it
 	 * easier to write code using the {@link DataManager}
+	 * 
 	 * @see DataManager
 	 *
 	 * @return the datamanager
@@ -205,11 +203,14 @@ public class ScorchCore extends JavaPlugin {
 	 * Returns the {@link PermissionModule} object without having to use
 	 * {@link ScorchCore#getModule(String)} and cast it. This is purely to make it
 	 * easier to write code using the {@link PermissionModule}
+	 * 
 	 * @see PermissionModule
 	 *
 	 * @return the permission module
 	 */
-	public PermissionModule getPermissionModule () { return permissionModule; }
+	public PermissionModule getPermissionModule() {
+		return permissionModule;
+	}
 
 	/**
 	 * Gets the GUI yml configuration
@@ -232,15 +233,23 @@ public class ScorchCore extends JavaPlugin {
 		return commands;
 	}
 
-	public PermissionModule getPerms() {
-		return perms;
-	}
-
+	/**
+	 * Gets the prefix of the player from their primary group
+	 * 
+	 * @param player
+	 * @return null if not assigned to any group
+	 */
 	public String getPrefix(UUID player) {
-		return ScorchCore.getInstance().getPerms().getGroup(perms.getPermissionPlayer(player).getGroups().get(0))
-				.getPrefix();
+		return permissionModule.getPermissionPlayer(player).getPrimaryGroup() == null ? ""
+				: permissionModule.getPermissionPlayer(player).getPrimaryGroup().getPrefix();
 	}
 
+	/**
+	 * {@link ScorchCore#getPrefix(UUID)}
+	 * 
+	 * @param player
+	 * @return
+	 */
 	public String getPrefix(OfflinePlayer player) {
 		return getPrefix(player.getUniqueId());
 	}
