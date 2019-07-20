@@ -10,6 +10,12 @@ import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;
 
+/**
+ * Module that loads and keeps track of all messages stored in the database
+ * 
+ * @author imodm
+ *
+ */
 public class MessagesModule extends AbstractModule {
 
 	private List<CMessage> messages, defaults;
@@ -44,6 +50,11 @@ public class MessagesModule extends AbstractModule {
 
 	@Override
 	public void initialize() {
+		reloadMessages();
+
+	}
+
+	public void reloadMessages() {
 		messages = new ArrayList<CMessage>();
 
 		try {
@@ -64,10 +75,11 @@ public class MessagesModule extends AbstractModule {
 				Logger.log(msg.getId() + " does not exist, saving default.");
 			}
 
+			Logger.log("Successfully loaded " + messages.size() + " message" + (messages.size() == 1 ? "" : "s") + ".");
 		} catch (NoDefaultConstructorException | DataObtainException e) {
 			e.printStackTrace();
 		}
-		Logger.log("Successfully loaded " + messages.size() + " message" + (messages.size() == 1 ? "" : "s") + ".");
+
 	}
 
 	public CMessage getMessage(String id) {
@@ -78,4 +90,5 @@ public class MessagesModule extends AbstractModule {
 	public void disable() {
 
 	}
+
 }

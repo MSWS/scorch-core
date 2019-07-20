@@ -16,6 +16,13 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
 
+/**
+ * Keeps track of player teleport history History is automatically discarded
+ * when player leaves
+ * 
+ * @author imodm
+ *
+ */
 public class TeleportModule extends AbstractModule implements Listener {
 
 	private Map<Player, List<Location>> history;

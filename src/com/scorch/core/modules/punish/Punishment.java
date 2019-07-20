@@ -29,6 +29,7 @@ import com.scorch.core.utils.MSG;
 /**
  * Punishment is an entry to a player's Punishment History, supports
  * OfflinePlayer banning, run the execute function to run commands/punishments
+ * (should only be run once)
  * 
  * @author imodm
  *

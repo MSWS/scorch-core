@@ -19,6 +19,15 @@ import com.scorch.core.modules.messages.OfflineMessagesModule;
 import com.scorch.core.modules.permissions.PermissionPlayer;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Command used by developers and internally for <b>testing only</b>
+ * 
+ * <b>Permissions</b><br>
+ * scorch.command.test - Access to command<br>
+ * 
+ * @author imodm
+ *
+ */
 public class TestCommand extends BukkitCommand {
 
 	public TestCommand(String name) {

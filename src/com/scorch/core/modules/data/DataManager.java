@@ -93,7 +93,7 @@ public class DataManager extends AbstractModule {
 	 */
 	public void createTable(String name, Class<?> storageType) throws NoDefaultConstructorException {
 
-		Logger.log("Creating table if it doesn't exist: %s", name);
+		Logger.log("Ensuring %s table exists", name);
 
 		if (!hasDefaultConstructor(storageType)) {
 			throw new NoDefaultConstructorException();
@@ -102,17 +102,14 @@ public class DataManager extends AbstractModule {
 		String query = "CREATE TABLE IF NOT EXISTS " + name
 				+ " (local_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, object_type TEXT NOT NULL, ";
 
-
-
-
 		for (int i = 0; i < storageType.getDeclaredFields().length; i++) {
 			Field field = storageType.getDeclaredFields()[i];
 
 			// Makes sure that the field doesn't have to be ignored for serialization
-			if (field.isAnnotationPresent(DataIgnore.class)){
-				if(i == storageType.getDeclaredFields().length-1){
-					if(query.endsWith(", ")){
-						query = query.substring(0, query.length()-2);
+			if (field.isAnnotationPresent(DataIgnore.class)) {
+				if (i == storageType.getDeclaredFields().length - 1) {
+					if (query.endsWith(", ")) {
+						query = query.substring(0, query.length() - 2);
 					}
 					query += ");";
 					this.getConnectionManager().executeQuery(query);
@@ -120,14 +117,13 @@ public class DataManager extends AbstractModule {
 				continue;
 			}
 
-
 			query += field.getName();
 
 			if (field.getType() == Integer.class) {
 				query += " INT";
 			} else if (field.getType() == String.class) {
 				query += " TEXT";
-			} else if (field.getType() == boolean.class){
+			} else if (field.getType() == boolean.class) {
 				query += " BOOLEAN ";
 			} else if (field.getType() == long.class) {
 				query += " BIGINT";
@@ -159,19 +155,24 @@ public class DataManager extends AbstractModule {
 	}
 
 	/**
-	 * Saves the bject to table, automatically parses all fields of the object to their sql equivalent.
-	 * <br>Supported field types include:</b>
-	 * <br><ul>
-	 *     <li>{@link Integer}</li>
-	 *     <li>{@link String}</li>
-	 *     <li>{@link Boolean}</li>
-	 *     <li>{@link Long}</li>
-	 *     <li>{@link UUID}</li>
-	 *     <li>{@link Location}</li>
-	 *     <li>{@link Collection}</li>
-	 *     <li>{@link Map}</li>
-	 * </ul></br>
-	 * <br>If the type isn't listed above, it will try to convert the object to json using Google's {@link Gson}</br>
+	 * Saves the bject to table, automatically parses all fields of the object to
+	 * their sql equivalent. <br>
+	 * Supported field types include:</b> <br>
+	 * <ul>
+	 * <li>{@link Integer}</li>
+	 * <li>{@link String}</li>
+	 * <li>{@link Boolean}</li>
+	 * <li>{@link Long}</li>
+	 * <li>{@link UUID}</li>
+	 * <li>{@link Location}</li>
+	 * <li>{@link Collection}</li>
+	 * <li>{@link Map}</li>
+	 * </ul>
+	 * </br>
+	 * <br>
+	 * If the type isn't listed above, it will try to convert the object to json
+	 * using Google's {@link Gson}</br>
+	 * 
 	 * @param table  the table to save <code>object</code> to
 	 * @param object the object to save
 	 */
@@ -228,7 +229,7 @@ public class DataManager extends AbstractModule {
 						statement.setInt(parameterIndex, (int) field.get(object));
 					} else if (field.getType() == String.class) {
 						statement.setString(parameterIndex, (String) field.get(object));
-					} else if (field.getType() == boolean.class){
+					} else if (field.getType() == boolean.class) {
 						statement.setBoolean(parameterIndex, (boolean) field.get(object));
 					} else if (field.getType() == long.class) {
 						statement.setLong(parameterIndex, (long) field.get(object));
@@ -260,18 +261,23 @@ public class DataManager extends AbstractModule {
 	}
 
 	/**
-	 * Saves the bject to table, automatically parses all fields of the object to their sql equivalent.
-	 * <br>Supported field types include:</b>
-	 * <br><ul>
-	 *     <li>{@link Integer}</li>
-	 *     <li>{@link String}</li>
-	 *     <li>{@link Boolean}</li>
-	 *     <li>{@link UUID}</li>
-	 *     <li>{@link Location}</li>
-	 *     <li>{@link Collection}</li>
-	 *     <li>{@link Map}</li>
-	 * </ul></br>
-	 * <br>If the type isn't listed above, it will try to convert the object to json using Google's {@link Gson}</br>
+	 * Saves the bject to table, automatically parses all fields of the object to
+	 * their sql equivalent. <br>
+	 * Supported field types include:</b> <br>
+	 * <ul>
+	 * <li>{@link Integer}</li>
+	 * <li>{@link String}</li>
+	 * <li>{@link Boolean}</li>
+	 * <li>{@link UUID}</li>
+	 * <li>{@link Location}</li>
+	 * <li>{@link Collection}</li>
+	 * <li>{@link Map}</li>
+	 * </ul>
+	 * </br>
+	 * <br>
+	 * If the type isn't listed above, it will try to convert the object to json
+	 * using Google's {@link Gson}</br>
+	 * 
 	 * @param table  the table to save <code>object</code> to
 	 * @param object the object to save
 	 */
@@ -350,7 +356,7 @@ public class DataManager extends AbstractModule {
 						field.set(dataObject, res.getInt(columnIndex));
 					} else if (field.getType() == String.class) {
 						field.set(dataObject, res.getString(columnIndex));
-					} else if (field.getType() == boolean.class){
+					} else if (field.getType() == boolean.class) {
 						field.set(dataObject, res.getBoolean(columnIndex));
 					} else if (field.getType() == long.class) {
 						field.set(dataObject, res.getLong(columnIndex));
@@ -430,7 +436,7 @@ public class DataManager extends AbstractModule {
 						field.set(dataObject, res.getInt(columnIndex));
 					} else if (field.getType() == String.class) {
 						field.set(dataObject, res.getString(columnIndex));
-					} else if (field.getType() == boolean.class){
+					} else if (field.getType() == boolean.class) {
 						field.set(dataObject, res.getBoolean(columnIndex));
 					} else if (field.getType() == long.class) {
 						field.set(dataObject, res.getLong(columnIndex));
@@ -453,7 +459,7 @@ public class DataManager extends AbstractModule {
 					columnIndex++;
 				}
 
-				if(dataObject.getClass() != clazz){
+				if (dataObject.getClass() != clazz) {
 					Logger.warn("OBJECT ISN'T A %s", clazz);
 				}
 
@@ -490,8 +496,7 @@ public class DataManager extends AbstractModule {
 		// Strip first element from sqlSelectors because we just used it ^ there
 
 		for (int i = 1; i < sqlSelectors.length; i++) {
-			sql = sql + String.format(" AND %s=?", sqlSelectors[i].getSelector(),
-					sqlSelectors[i].getValue());
+			sql = sql + String.format(" AND %s=?", sqlSelectors[i].getSelector(), sqlSelectors[i].getValue());
 		}
 
 		sql = sql + ";";
@@ -499,14 +504,14 @@ public class DataManager extends AbstractModule {
 		// Built query, so execute it
 		try {
 			PreparedStatement statement = getConnectionManager().prepareStatement(sql);
-			for(int i = 0; i < sqlSelectors.length; i++) {
+			for (int i = 0; i < sqlSelectors.length; i++) {
 				Object selectorValue = sqlSelectors[i].getValue();
 
 				if (selectorValue.getClass() == Integer.class) {
 					statement.setInt(i + 1, (int) selectorValue);
 				} else if (selectorValue.getClass() == String.class) {
 					statement.setString(i + 1, (String) selectorValue);
-				} else if (selectorValue.getClass() == boolean.class){
+				} else if (selectorValue.getClass() == boolean.class) {
 					statement.setBoolean(i + 1, (boolean) selectorValue);
 				} else if (selectorValue.getClass() == long.class) {
 					statement.setLong(i + 1, (long) selectorValue);
@@ -519,7 +524,8 @@ public class DataManager extends AbstractModule {
 				} else if (Map.class.isAssignableFrom(selectorValue.getClass())) {
 					statement.setString(i + 1, DataManager.getGson().toJson(selectorValue));
 				} else if (selectorValue.getClass() == Location.class) {
-					statement.setString(i + 1, DataManager.getGson().toJson(JSONLocation.fromLocation((Location) selectorValue)));
+					statement.setString(i + 1,
+							DataManager.getGson().toJson(JSONLocation.fromLocation((Location) selectorValue)));
 				} else {
 					statement.setString(i + 1, DataManager.getGson().toJson(selectorValue));
 				}
@@ -531,7 +537,6 @@ public class DataManager extends AbstractModule {
 		}
 	}
 
-
 	/**
 	 * Deletes the object specified using the {@link SQLSelector}s from the table
 	 *
@@ -541,7 +546,7 @@ public class DataManager extends AbstractModule {
 	 *
 	 * @see SQLSelector
 	 */
-	public void deleteObjectAsync (String table, SQLSelector... sqlSelectors) {
+	public void deleteObjectAsync(String table, SQLSelector... sqlSelectors) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -555,32 +560,36 @@ public class DataManager extends AbstractModule {
 	}
 
 	/**
-	 * Updates the object in the database using {@link SQLSelector}s to select the object
+	 * Updates the object in the database using {@link SQLSelector}s to select the
+	 * object
+	 * 
 	 * @param table        the table to update data in
 	 * @param object       the object to update
 	 * @param sqlSelectors the sql selectors that specify the data
 	 */
-	public void updateObject (String table, Object object, SQLSelector... sqlSelectors) throws DataUpdateException {
-		if(table == null || table.equals("")) throw new DataUpdateException("Table name is null");
-		if(sqlSelectors == null || sqlSelectors.length == 0) throw new DataUpdateException("No sql selectors defined");
+	public void updateObject(String table, Object object, SQLSelector... sqlSelectors) throws DataUpdateException {
+		if (table == null || table.equals(""))
+			throw new DataUpdateException("Table name is null");
+		if (sqlSelectors == null || sqlSelectors.length == 0)
+			throw new DataUpdateException("No sql selectors defined");
 
-		String sql = String.format("UPDATE %s SET " , table);
+		String sql = String.format("UPDATE %s SET ", table);
 
-		for(int i = 0; i < object.getClass().getDeclaredFields().length; i++){
+		for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
 			Field field = object.getClass().getDeclaredFields()[i];
 			// Make sure it's accessible
 			field.setAccessible(true);
 
 			// Make sure that the field doesn't have to be ignored
-			if(field.isAnnotationPresent(DataIgnore.class)) continue;
+			if (field.isAnnotationPresent(DataIgnore.class))
+				continue;
 
 			sql = sql + field.getName() + " = ?";
 
-			if(i == object.getClass().getDeclaredFields().length-1){
+			if (i == object.getClass().getDeclaredFields().length - 1) {
 				// end of SET setup
 				sql = sql + " WHERE ";
-			}
-			else {
+			} else {
 				sql = sql + ", ";
 			}
 		}
@@ -613,7 +622,7 @@ public class DataManager extends AbstractModule {
 						statement.setInt(parameterIndex, (int) field.get(object));
 					} else if (field.getType() == String.class) {
 						statement.setString(parameterIndex, (String) field.get(object));
-					} else if (field.getType() == boolean.class){
+					} else if (field.getType() == boolean.class) {
 						statement.setBoolean(parameterIndex, (boolean) field.get(object));
 					} else if (field.getType() == long.class) {
 						statement.setLong(parameterIndex, (long) field.get(object));
@@ -626,7 +635,8 @@ public class DataManager extends AbstractModule {
 					} else if (Map.class.isAssignableFrom(field.getType())) {
 						statement.setString(parameterIndex, DataManager.getGson().toJson(field.get(object)));
 					} else if (field.getType() == Location.class) {
-						statement.setString(parameterIndex, DataManager.getGson().toJson(JSONLocation.fromLocation((Location)field.get(object))));
+						statement.setString(parameterIndex,
+								DataManager.getGson().toJson(JSONLocation.fromLocation((Location) field.get(object))));
 					} else {
 						statement.setString(parameterIndex, DataManager.getGson().toJson(field.get(object)));
 					}
@@ -639,19 +649,19 @@ public class DataManager extends AbstractModule {
 							+ "\n" + sql);
 				}
 			}
-			for(int i = 0; i < sqlSelectors.length; i++){
+			for (int i = 0; i < sqlSelectors.length; i++) {
 				Object selectorValue = sqlSelectors[i].getValue();
 				try {
 					if (selectorValue.getClass() == Integer.class) {
 						statement.setInt(parameterIndex, (int) selectorValue);
 					} else if (selectorValue.getClass() == String.class) {
 						statement.setString(parameterIndex, (String) selectorValue);
-					} else if (selectorValue.getClass() == boolean.class){
+					} else if (selectorValue.getClass() == boolean.class) {
 						statement.setBoolean(parameterIndex, (boolean) selectorValue);
 					} else if (selectorValue.getClass() == long.class) {
-						statement.setLong(parameterIndex, (long)selectorValue);
+						statement.setLong(parameterIndex, (long) selectorValue);
 					} else if (selectorValue.getClass() == UUID.class) {
-						statement.setString(parameterIndex, ((UUID)selectorValue).toString());
+						statement.setString(parameterIndex, ((UUID) selectorValue).toString());
 					} else if (selectorValue.getClass().isEnum()) {
 						statement.setString(parameterIndex, selectorValue.toString());
 					} else if (Collection.class.isAssignableFrom(selectorValue.getClass())) {
@@ -659,7 +669,8 @@ public class DataManager extends AbstractModule {
 					} else if (Map.class.isAssignableFrom(selectorValue.getClass())) {
 						statement.setString(parameterIndex, DataManager.getGson().toJson(selectorValue));
 					} else if (selectorValue.getClass() == Location.class) {
-						statement.setString(parameterIndex, DataManager.getGson().toJson(JSONLocation.fromLocation((Location)selectorValue)));
+						statement.setString(parameterIndex,
+								DataManager.getGson().toJson(JSONLocation.fromLocation((Location) selectorValue)));
 					} else {
 						statement.setString(parameterIndex, DataManager.getGson().toJson(selectorValue));
 					}
@@ -681,12 +692,14 @@ public class DataManager extends AbstractModule {
 	}
 
 	/**
-	 * Updates the object in the database using {@link SQLSelector}s to select the object
+	 * Updates the object in the database using {@link SQLSelector}s to select the
+	 * object
+	 * 
 	 * @param table        the table to update data in
 	 * @param object       the object to update
 	 * @param sqlSelectors the sql selectors that specify the data
 	 */
-	public void updateObjectAsync (String table, Object object, SQLSelector... sqlSelectors) {
+	public void updateObjectAsync(String table, Object object, SQLSelector... sqlSelectors) {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
@@ -736,14 +749,12 @@ public class DataManager extends AbstractModule {
 	}
 
 	/*
-	public ConnectionManager getConnectionManager(String key) {
-		final String req = "5QWWZZZQZZAC46QZLT7OOQQAITTIQOFO5QC1AFZCLOQQWOZLQTL4CZZZQZZA0IOF";
-
-		if (!MSG.hashWithSalt(ScorchCore.getInstance().getDescription().getName(), key, 64, 5).equals(req)) {
-			Logger.warn("Illegal access of connection manager. Key: " + key);
-			return null;
-		}
-		return this.connectionManager;
-	}
-	*/
+	 * public ConnectionManager getConnectionManager(String key) { final String req
+	 * = "5QWWZZZQZZAC46QZLT7OOQQAITTIQOFO5QC1AFZCLOQQWOZLQTL4CZZZQZZA0IOF";
+	 * 
+	 * if (!MSG.hashWithSalt(ScorchCore.getInstance().getDescription().getName(),
+	 * key, 64, 5).equals(req)) {
+	 * Logger.warn("Illegal access of connection manager. Key: " + key); return
+	 * null; } return this.connectionManager; }
+	 */
 }

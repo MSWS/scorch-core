@@ -4,6 +4,12 @@ import org.bukkit.Material;
 
 import com.scorch.core.utils.Logger;
 
+/**
+ * Defines a punishment type for a {@link Punishment}
+ * 
+ * @author imodm
+ *
+ */
 public enum PunishType {
 	IP_BAN("&d&lIP Ban", "BEDROCK", true), PERM_BAN("&4&lPerm Ban", "REDSTONE_BLOCK", true),
 	TEMP_BAN("&c&lTemp Ban", "DIAMOND_SWORD", true), PERM_MUTE("&4&lPerm Mute", "BOOK", false),

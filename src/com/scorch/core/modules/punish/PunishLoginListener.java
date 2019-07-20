@@ -15,8 +15,9 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.utils.MSG;
 
 /**
- * {@link PunishLoginListener} is the listener for when players join the/a
- * server NOTE: Work in process
+ * {@link PunishLoginListener} is the listener for when players join the server,
+ * sets result to KICK_BANNED if they have an active punishment where
+ * {@link PunishType#restrictsLogin()} is true
  * 
  * @author imodm
  *

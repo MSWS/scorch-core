@@ -10,6 +10,12 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.punish.Punishment;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Internal <b>console only command</b> meant for emergency/backend usage only
+ * 
+ * @author imodm
+ *
+ */
 public class UnpunishCommand extends BukkitCommand {
 
 	public UnpunishCommand(String name) {

@@ -12,6 +12,16 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.CPlayer;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Punishment History command
+ * 
+ * <b>Permissions</b> <br>
+ * scorch.command.history - Access to command<br>
+ * scorch.command.history.others - Access to view other player's history
+ * 
+ * @author imodm
+ *
+ */
 public class HistoryCommand extends BukkitCommand {
 
 	public HistoryCommand(String name) {
@@ -28,7 +38,7 @@ public class HistoryCommand extends BukkitCommand {
 			MSG.tell(sender, getPermissionMessage());
 			return true;
 		}
-		
+
 		if (!(sender instanceof Player)) {
 			MSG.tell(sender, "you must be a player");
 			return true;
@@ -45,7 +55,7 @@ public class HistoryCommand extends BukkitCommand {
 				MSG.tell(sender, "/history [player]");
 				return true;
 			}
-		} else {
+		} else if (sender.hasPermission("scorch.command.history.others")) {
 			target = Bukkit.getOfflinePlayer(args[0]);
 		}
 

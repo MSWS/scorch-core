@@ -9,6 +9,16 @@ import org.bukkit.entity.Player;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Messaging system meant for staff only
+ * 
+ * <b>Permissions</b><br>
+ * scorch.command.ma - Access to command<br>
+ * scorch.command.ma.watch - Access to view staff PMs not sent to/from directly
+ * 
+ * @author imodm
+ *
+ */
 public class MACommand extends BukkitCommand {
 
 	public MACommand(String name) {
@@ -23,7 +33,7 @@ public class MACommand extends BukkitCommand {
 			MSG.tell(sender, getPermissionMessage());
 			return true;
 		}
-		
+
 		if (args.length < 2) {
 			MSG.tell(sender, "/ma [player] [message]");
 			return true;

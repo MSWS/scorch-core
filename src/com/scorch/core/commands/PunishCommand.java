@@ -12,6 +12,16 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.CPlayer;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Punish command meant for staff
+ * 
+ * <b>Permissions</b><br>
+ * scorch.command.punish - Access to command<br>
+ * (Modify GUI to define permissions for each item/punishment)
+ * 
+ * @author imodm
+ *
+ */
 public class PunishCommand extends BukkitCommand {
 
 	public PunishCommand(String name) {
@@ -28,7 +38,7 @@ public class PunishCommand extends BukkitCommand {
 			MSG.tell(sender, getPermissionMessage());
 			return true;
 		}
-		
+
 		if (!(sender instanceof Player)) {
 			MSG.tell(sender, "You must be a player");
 			return true;

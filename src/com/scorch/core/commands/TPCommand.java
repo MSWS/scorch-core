@@ -16,6 +16,20 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.TeleportModule;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Teleport command meant for general moderation or admins
+ * 
+ * <b>Permissions</b><br>
+ * scorch.command.teleport - Access to command<br>
+ * scorch.command.teleport.history - Access to view teleport history of self<br>
+ * scorch.command.teleport.back - Access to teleport to previous teleport
+ * locations<br>
+ * scorch.command.teleport.back.others - Access to force other players to
+ * teleport to previous teleport locations
+ * 
+ * @author imodm
+ *
+ */
 public class TPCommand extends BukkitCommand {
 
 	private TeleportModule module = null;
@@ -48,7 +62,7 @@ public class TPCommand extends BukkitCommand {
 		Location target = null;
 		String playerName = args[0], targetName = "Unknown";
 
-		if (args[0].equalsIgnoreCase("history")) {
+		if (args[0].equalsIgnoreCase("history") && sender.hasPermission("scorch.command.teleport.history")) {
 			if (args.length == 1) {
 				if (sender instanceof Player) {
 					tmp = (Player) sender;
@@ -79,7 +93,7 @@ public class TPCommand extends BukkitCommand {
 						+ hist.get(i).getBlockX() + " " + hist.get(i).getBlockY() + " " + hist.get(i).getBlockZ());
 			}
 			return true;
-		} else if (args[0].matches("(?i)(back|b)")) {
+		} else if (args[0].matches("(?i)(back|b)") && sender.hasPermission("scorch.command.teleport.back")) {
 			if (args.length == 1) {
 				if (sender instanceof Player) {
 					int index = 0;
@@ -123,7 +137,7 @@ public class TPCommand extends BukkitCommand {
 						MSG.tell(sender, "Specify Player");
 						return true;
 					}
-				} else {
+				} else if (sender.hasPermission("scorch.command.teleport.back.others")) {
 					target = module.getRecentTeleports(tmp).get(0);
 					players.set(0, tmp);
 					targetName = "last teleport location";
@@ -149,7 +163,7 @@ public class TPCommand extends BukkitCommand {
 				playerName = tmp.getName();
 				players.set(0, tmp);
 			}
-		} else if (args[0].equalsIgnoreCase("all")) {
+		} else if (args[0].equalsIgnoreCase("all") && sender.hasPermission("scorch.command.teleport.all")) {
 			players = Bukkit.getOnlinePlayers().stream().collect(Collectors.toList());
 			if (args.length == 1 && sender instanceof Player) {
 				target = ((Player) sender).getLocation();

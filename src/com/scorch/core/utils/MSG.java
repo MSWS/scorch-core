@@ -11,6 +11,9 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.scorch.core.ScorchCore;
+import com.scorch.core.modules.messages.CMessage;
+
 public class MSG {
 	public static JavaPlugin plugin;
 
@@ -64,6 +67,16 @@ public class MSG {
 		} else {
 			sender.sendMessage(color(msg.toString()));
 		}
+	}
+
+	/**
+	 * Sends a {@link CMessage} from the database
+	 * 
+	 * @param sender
+	 * @param msgId
+	 */
+	public static void cTell(CommandSender sender, String msgId) {
+		tell(sender, ScorchCore.getInstance().getMessages().getMessage(msgId));
 	}
 
 	/**

@@ -10,6 +10,17 @@ import org.bukkit.entity.Player;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Staff Chat command, can be used by everyone but can only be seen by the
+ * sender and staff in the same server
+ * 
+ * <b>Permissions</b><br>
+ * scorch.command.a - Access to /a <br>
+ * scorch.command.a.receive - View /a messages not sent by self
+ * 
+ * @author imodm
+ *
+ */
 public class ACommand extends BukkitCommand {
 
 	public ACommand(String name) {

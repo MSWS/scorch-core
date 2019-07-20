@@ -8,6 +8,13 @@ import org.bukkit.scheduler.BukkitRunnable;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
 
+/**
+ * Manages and schedules banwaves automatically<br>
+ * Runs by milliseconds
+ * 
+ * @author imodm
+ *
+ */
 public class BanwaveModule extends AbstractModule {
 
 	public BanwaveModule(String id) {

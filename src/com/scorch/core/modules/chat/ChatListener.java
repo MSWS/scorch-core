@@ -58,8 +58,8 @@ public class ChatListener implements Listener {
 		}
 
 		for (Player p : Bukkit.getOnlinePlayers()) {
-			MSG.tell(p, player.getName() + ": "
-					+ ScorchCore.getInstance().getFilter().filter(event.getMessage(), FilterType.REGULAR));
+			MSG.tell(p, player.getName() + ": " + ScorchCore.getInstance().getFilter().filter(event.getMessage(),
+					FilterType.REGULAR, FilterType.MANDATORY));
 		}
 
 		Logger.log(player.getName() + ": " + event.getMessage());

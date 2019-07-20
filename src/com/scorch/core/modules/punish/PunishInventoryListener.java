@@ -19,6 +19,12 @@ import org.bukkit.event.inventory.InventoryType;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.CPlayer;
 
+/**
+ * Manages Punish GUI
+ * 
+ * @author imodm
+ *
+ */
 public class PunishInventoryListener implements Listener {
 	public PunishInventoryListener() {
 		Bukkit.getPluginManager().registerEvents(this, ScorchCore.getInstance());

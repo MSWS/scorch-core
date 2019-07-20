@@ -8,6 +8,12 @@ import org.bukkit.command.CommandSender;
 import com.scorch.core.modules.data.annotations.DataNotNull;
 import com.scorch.core.utils.MSG;
 
+/**
+ * CMessage is an Object to make storing messages in a database easier
+ * 
+ * @author imodm
+ *
+ */
 public class CMessage {
 	@DataNotNull
 	private String msg;

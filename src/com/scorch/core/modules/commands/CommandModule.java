@@ -23,6 +23,13 @@ import com.scorch.core.commands.UnpunishCommand;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.utils.Logger;
 
+/**
+ * Module that manages all commands, use to enable/disable commands specifically
+ * Still TODO
+ * 
+ * @author imodm
+ *
+ */
 public class CommandModule extends AbstractModule {
 
 	private Map<Command, Boolean> commands;

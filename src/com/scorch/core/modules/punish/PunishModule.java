@@ -30,8 +30,8 @@ import com.scorch.core.utils.MSG;
 import com.scorch.core.utils.Utils;
 
 /**
- * {@link PunishModule} Manages and loads all commands, events, etc. related to
- * the punishment system.
+ * {@link PunishModule} Manages and loads events and entries related to the
+ * punishment system.
  * 
  * Note that the {@link DataManager} module should be loaded before this.
  * 

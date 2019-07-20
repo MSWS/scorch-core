@@ -12,6 +12,17 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.CPlayer;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Extension of /MA command, used to send a staff message to the most recent
+ * player you sent a MA to
+ * 
+ * <b>Permissions</b><br>
+ * scorch.command.ra - Access to command<br>
+ * scorch.command.ma.watch - Access to view staff PMs not sent to/from directly
+ * 
+ * @author imodm
+ *
+ */
 public class RACommand extends BukkitCommand {
 
 	public RACommand(String name) {
@@ -26,7 +37,7 @@ public class RACommand extends BukkitCommand {
 			MSG.tell(sender, getPermissionMessage());
 			return true;
 		}
-		
+
 		if (args.length < 1) {
 			MSG.tell(sender, "/ra [message]");
 			return true;
