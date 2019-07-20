@@ -20,6 +20,7 @@ import com.scorch.core.modules.commands.CommandModule;
 import com.scorch.core.modules.data.CPlayer;
 import com.scorch.core.modules.data.ConnectionManager;
 import com.scorch.core.modules.data.DataManager;
+import com.scorch.core.modules.data.TeleportModule;
 import com.scorch.core.modules.messages.MessagesModule;
 import com.scorch.core.modules.permissions.PermissionModule;
 import com.scorch.core.modules.punish.BanwaveModule;
@@ -67,13 +68,14 @@ public class ScorchCore extends JavaPlugin {
 
 		this.messages = (MessagesModule) registerModule(new MessagesModule("MessagesModule"), ModulePriority.HIGH);
 
+		registerModule(new BanwaveModule("BanwaveModule"), ModulePriority.MEDIUM);
 		this.permissionModule = (PermissionModule) registerModule(new PermissionModule("PermissionModule"),
 				ModulePriority.HIGH);
 		this.pMod = (PunishModule) registerModule(new PunishModule("PunishModule"), ModulePriority.MEDIUM);
-		registerModule(new BanwaveModule("BanwaveModule"), ModulePriority.MEDIUM);
-		commands = (CommandModule) registerModule(new CommandModule("CommandModule"), ModulePriority.MEDIUM);
+		this.commands = (CommandModule) registerModule(new CommandModule("CommandModule"), ModulePriority.MEDIUM);
 
 		registerModule(new ChatModule("ChatModule"), ModulePriority.LOW);
+		registerModule(new TeleportModule("TeleportModule"), ModulePriority.LOW);
 		this.filter = (FilterModule) registerModule(new FilterModule("FilterModule"), ModulePriority.LOW);
 
 		try {
