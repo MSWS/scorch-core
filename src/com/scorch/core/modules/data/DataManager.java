@@ -432,7 +432,7 @@ public class DataManager extends AbstractModule {
 					// Make sure the field is accessible in case it's private
 					field.setAccessible(true);
 
-					if (field.getType() == Integer.class) {
+					if (field.getType() == int.class) {
 						field.set(dataObject, res.getInt(columnIndex));
 					} else if (field.getType() == String.class) {
 						field.set(dataObject, res.getString(columnIndex));

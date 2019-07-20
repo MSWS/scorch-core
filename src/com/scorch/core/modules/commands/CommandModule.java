@@ -20,6 +20,7 @@ import com.scorch.core.commands.RACommand;
 import com.scorch.core.commands.TPCommand;
 import com.scorch.core.commands.TestCommand;
 import com.scorch.core.commands.UnpunishCommand;
+import com.scorch.core.commands.VanishCommand;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.utils.Logger;
 
@@ -63,6 +64,7 @@ public class CommandModule extends AbstractModule {
 		commands.put(new UnpunishCommand("unpunish"), true);
 		commands.put(new TestCommand("test"), true);
 		commands.put(new TPCommand("teleport"), true);
+		commands.put(new VanishCommand("vanish"), true);
 
 		enableCommands(commands.keySet().stream().collect(Collectors.toList()));
 	}

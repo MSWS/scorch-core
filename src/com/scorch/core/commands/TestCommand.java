@@ -107,7 +107,6 @@ public class TestCommand extends BukkitCommand {
 			break;
 		case "perm":
 			PermissionPlayer pp = ScorchCore.getInstance().getPermissionModule().getPermissionPlayer((Player) sender);
-
 			MSG.tell(sender, "Current Groups");
 			for (String name : pp.getGroupNames()) {
 				MSG.tell(sender, name);

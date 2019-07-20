@@ -27,6 +27,7 @@ import com.scorch.core.modules.permissions.PermissionModule;
 import com.scorch.core.modules.permissions.PermissionPlayer;
 import com.scorch.core.modules.punish.BanwaveModule;
 import com.scorch.core.modules.punish.PunishModule;
+import com.scorch.core.modules.staff.VanishModule;
 import com.scorch.core.utils.Logger;
 
 /**
@@ -79,6 +80,7 @@ public class ScorchCore extends JavaPlugin {
 		registerModule(new ChatModule("ChatModule"), ModulePriority.LOW);
 		registerModule(new TeleportModule("TeleportModule"), ModulePriority.LOW);
 		registerModule(new CombatModule("CombatModule"), ModulePriority.LOW);
+		registerModule(new VanishModule("VanishModule"), ModulePriority.LOW);
 		this.filter = (FilterModule) registerModule(new FilterModule("FilterModule"), ModulePriority.LOW);
 
 		try {
