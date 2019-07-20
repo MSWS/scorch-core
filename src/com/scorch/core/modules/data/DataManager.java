@@ -30,7 +30,6 @@ import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.modules.data.wrappers.JSONLocation;
-import com.scorch.core.modules.permissions.PermissionPlayer;
 import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
 
@@ -47,7 +46,6 @@ public class DataManager extends AbstractModule {
 	private ConnectionManager connectionManager;
 
 	private Map<OfflinePlayer, CPlayer> players;
-
 	private Map<UUID, ScorchPlayer> cache;
 
 	public DataManager(String id, ConnectionManager connectionManager) {
@@ -71,6 +69,23 @@ public class DataManager extends AbstractModule {
 			}
 		}.runTaskAsynchronously(ScorchCore.getInstance());
 
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				try {
+					Logger.log("Saving all player data...");
+					for (Entry<UUID, ScorchPlayer> entry : cache.entrySet()) {
+						updateObject("players", entry.getValue(), new SQLSelector("uuid", entry.getKey().toString()));
+						if (Bukkit.getPlayer(entry.getKey()) == null) // Remove player data if the player is no longer
+																		// on the server
+							cache.remove(entry.getKey());
+					}
+					Logger.log("Finished saving player data.");
+				} catch (DataUpdateException e) {
+					e.printStackTrace();
+				}
+			}
+		}.runTaskTimerAsynchronously(ScorchCore.getInstance(), 6000, 6000); // 5 Minutes
 	}
 
 	@Override
@@ -145,7 +160,7 @@ public class DataManager extends AbstractModule {
 
 			query += field.getName();
 
-			if (field.getType() == Integer.class) {
+			if (field.getType() == int.class) {
 				query += " INT";
 			} else if (field.getType() == String.class) {
 				query += " TEXT";
@@ -251,7 +266,7 @@ public class DataManager extends AbstractModule {
 					continue;
 
 				try {
-					if (field.getType() == Integer.class) {
+					if (field.getType() == int.class) {
 						statement.setInt(parameterIndex, (int) field.get(object));
 					} else if (field.getType() == String.class) {
 						statement.setString(parameterIndex, (String) field.get(object));
@@ -378,7 +393,7 @@ public class DataManager extends AbstractModule {
 					// Make sure the field is accessible in case it's private
 					field.setAccessible(true);
 
-					if (field.getType() == Integer.class) {
+					if (field.getType() == int.class) {
 						field.set(dataObject, res.getInt(columnIndex));
 					} else if (field.getType() == String.class) {
 						field.set(dataObject, res.getString(columnIndex));
@@ -536,7 +551,7 @@ public class DataManager extends AbstractModule {
 			for (int i = 0; i < sqlSelectors.length; i++) {
 				Object selectorValue = sqlSelectors[i].getValue();
 
-				if (selectorValue.getClass() == Integer.class) {
+				if (selectorValue.getClass() == int.class) {
 					statement.setInt(i + 1, (int) selectorValue);
 				} else if (selectorValue.getClass() == String.class) {
 					statement.setString(i + 1, (String) selectorValue);
@@ -647,7 +662,7 @@ public class DataManager extends AbstractModule {
 					continue;
 
 				try {
-					if (field.getType() == Integer.class) {
+					if (field.getType() == int.class) {
 						statement.setInt(parameterIndex, (int) field.get(object));
 					} else if (field.getType() == String.class) {
 						statement.setString(parameterIndex, (String) field.get(object));
@@ -681,7 +696,7 @@ public class DataManager extends AbstractModule {
 			for (int i = 0; i < sqlSelectors.length; i++) {
 				Object selectorValue = sqlSelectors[i].getValue();
 				try {
-					if (selectorValue.getClass() == Integer.class) {
+					if (selectorValue.getClass() == int.class) {
 						statement.setInt(parameterIndex, (int) selectorValue);
 					} else if (selectorValue.getClass() == String.class) {
 						statement.setString(parameterIndex, (String) selectorValue);
@@ -791,7 +806,7 @@ public class DataManager extends AbstractModule {
 		}
 
 		if (player == null) {
-			player = new ScorchPlayer(uuid, new PermissionPlayer(uuid, new ArrayList<>()), new HashMap<>());
+			player = new ScorchPlayer(uuid, new HashMap<>());
 			saveObject("players", player);
 		}
 

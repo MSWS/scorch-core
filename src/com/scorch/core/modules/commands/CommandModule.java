@@ -13,6 +13,7 @@ import org.bukkit.command.SimpleCommandMap;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.commands.ACommand;
+import com.scorch.core.commands.FilterCommand;
 import com.scorch.core.commands.HelpCommand;
 import com.scorch.core.commands.HistoryCommand;
 import com.scorch.core.commands.MACommand;
@@ -67,6 +68,7 @@ public class CommandModule extends AbstractModule {
 		commands.put(new TPCommand("teleport"), true);
 		commands.put(new VanishCommand("vanish"), true);
 		commands.put(new HelpCommand("help"), true);
+		commands.put(new FilterCommand("filter"), true);
 
 		enableCommands(commands.keySet().stream().collect(Collectors.toList()));
 	}

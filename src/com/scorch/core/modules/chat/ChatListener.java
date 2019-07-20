@@ -14,6 +14,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.chat.FilterModule.FilterType;
+import com.scorch.core.modules.data.ScorchPlayer;
 import com.scorch.core.modules.messages.CMessage;
 import com.scorch.core.modules.messages.MessagesModule;
 import com.scorch.core.modules.punish.Punishment;
@@ -57,11 +58,24 @@ public class ChatListener implements Listener {
 			return;
 		}
 
+		Logger.log(player.getName() + ": " + event.getMessage());
+		FilterModule fm = (FilterModule) ScorchCore.getInstance().getModule("FilterModule");
+
 		for (Player p : Bukkit.getOnlinePlayers()) {
-			MSG.tell(p, player.getName() + ": " + ScorchCore.getInstance().getFilter().filter(event.getMessage(),
-					FilterType.REGULAR, FilterType.MANDATORY));
+			ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(p.getUniqueId());
+			String filterType = sp.getData("filterpreference", String.class, "REGULAR");
+
+			if (filterType.equalsIgnoreCase("none")) {
+				if (fm != null)
+					event.setMessage(fm.filter(event.getMessage(), FilterType.ADVERTISING, FilterType.BOT,
+							FilterType.MANDATORY));
+			} else if (filterType.equalsIgnoreCase("regular")) {
+				if (fm != null)
+					event.setMessage(fm.filter(event.getMessage(), FilterType.values()));
+			}
+
+			MSG.tell(p, player.getName() + ": " + event.getMessage());
 		}
 
-		Logger.log(player.getName() + ": " + event.getMessage());
 	}
 }

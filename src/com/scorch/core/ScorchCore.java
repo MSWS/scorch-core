@@ -48,7 +48,6 @@ public class ScorchCore extends JavaPlugin {
 	private PermissionModule permissionModule;
 	private MessagesModule messages;
 	private PunishModule pMod;
-	private FilterModule filter;
 	private CommandModule commands;
 
 	private File guiYml = new File(getDataFolder(), "guis.yml");
@@ -81,7 +80,7 @@ public class ScorchCore extends JavaPlugin {
 		registerModule(new TeleportModule("TeleportModule"), ModulePriority.LOW);
 		registerModule(new CombatModule("CombatModule"), ModulePriority.LOW);
 		registerModule(new VanishModule("VanishModule"), ModulePriority.LOW);
-		this.filter = (FilterModule) registerModule(new FilterModule("FilterModule"), ModulePriority.LOW);
+		registerModule(new FilterModule("FilterModule"), ModulePriority.LOW);
 
 		try {
 			Arrays.stream(ModulePriority.values()).forEach(this::loadModules);
@@ -128,6 +127,11 @@ public class ScorchCore extends JavaPlugin {
 	 */
 	private void unloadModules() {
 		getModules().forEach(AbstractModule::disable);
+	}
+
+	public void disableModule(AbstractModule module) {
+		modules.remove(module);
+		module.disable();
 	}
 
 	/**
@@ -230,10 +234,6 @@ public class ScorchCore extends JavaPlugin {
 
 	public PunishModule getPunishModule() {
 		return pMod;
-	}
-
-	public FilterModule getFilter() {
-		return filter;
 	}
 
 	public CommandModule getCommands() {

@@ -5,24 +5,17 @@ import java.util.UUID;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.exceptions.DataUpdateException;
-import com.scorch.core.modules.permissions.PermissionPlayer;
 
 public class ScorchPlayer {
 	private UUID uuid;
-	private PermissionPlayer pp;
 	private Map<String, Object> data;
 
 	public ScorchPlayer() {
 	}
 
-	public ScorchPlayer(UUID uuid, PermissionPlayer player, Map<String, Object> data) {
+	public ScorchPlayer(UUID uuid, Map<String, Object> data) {
 		this.uuid = uuid;
-		this.pp = player;
 		this.data = data;
-	}
-
-	public PermissionPlayer getPermissionPlayer() {
-		return pp;
 	}
 
 	public Map<String, Object> getData() {
@@ -39,6 +32,18 @@ public class ScorchPlayer {
 
 	public void setData(String id, Object obj) {
 		data.put(id, obj);
+	}
+
+	public boolean hasData(String id) {
+		return data.containsKey(id);
+	}
+
+	public Object getData(String id, Object defaultValue) {
+		return data.containsKey(id) ? getData(id) : defaultValue;
+	}
+
+	public <T> T getData(String id, Class<T> cast, Object defaultValue) {
+		return cast.cast(getData(id, defaultValue));
 	}
 
 	public void saveData() {

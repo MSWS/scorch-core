@@ -6,14 +6,16 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
+import com.scorch.core.modules.data.ScorchPlayer;
 import com.scorch.core.utils.MSG;
 
-public class VanishModule extends AbstractModule {
+public class VanishModule extends AbstractModule implements Listener {
 
 	private List<Player> vanished;
 
@@ -24,6 +26,8 @@ public class VanishModule extends AbstractModule {
 	@Override
 	public void initialize() {
 		vanished = new ArrayList<>();
+
+		Bukkit.getPluginManager().registerEvents(this, ScorchCore.getInstance());
 	}
 
 	@Override
@@ -31,6 +35,9 @@ public class VanishModule extends AbstractModule {
 		for (int i = 0; i < vanished.size(); i++)
 			reveal(vanished.get(i));
 		vanished.clear();
+
+		PlayerJoinEvent.getHandlerList().unregister(this);
+		PlayerQuitEvent.getHandlerList().unregister(this);
 	}
 
 	public boolean toggle(Player player) {
@@ -88,6 +95,11 @@ public class VanishModule extends AbstractModule {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
+		ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(player.getUniqueId());
+
+		if (sp.getData("vanished", Boolean.class, false)) {
+			vanish(player);
+		}
 
 		for (Player staff : player.getWorld().getPlayers()) {
 			if (!isVanished(staff))
@@ -101,6 +113,10 @@ public class VanishModule extends AbstractModule {
 
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
-		vanished.remove(event.getPlayer());
+		Player player = event.getPlayer();
+		ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(player.getUniqueId());
+		sp.setData("vanished", isVanished(player));
+
+		vanished.remove(player);
 	}
 }

@@ -81,7 +81,7 @@ public class FilterModule extends AbstractModule implements Listener {
 	}
 
 	public enum FilterType {
-		REGULAR, MANDATORY, ADVERTISING, BOT;
+		REGULAR, MANDATORY, ADVERTISING, BOT, NONE;
 	}
 
 	public void addWord(FilterEntry entry) {
