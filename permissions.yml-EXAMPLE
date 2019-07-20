@@ -3,10 +3,10 @@ groups:
       inherits:
       weight: 0
       default: true
-      prefix: '&7Commoner'
+      prefix: '&7'
       permissions:
-         - "hub.item.superhorse"
-         - "server"
+         - "scorch.command.a"
+         - "-bukkit.command.plugins"
    gamer:
       inherits: [default]
       weight: 1

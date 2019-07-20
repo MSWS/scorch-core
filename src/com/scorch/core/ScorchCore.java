@@ -24,6 +24,7 @@ import com.scorch.core.modules.data.DataManager;
 import com.scorch.core.modules.data.TeleportModule;
 import com.scorch.core.modules.messages.MessagesModule;
 import com.scorch.core.modules.permissions.PermissionModule;
+import com.scorch.core.modules.permissions.PermissionPlayer;
 import com.scorch.core.modules.punish.BanwaveModule;
 import com.scorch.core.modules.punish.PunishModule;
 import com.scorch.core.utils.Logger;
@@ -244,6 +245,9 @@ public class ScorchCore extends JavaPlugin {
 	 * @return null if not assigned to any group
 	 */
 	public String getPrefix(UUID player) {
+		PermissionPlayer pp = permissionModule.getPermissionPlayer(player);
+		if (pp == null)
+			return "";
 		return permissionModule.getPermissionPlayer(player).getPrimaryGroup() == null ? ""
 				: permissionModule.getPermissionPlayer(player).getPrimaryGroup().getPrefix();
 	}

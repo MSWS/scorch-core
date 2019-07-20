@@ -98,6 +98,10 @@ public class TestCommand extends BukkitCommand {
 				e.printStackTrace();
 			}
 			break;
+		case "reloadmessages":
+			ScorchCore.getInstance().getMessages().reloadMessages();
+			MSG.tell(sender, "Messages reloaded");
+			break;
 		case "message":
 			MSG.tell(sender, ScorchCore.getInstance().getMessages().getMessage(args[1]));
 			break;
@@ -164,7 +168,8 @@ public class TestCommand extends BukkitCommand {
 	public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
 		List<String> result = new ArrayList<String>();
 		if (args.length <= 1) {
-			for (String res : new String[] { "sql", "message", "perm", "offline", "enablecmd", "disablecmd" }) {
+			for (String res : new String[] { "sql", "message", "perm", "offline", "enablecmd", "disablecmd",
+					"reloadmessages" }) {
 				if (res.toLowerCase().startsWith(args[0].toLowerCase()))
 					result.add(res);
 			}

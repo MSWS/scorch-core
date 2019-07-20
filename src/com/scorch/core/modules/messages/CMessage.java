@@ -25,7 +25,7 @@ public class CMessage {
 
 	public CMessage(String id, String raw) {
 		this.id = id;
-		msg = MSG.color(raw);
+		msg = raw;
 	}
 
 	public CMessage(String id, String raw, Map<String, String> holders) {
@@ -38,7 +38,7 @@ public class CMessage {
 	}
 
 	public String getMessage() {
-		return msg;
+		return MSG.color(msg);
 	}
 
 	public String getId() {
