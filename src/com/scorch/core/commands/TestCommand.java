@@ -53,12 +53,11 @@ public class TestCommand extends BukkitCommand {
 
 		switch (args[0].toLowerCase()) {
 		case "sql":
-			// secret command much
 			if (!sender.hasPermission("core.sql"))
 				return false;
 
 			if (args.length < 2) {
-				MSG.tell(sender, "/test sql SQL Statement]");
+				MSG.tell(sender, "/test sql [SQL Statement]");
 				return true;
 			}
 

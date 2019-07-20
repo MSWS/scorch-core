@@ -16,6 +16,7 @@ import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.ModulePriority;
 import com.scorch.core.modules.chat.ChatModule;
 import com.scorch.core.modules.chat.FilterModule;
+import com.scorch.core.modules.combat.CombatModule;
 import com.scorch.core.modules.commands.CommandModule;
 import com.scorch.core.modules.data.CPlayer;
 import com.scorch.core.modules.data.ConnectionManager;
@@ -76,6 +77,7 @@ public class ScorchCore extends JavaPlugin {
 
 		registerModule(new ChatModule("ChatModule"), ModulePriority.LOW);
 		registerModule(new TeleportModule("TeleportModule"), ModulePriority.LOW);
+		registerModule(new CombatModule("CombatModule"), ModulePriority.LOW);
 		this.filter = (FilterModule) registerModule(new FilterModule("FilterModule"), ModulePriority.LOW);
 
 		try {
