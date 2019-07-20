@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -28,7 +30,9 @@ import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.modules.data.wrappers.JSONLocation;
+import com.scorch.core.modules.permissions.PermissionPlayer;
 import com.scorch.core.utils.Logger;
+import com.scorch.core.utils.MSG;
 
 /*
  * Utility to easily save different types of objects to a database and load them
@@ -44,6 +48,8 @@ public class DataManager extends AbstractModule {
 
 	private Map<OfflinePlayer, CPlayer> players;
 
+	private Map<UUID, ScorchPlayer> cache;
+
 	public DataManager(String id, ConnectionManager connectionManager) {
 		super(id);
 		this.connectionManager = connectionManager;
@@ -52,10 +58,30 @@ public class DataManager extends AbstractModule {
 	@Override
 	public void initialize() {
 		players = new HashMap<>();
+		cache = new HashMap<>();
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				try {
+					createTable("players", ScorchPlayer.class);
+				} catch (NoDefaultConstructorException e) {
+					e.printStackTrace();
+				}
+			}
+		}.runTaskAsynchronously(ScorchCore.getInstance());
+
 	}
 
 	@Override
 	public void disable() {
+		for (Entry<UUID, ScorchPlayer> entry : cache.entrySet()) {
+			try {
+				updateObject("players", entry.getValue(), new SQLSelector("uuid", entry.getKey().toString()));
+			} catch (DataUpdateException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public CPlayer getPlayer(OfflinePlayer player) {
@@ -385,7 +411,10 @@ public class DataManager extends AbstractModule {
 					return dataObject;
 				}
 			}
-			return collection;
+			if (collection.size() > 1)
+				return collection;
+			else
+				return collection.stream().findFirst().orElse(null);
 		} catch (SQLException | ClassNotFoundException | InstantiationException | IllegalAccessException
 				| NoSuchMethodException | InvocationTargetException e) {
 			Logger.error("An error occurred while trying to get object from table: " + e.getMessage());
@@ -748,13 +777,26 @@ public class DataManager extends AbstractModule {
 		return this.connectionManager;
 	}
 
-	/*
-	 * public ConnectionManager getConnectionManager(String key) { final String req
-	 * = "5QWWZZZQZZAC46QZLT7OOQQAITTIQOFO5QC1AFZCLOQQWOZLQTL4CZZZQZZA0IOF";
-	 * 
-	 * if (!MSG.hashWithSalt(ScorchCore.getInstance().getDescription().getName(),
-	 * key, 64, 5).equals(req)) {
-	 * Logger.warn("Illegal access of connection manager. Key: " + key); return
-	 * null; } return this.connectionManager; }
-	 */
+	public ScorchPlayer getScorchPlayer(UUID uuid) {
+		if (cache.containsKey(uuid))
+			return cache.get(uuid);
+
+		ScorchPlayer player = null;
+		try {
+			player = (ScorchPlayer) getObject("players", new SQLSelector("uuid", uuid.toString()));
+			if (Bukkit.getPlayer(uuid) != null)
+				MSG.tell(Bukkit.getPlayer(uuid), "&7Your data has successfully been loaded.");
+		} catch (DataObtainException e) {
+			e.printStackTrace();
+		}
+
+		if (player == null) {
+			player = new ScorchPlayer(uuid, new PermissionPlayer(uuid, new ArrayList<>()), new HashMap<>());
+			saveObject("players", player);
+		}
+
+		cache.put(uuid, player);
+		return player;
+	}
+
 }

@@ -46,6 +46,7 @@ public class MessagesModule extends AbstractModule {
 		defaults.add(new CMessage("maformat-sender", "&5-> &r%group%%player%&d %message%"));
 		defaults.add(new CMessage("maformat-spec",
 				"%senderprefix%%sendername% &5-> &r%receiverprefix%%receivername% &d%message%"));
+		defaults.add(new CMessage("helpmessage", "Edit this in the database"));
 	}
 
 	@Override

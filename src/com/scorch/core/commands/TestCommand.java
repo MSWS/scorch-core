@@ -50,7 +50,6 @@ public class TestCommand extends BukkitCommand {
 		}
 
 		Command cmd;
-
 		switch (args[0].toLowerCase()) {
 		case "sql":
 			if (!sender.hasPermission("core.sql"))
@@ -158,6 +157,9 @@ public class TestCommand extends BukkitCommand {
 				return true;
 			}
 			ScorchCore.getInstance().getCommands().disableCommand(cmd);
+			break;
+		default:
+			MSG.tell(sender, "Unknown function");
 			break;
 		}
 		return true;

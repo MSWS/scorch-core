@@ -15,7 +15,7 @@ import java.sql.*;
  */
 public class ConnectionManager extends AbstractModule {
 
-	private String driver, host, user, password, database, port;
+	private String driver = "org.mariadb.jdbc.Driver", host, user, password, database, port;
 	private Connection connection;
 
 	public ConnectionManager(String id) {
