@@ -111,7 +111,6 @@ public class TPCommand extends BukkitCommand {
 					return true;
 				}
 			} else if (args.length == 2) {
-				// tp back [amo]
 				tmp = Bukkit.getPlayer(args[1]);
 				if (tmp == null) {
 					if (sender instanceof Player) {
@@ -138,6 +137,10 @@ public class TPCommand extends BukkitCommand {
 						return true;
 					}
 				} else if (sender.hasPermission("scorch.command.teleport.back.others")) {
+					if (module.getRecentTeleports(tmp).isEmpty()) {
+						MSG.tell(sender, "&e" + tmp.getName() + "&7 has no remaining teleport history positions.");
+						return true;
+					}
 					target = module.getRecentTeleports(tmp).get(0);
 					players.set(0, tmp);
 					targetName = "last teleport location";

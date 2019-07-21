@@ -810,6 +810,10 @@ public class DataManager extends AbstractModule {
 			saveObject("players", player);
 		}
 
+		if (player.getName() == null) {
+			player.setName(Bukkit.getOfflinePlayer(uuid).getName());
+		}
+
 		cache.put(uuid, player);
 		return player;
 	}

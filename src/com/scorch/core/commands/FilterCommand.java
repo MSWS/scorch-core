@@ -123,7 +123,7 @@ public class FilterCommand extends BukkitCommand {
 			}
 		}
 
-		if (args.length == 4 && args[1].equalsIgnoreCase("addword")) {
+		if (args.length == 3 && args[0].equalsIgnoreCase("addword")) {
 			for (FilterType type : FilterType.values()) {
 				if (type.toString().toLowerCase().startsWith(args[2].toLowerCase())) {
 					result.add(type.toString());

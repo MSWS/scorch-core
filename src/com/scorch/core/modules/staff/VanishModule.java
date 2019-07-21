@@ -53,13 +53,7 @@ public class VanishModule extends AbstractModule implements Listener {
 			if (!wouldSee(player, p))
 				p.hidePlayer(ScorchCore.getInstance(), player);
 
-		MSG.tell(player, " ");
-		MSG.tell(player, "&4&l[&c&lVANISH&4&l] &9&lVANISH STATUS");
-		MSG.tell(player, "&bYour vanish status has been &aenabled");
-		MSG.tell(player, "&byou are now invisible to everyone except");
-		MSG.tell(player, "&1your rank &band above.");
-		MSG.tell(player, " ");
-
+		MSG.cTell(player, "vanishenablemessage");
 		vanished.add(player);
 	}
 
@@ -68,10 +62,7 @@ public class VanishModule extends AbstractModule implements Listener {
 			p.showPlayer(ScorchCore.getInstance(), player);
 		}
 
-		MSG.tell(player, " ");
-		MSG.tell(player, "&4&l[&c&lVANISH&4&l] &9&lVANISH STATUS");
-		MSG.tell(player, "&bYour vanish status has been &cdisabled");
-		MSG.tell(player, " ");
+		MSG.cTell(player, "vanishdisablemessage");
 
 		vanished.remove(player);
 	}

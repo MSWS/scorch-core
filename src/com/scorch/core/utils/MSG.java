@@ -380,6 +380,35 @@ public class MSG {
 				result += c;
 		}
 		return result;
+	}
+	
+	public static String getTPSColor(int tps) {
+		if (tps >= 20) {
+			return "&2";
+		} else if (tps >= 18) {
+			return "&a";
+		} else if (tps >= 15) {
+			return "&e";
+		} else if (tps >= 10) {
+			return "&c";
+		} else {
+			return "&4";
+		}
+	}
 
+	public static String getPingColor(int ping) {
+		if (ping < 50) {
+			return "&2";
+		} else if (ping < 100) {
+			return "&a";
+		} else if (ping < 130) {
+			return "&2";
+		} else if (ping < 150) {
+			return "&e";
+		} else if (ping < 200) {
+			return "&c";
+		} else {
+			return "&4";
+		}
 	}
 }

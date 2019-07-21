@@ -47,6 +47,8 @@ public class MessagesModule extends AbstractModule {
 		defaults.add(new CMessage("maformat-spec",
 				"%senderprefix%%sendername% &5-> &r%receiverprefix%%receivername% &d%message%"));
 		defaults.add(new CMessage("helpmessage", "Edit this in the database"));
+		defaults.add(new CMessage("vanishenablemessage", "Vanish enabled"));
+		defaults.add(new CMessage("vanishdisablemessage", "Vanish disabled"));
 	}
 
 	@Override

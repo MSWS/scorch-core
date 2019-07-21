@@ -64,8 +64,12 @@ public class ScorchPlayer {
 	/**
 	 * @return the username
 	 */
-	public String getUsername() {
+	public String getName() {
 		return username;
+	}
+
+	public void setName(String name) {
+		this.username = name;
 	}
 
 }

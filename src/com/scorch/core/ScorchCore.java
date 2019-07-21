@@ -22,6 +22,7 @@ import com.scorch.core.modules.data.CPlayer;
 import com.scorch.core.modules.data.ConnectionManager;
 import com.scorch.core.modules.data.DataManager;
 import com.scorch.core.modules.data.IPTracker;
+import com.scorch.core.modules.data.LagModule;
 import com.scorch.core.modules.messages.MessagesModule;
 import com.scorch.core.modules.permissions.PermissionModule;
 import com.scorch.core.modules.permissions.PermissionPlayer;
@@ -84,6 +85,8 @@ public class ScorchCore extends JavaPlugin {
 		registerModule(new CombatModule("CombatModule"), ModulePriority.LOW);
 		registerModule(new VanishModule("VanishModule"), ModulePriority.LOW);
 		registerModule(new FilterModule("FilterModule"), ModulePriority.LOW);
+
+		registerModule(new LagModule("LagModule"), ModulePriority.LOWEST);
 
 		try {
 			Arrays.stream(ModulePriority.values()).forEach(this::loadModules);
@@ -296,5 +299,9 @@ public class ScorchCore extends JavaPlugin {
 	 */
 	public static ScorchCore getInstance() {
 		return instance;
+	}
+
+	public double getTPS(int ticks) {
+		return ((LagModule) getModule("LagModule")).getTPS(ticks);
 	}
 }

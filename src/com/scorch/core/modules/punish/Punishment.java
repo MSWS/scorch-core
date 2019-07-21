@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -110,10 +111,9 @@ public class Punishment implements Comparable<Punishment> {
 			if (it == null) {
 				Logger.error("IP Tracker Module is NULL");
 			} else {
-				for (Player p : Bukkit.getOnlinePlayers()) {
-					if (it.isLinked(this.target, p.getUniqueId())) {
-						p.kickPlayer(getKickMessage());
-					}
+				for (UUID p : it.linkedAccounts(this.target).stream()
+						.filter(uuid -> Bukkit.getOfflinePlayer(uuid).isOnline()).collect(Collectors.toList())) {
+					Bukkit.getPlayer(p).kickPlayer(getKickMessage());
 				}
 			}
 

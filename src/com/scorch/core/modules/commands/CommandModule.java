@@ -16,7 +16,9 @@ import com.scorch.core.commands.ACommand;
 import com.scorch.core.commands.FilterCommand;
 import com.scorch.core.commands.HelpCommand;
 import com.scorch.core.commands.HistoryCommand;
+import com.scorch.core.commands.LagCommand;
 import com.scorch.core.commands.MACommand;
+import com.scorch.core.commands.PingCommand;
 import com.scorch.core.commands.PunishCommand;
 import com.scorch.core.commands.RACommand;
 import com.scorch.core.commands.TPCommand;
@@ -69,6 +71,8 @@ public class CommandModule extends AbstractModule {
 		commands.put(new VanishCommand("vanish"), true);
 		commands.put(new HelpCommand("help"), true);
 		commands.put(new FilterCommand("filter"), true);
+		commands.put(new LagCommand("lag"), true);
+		commands.put(new PingCommand("ping"), true);
 
 		enableCommands(commands.keySet().stream().collect(Collectors.toList()));
 	}
