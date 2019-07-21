@@ -5,7 +5,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -15,7 +14,6 @@ import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.ConnectionManager;
-import com.scorch.core.modules.data.IPTracker;
 import com.scorch.core.modules.messages.OfflineMessage;
 import com.scorch.core.modules.messages.OfflineMessagesModule;
 import com.scorch.core.modules.permissions.PermissionPlayer;
@@ -41,7 +39,6 @@ public class TestCommand extends BukkitCommand {
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean execute(CommandSender sender, String label, String[] args) {
-		IPTracker it = (IPTracker) ScorchCore.getInstance().getModule("IPTrackerModule");
 		if (!sender.hasPermission(getPermission())) {
 			MSG.tell(sender, getPermissionMessage());
 			return true;
@@ -54,19 +51,9 @@ public class TestCommand extends BukkitCommand {
 
 		Command cmd;
 		switch (args[0].toLowerCase()) {
-		case "fakeip":
-			it.addDummies(100);
-			MSG.tell(sender, "Added 100 IPs");
-			break;
-		case "saveip":
-			it.saveIps();
-			MSG.tell(sender, "IPs saved");
-			break;
-		case "checkuuid":
-			MSG.tell(sender, it.linkedAccounts(UUID.fromString(args[1])));
-			break;
-		case "checkip":
-			MSG.tell(sender, it.linkedAccounts(args[1]));
+		case "reloadpunishments":
+			ScorchCore.getInstance().getPunishModule().refreshPunishments();
+			MSG.tell(sender, "Reloaded punishments");
 			break;
 		case "sql":
 			if (!sender.hasPermission("core.sql"))
@@ -187,7 +174,7 @@ public class TestCommand extends BukkitCommand {
 		List<String> result = new ArrayList<String>();
 		if (args.length <= 1) {
 			for (String res : new String[] { "sql", "message", "perm", "offline", "enablecmd", "disablecmd",
-					"reloadmessages" }) {
+					"reloadmessages", "reloadpunishments" }) {
 				if (res.toLowerCase().startsWith(args[0].toLowerCase()))
 					result.add(res);
 			}

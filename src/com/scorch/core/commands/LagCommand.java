@@ -46,7 +46,7 @@ public class LagCommand extends BukkitCommand {
 		List<String> tps = new ArrayList<>();
 		for (int i : new int[] { 20, 20 * 60, 20 * 60 * 5, 20 * 60 * 60 }) {
 			tps.add(MSG.getTPSColor((int) ScorchCore.getInstance().getTPS(i))
-					+ MSG.parseDecimal(ScorchCore.getInstance().getTPS(i), 2) + " &7[&8" + MSG.getTime(i * 50) + "&7]");
+					+ MSG.parseDecimal(ScorchCore.getInstance().getTPS(i), 2));
 		}
 
 		MSG.tell(sender, " ");
