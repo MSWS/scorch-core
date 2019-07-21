@@ -13,7 +13,7 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.data.TeleportModule;
+import com.scorch.core.modules.staff.TeleportModule;
 import com.scorch.core.utils.MSG;
 
 /**

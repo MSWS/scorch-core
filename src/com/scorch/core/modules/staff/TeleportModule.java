@@ -1,4 +1,4 @@
-package com.scorch.core.modules.data;
+package com.scorch.core.modules.staff;
 
 import java.util.ArrayList;
 import java.util.HashMap;
