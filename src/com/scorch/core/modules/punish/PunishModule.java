@@ -56,6 +56,13 @@ public class PunishModule extends AbstractModule {
 		clickListener = new PunishInventoryListener();
 
 		refreshPunishments();
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				refreshPunishments();
+			}
+		}.runTaskTimer(ScorchCore.getInstance(), 600, 600);
 	}
 
 	@Override
@@ -187,8 +194,8 @@ public class PunishModule extends AbstractModule {
 			}
 		}.runTaskAsynchronously(ScorchCore.getInstance());
 	}
-	
-	public List<Punishment> getGlobalPunishments(){
+
+	public List<Punishment> getGlobalPunishments() {
 		return globalPunishments;
 	}
 }

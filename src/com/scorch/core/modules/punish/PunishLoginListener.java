@@ -72,6 +72,8 @@ public class PunishLoginListener implements Listener {
 		if (punishments.isEmpty())
 			return;
 
+		
+		
 		Collections.sort(punishments);
 
 		event.setResult(Result.KICK_BANNED);
