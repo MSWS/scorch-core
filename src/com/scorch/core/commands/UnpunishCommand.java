@@ -20,19 +20,14 @@ public class UnpunishCommand extends BukkitCommand {
 
 	public UnpunishCommand(String name) {
 		super(name);
-		this.setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").toString());
+		setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").toString());
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean execute(CommandSender sender, String label, String[] args) {
-		if (!sender.hasPermission(getPermission())) {
-			MSG.tell(sender, getPermissionMessage());
-			return true;
-		}
-
 		if (sender instanceof Player) {
-			MSG.tell(sender, ScorchCore.getInstance().getMessages().getMessage("noperm").toString());
+			MSG.tell(sender, getPermissionMessage());
 			return true;
 		}
 

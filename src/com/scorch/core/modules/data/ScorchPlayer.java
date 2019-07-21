@@ -8,13 +8,16 @@ import com.scorch.core.modules.data.exceptions.DataUpdateException;
 
 public class ScorchPlayer {
 	private UUID uuid;
+	private String username;
 	private Map<String, Object> data;
 
 	public ScorchPlayer() {
 	}
 
-	public ScorchPlayer(UUID uuid, Map<String, Object> data) {
+	public ScorchPlayer(UUID uuid, String username, Map<String, Object> data) {
 		this.uuid = uuid;
+		this.username = username;
+
 		this.data = data;
 	}
 
@@ -46,6 +49,9 @@ public class ScorchPlayer {
 		return cast.cast(getData(id, defaultValue));
 	}
 
+	/**
+	 * Updates the database with the current {@link ScorchPlayer} info
+	 */
 	public void saveData() {
 		try {
 			ScorchCore.getInstance().getDataManager().updateObject("players", this,
@@ -53,6 +59,13 @@ public class ScorchPlayer {
 		} catch (DataUpdateException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * @return the username
+	 */
+	public String getUsername() {
+		return username;
 	}
 
 }

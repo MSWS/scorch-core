@@ -35,6 +35,7 @@ public class FilterCommand extends BukkitCommand {
 		}
 
 		FilterModule fm = (FilterModule) ScorchCore.getInstance().getModule("FilterModule");
+		FilterEntry entry;
 
 		switch (args[0].toLowerCase()) {
 		case "preference":
@@ -80,8 +81,22 @@ public class FilterCommand extends BukkitCommand {
 				return true;
 			}
 
-			FilterEntry entry = new FilterEntry(args[1], FilterType.valueOf(args[2].toUpperCase()));
+			entry = new FilterEntry(args[1], FilterType.valueOf(args[2].toUpperCase()));
 			fm.addWord(entry);
+			break;
+		case "removeword":
+			if (args.length < 2) {
+				MSG.tell(sender, "/filter removeword [word]");
+				return true;
+			}
+
+			entry = fm.getFilterEntry(args[1]);
+			if (entry == null) {
+				MSG.tell(sender, "Word is not filtered");
+				return true;
+			}
+
+			fm.removeWord(entry);
 			break;
 		}
 

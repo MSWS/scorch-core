@@ -806,7 +806,7 @@ public class DataManager extends AbstractModule {
 		}
 
 		if (player == null) {
-			player = new ScorchPlayer(uuid, new HashMap<>());
+			player = new ScorchPlayer(uuid, Bukkit.getOfflinePlayer(uuid).getName(), new HashMap<>());
 			saveObject("players", player);
 		}
 

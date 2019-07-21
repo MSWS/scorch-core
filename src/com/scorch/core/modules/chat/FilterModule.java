@@ -9,6 +9,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
+import com.scorch.core.modules.data.SQLSelector;
+import com.scorch.core.modules.data.exceptions.DataDeleteException;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;
@@ -53,11 +55,12 @@ public class FilterModule extends AbstractModule implements Listener {
 						entries.add((FilterEntry) cm);
 					});
 
-					for (FilterEntry msg : def.stream().filter(cm -> !containsWord(cm.getWord()))
-							.collect(Collectors.toList())) {
-						ScorchCore.getInstance().getDataManager().saveObject("swears", msg);
-						entries.add(msg);
-					}
+					if (entries.isEmpty())
+						for (FilterEntry msg : def.stream().filter(cm -> !containsWord(cm.getWord()))
+								.collect(Collectors.toList())) {
+							ScorchCore.getInstance().getDataManager().saveObject("swears", msg);
+							entries.add(msg);
+						}
 					Logger.log("Successfully loaded " + entries.size() + " swear word"
 							+ (entries.size() == 1 ? "" : "s") + ".");
 				} catch (NoDefaultConstructorException | DataObtainException e) {
@@ -81,7 +84,7 @@ public class FilterModule extends AbstractModule implements Listener {
 	}
 
 	public enum FilterType {
-		REGULAR, MANDATORY, ADVERTISING, BOT, NONE;
+		REGULAR, MANDATORY, ADVERTISING, BOT, NONE, ALLOW;
 	}
 
 	public void addWord(FilterEntry entry) {
@@ -90,12 +93,26 @@ public class FilterModule extends AbstractModule implements Listener {
 		ScorchCore.getInstance().getDataManager().saveObject("swears", entry);
 	}
 
+	public void removeWord(FilterEntry entry) {
+		entries.remove(entry);
+
+		try {
+			ScorchCore.getInstance().getDataManager().deleteObject("swears", new SQLSelector("word", entry.getWord()));
+		} catch (DataDeleteException e) {
+			e.printStackTrace();
+		}
+	}
+
 	public String filter(String message, FilterType... level) {
 		for (FilterType type : level) {
 			message = MSG.filter(message, entries.stream().filter(word -> word.getType() == type).map(m -> m.getWord())
 					.collect(Collectors.toList()));
 		}
 		return message;
+	}
+
+	public FilterEntry getFilterEntry(String word) {
+		return entries.stream().filter(filter -> filter.getWord().equalsIgnoreCase(word)).findFirst().orElse(null);
 	}
 
 }
