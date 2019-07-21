@@ -11,6 +11,11 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.scorch.core.ScorchCore;
@@ -18,14 +23,17 @@ import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
+import com.scorch.core.utils.Logger;
 
-public class IPTracker extends AbstractModule {
+public class IPTracker extends AbstractModule implements Listener {
 
 	private Map<UUID, IPEntry> links;
 
 	public IPTracker(String id) {
 		super(id);
 	}
+
+	private int accounts = 0, ips = 0;
 
 	@Override
 	public void initialize() {
@@ -35,12 +43,16 @@ public class IPTracker extends AbstractModule {
 			@Override
 			public void run() {
 				try {
+					Logger.log("Loading IP data...");
 					ScorchCore.getInstance().getDataManager().createTable("playerips", IPEntry.class);
 					for (Object entry : ScorchCore.getInstance().getDataManager().getAllObjects("playerips")) {
 						IPEntry ipe = (IPEntry) entry;
 						links.put(ipe.getUUID(), ipe);
+						ips += ipe.getIps().size();
+						accounts++;
 					}
-
+					Logger.log("Successfully loaded " + ips + " IP" + (ips == 1 ? "" : "s") + " of " + accounts
+							+ " account" + (accounts == 1 ? "" : "s") + ".");
 				} catch (NoDefaultConstructorException | DataObtainException e) {
 					e.printStackTrace();
 				}
@@ -53,6 +65,8 @@ public class IPTracker extends AbstractModule {
 				saveIps();
 			}
 		}.runTaskTimerAsynchronously(ScorchCore.getInstance(), 6000, 6000);
+
+		Bukkit.getPluginManager().registerEvents(this, ScorchCore.getInstance());
 	}
 
 	@Override
@@ -63,7 +77,8 @@ public class IPTracker extends AbstractModule {
 	public void addIp(UUID account, String ip) {
 		IPEntry entry = links.getOrDefault(account, new IPEntry(account, new ArrayList<>()));
 
-		entry.addIp(ip);
+		if (!entry.getIps().contains(ip))
+			entry.addIp(ip);
 
 		if (!links.containsKey(account))
 			ScorchCore.getInstance().getDataManager().saveObjectAsync("playerips", entry);
@@ -74,7 +89,7 @@ public class IPTracker extends AbstractModule {
 	public void addIp(UUID account, List<String> ips) {
 		IPEntry entry = links.getOrDefault(account, new IPEntry(account, new ArrayList<>()));
 
-		entry.addIps(ips);
+		ips.forEach(ip -> addIp(account, ip));
 
 		if (!links.containsKey(account))
 			ScorchCore.getInstance().getDataManager().saveObjectAsync("playerips", entry);
@@ -83,7 +98,7 @@ public class IPTracker extends AbstractModule {
 	}
 
 	public Set<UUID> linkedAccounts(UUID account) {
-		return linkedAccounts(account, null);
+		return linkedAccounts(account, new HashSet<>());
 	}
 
 	public Set<UUID> linkedAccounts(UUID account, Set<String> scannedIPs) {
@@ -188,6 +203,15 @@ public class IPTracker extends AbstractModule {
 		} catch (DataUpdateException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@EventHandler
+	public void onJoin(PlayerJoinEvent event) {
+		Player player = event.getPlayer();
+		ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(player.getUniqueId());
+		sp.setData("lastip", player.getAddress().getHostName());
+
+		addIp(player.getUniqueId(), player.getAddress().getHostName());
 	}
 
 }

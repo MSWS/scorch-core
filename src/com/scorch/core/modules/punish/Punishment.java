@@ -11,12 +11,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.scorch.core.ScorchCore;
+import com.scorch.core.modules.data.IPTracker;
 import com.scorch.core.modules.data.SQLSelector;
+import com.scorch.core.modules.data.ScorchPlayer;
 import com.scorch.core.modules.data.annotations.DataIgnore;
 import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.messages.CMessage;
@@ -40,7 +43,7 @@ public class Punishment implements Comparable<Punishment> {
 	private final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a");
 
 	private UUID id, target;
-	private String staff, reason, remover, removeReason;
+	private String staff, reason, remover, removeReason, ip;
 
 	private long date, duration, removeDate;
 
@@ -70,20 +73,6 @@ public class Punishment implements Comparable<Punishment> {
 	}
 
 	/**
-	 * Creates a new punishment with a remover
-	 * 
-	 * @see Punishment
-	 */
-	public Punishment(UUID target, String staff, String reason, long date, long duration, PunishType type,
-			String remover, String removeReason, long removeDate) {
-		this(target, staff, removeReason, removeDate, duration, type);
-
-		this.remover = remover;
-		this.removeReason = removeReason;
-		this.removeDate = removeDate;
-	}
-
-	/**
 	 * Empty contructor for the datamanager
 	 */
 	public Punishment() {
@@ -95,11 +84,39 @@ public class Punishment implements Comparable<Punishment> {
 	 */
 	public void execute() {
 		OfflinePlayer target = Bukkit.getOfflinePlayer(this.target);
+		ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(target.getUniqueId());
+		IPTracker it = (IPTracker) ScorchCore.getInstance().getModule("IPTrackerModule");
+
 		kick: if (punishType.restrictsLogin()) {
 			if (!target.isOnline())
 				break kick;
 
 			target.getPlayer().kickPlayer(getKickMessage());
+		}
+
+		if (punishType == PunishType.IP_BAN) {
+			String ip = sp.getData("lastip", String.class);
+			if (ip == null)
+				return;
+			this.ip = ip;
+
+			for (Player p : Bukkit.getOnlinePlayers()) {
+				if (p.getAddress().getHostName().equals(ip))
+					p.kickPlayer(getKickMessage());
+			}
+		}
+
+		if (punishType == PunishType.BLACKLIST) {
+			if (it == null) {
+				Logger.error("IP Tracker Module is NULL");
+			} else {
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					if (it.isLinked(this.target, p.getUniqueId())) {
+						p.kickPlayer(getKickMessage());
+					}
+				}
+			}
+
 		}
 
 		if (punishType == PunishType.WARNING) {
@@ -185,6 +202,10 @@ public class Punishment implements Comparable<Punishment> {
 		return duration;
 	}
 
+	public String getIP() {
+		return ip;
+	}
+
 	public ItemStack getItem() {
 		ItemStack item = new ItemStack(punishType.getMaterial());
 		ItemMeta meta = item.getItemMeta();
@@ -192,6 +213,8 @@ public class Punishment implements Comparable<Punishment> {
 		List<String> lore = new ArrayList<>();
 		lore.add(MSG.color("&3Staff: &b" + staff));
 		lore.add(MSG.color("&3Reason: &b" + reason));
+		if (punishType == PunishType.IP_BAN)
+			lore.add(MSG.color("&6IP: &e" + ip));
 		lore.add("");
 		lore.add(MSG.color("&2Date: &a" + sdf.format(date)));
 		if (punishType != PunishType.WARNING && punishType != PunishType.KICK) {
@@ -276,6 +299,8 @@ public class Punishment implements Comparable<Punishment> {
 			return "temporarily muted";
 		case WARNING:
 			return "warned";
+		case BLACKLIST:
+			return "blacklisted";
 		default:
 			Logger.warn("Unknown punish type: " + punishType);
 			return "punished";

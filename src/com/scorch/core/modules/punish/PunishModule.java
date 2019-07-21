@@ -46,7 +46,7 @@ public class PunishModule extends AbstractModule {
 	private Listener joinListener, clickListener;
 	private final String table = "punishments";
 
-	private List<Punishment> punishments;
+	private List<Punishment> punishments, globalPunishments;
 
 	private Map<UUID, List<Punishment>> linked;
 
@@ -69,6 +69,10 @@ public class PunishModule extends AbstractModule {
 
 		List<Punishment> current = linked.getOrDefault(punishment.getTargetUUID(), new ArrayList<>());
 		current.add(punishment);
+		punishments.add(punishment);
+
+		if (punishment.getType() == PunishType.BLACKLIST || punishment.getType() == PunishType.IP_BAN)
+			globalPunishments.add(punishment);
 
 		linked.put(punishment.getTargetUUID(), current);
 
@@ -154,6 +158,7 @@ public class PunishModule extends AbstractModule {
 
 	public void refreshPunishments() {
 		punishments = new ArrayList<Punishment>();
+		globalPunishments = new ArrayList<>();
 		linked = new HashMap<UUID, List<Punishment>>();
 
 		new BukkitRunnable() {
@@ -166,6 +171,8 @@ public class PunishModule extends AbstractModule {
 					ScorchCore.getInstance().getDataManager().getAllObjects("punishments").forEach(punish -> {
 						Punishment p = (Punishment) punish;
 						punishments.add(p);
+						if (p.getType() == PunishType.BLACKLIST || p.getType() == PunishType.IP_BAN)
+							globalPunishments.add(p);
 
 						List<Punishment> current = linked.getOrDefault(p.getTargetUUID(), new ArrayList<>());
 						current.add(p);
@@ -179,6 +186,9 @@ public class PunishModule extends AbstractModule {
 						+ (punishments.size() == 1 ? "" : "s") + ".");
 			}
 		}.runTaskAsynchronously(ScorchCore.getInstance());
-
+	}
+	
+	public List<Punishment> getGlobalPunishments(){
+		return globalPunishments;
 	}
 }

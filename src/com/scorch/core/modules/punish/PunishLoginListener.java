@@ -12,6 +12,9 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 import com.scorch.core.ScorchCore;
+import com.scorch.core.modules.data.IPTracker;
+import com.scorch.core.modules.data.ScorchPlayer;
+import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
 
 /**
@@ -23,15 +26,45 @@ import com.scorch.core.utils.MSG;
  *
  */
 public class PunishLoginListener implements Listener {
+	private PunishModule pm;
+
 	public PunishLoginListener() {
 		Bukkit.getPluginManager().registerEvents(this, ScorchCore.getInstance());
 	}
 
 	@EventHandler
 	public void onLogin(PlayerLoginEvent event) {
-		Player player = event.getPlayer();
+		if ((pm = ScorchCore.getInstance().getPunishModule()) == null)
+			return;
 
-		List<Punishment> punishments = ScorchCore.getInstance().getPunishModule().getPunishments(player.getUniqueId());
+		Player player = event.getPlayer();
+		ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(player.getUniqueId());
+		Punishment active = null;
+
+		List<Punishment> punishments = pm.getPunishments(player.getUniqueId());
+
+		for (Punishment global : pm.getGlobalPunishments()) {
+			if (global.getType() == PunishType.BLACKLIST) {
+				IPTracker it = (IPTracker) ScorchCore.getInstance().getModule("IPTrackerModule");
+				if (it == null) {
+					Logger.error("IP Tracker Module is NULL");
+					continue;
+				}
+
+				if (it.isLinked(global.getTargetUUID(), player.getUniqueId())) {
+					punishments.add(global);
+				}
+			} else if (global.getType() == PunishType.IP_BAN) {
+				if (global.getIP() == null) {
+					Logger.error("Punishment " + global.getId() + " has no IP despite being an IP ban.");
+					continue;
+				}
+				if (global.getIP().equals(event.getAddress().getHostName())
+						|| global.getIP().equals(sp.getData("lastip", String.class, null))) {
+					punishments.add(global);
+				}
+			}
+		}
 
 		punishments = punishments.stream().filter(Punishment::isActive).filter(p -> p.getType().restrictsLogin())
 				.collect(Collectors.toList());
@@ -42,7 +75,7 @@ public class PunishLoginListener implements Listener {
 		Collections.sort(punishments);
 
 		event.setResult(Result.KICK_BANNED);
-		Punishment active = punishments.get(0);
+		active = punishments.get(0);
 
 		event.setKickMessage(MSG.color(active.getKickMessage()));
 	}
