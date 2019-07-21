@@ -59,6 +59,19 @@ punish:
     - '&cban on someone with &oevidence&c.'
     BanTime: -1
     Permission: rank.mod
+  blacklist:
+    Icon: BARRIER
+    Slot: 30
+    Name: '&4&lBlacklist'
+    Type: BLACKLIST
+    Permission: rank.dev
+    Duration: -1
+    Lore:
+    - ''
+    - '&DIn development'
+    - ''
+    - '&cPermanently bans all accounts linked'
+    - '&cto this account'
   ip:
     Icon: BEDROCK
     Slot: 39

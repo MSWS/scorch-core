@@ -14,7 +14,8 @@ public enum PunishType {
 	IP_BAN("&d&lIP Ban", "BEDROCK", true), PERM_BAN("&4&lPerm Ban", "REDSTONE_BLOCK", true),
 	TEMP_BAN("&c&lTemp Ban", "DIAMOND_SWORD", true), PERM_MUTE("&4&lPerm Mute", "BOOK", false),
 	TEMP_MUTE("&c&lTemp Mute", "BOOK", false), WARNING("&e&lWarning", "PAPER", false),
-	KICK("&b&lKick", "LEATHER_BOOTS", false), OTHER("&3&lOther", "HOPPER", false);
+	KICK("&b&lKick", "LEATHER_BOOTS", false), BLACKLIST("&4&lBlacklist", "BARRIER", true),
+	OTHER("&3&lOther", "HOPPER", false);
 
 	private Material mat;
 	private boolean restrictLogin;
