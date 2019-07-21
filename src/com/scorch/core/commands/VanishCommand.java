@@ -50,8 +50,8 @@ public class VanishCommand extends BukkitCommand {
 			return true;
 		}
 
-		MSG.tell(sender, (vm.toggle(target) ? "&aEnabled" : "&cDisabled") + " &7" + target.getName() + "'"
-				+ (target.getName().toLowerCase().endsWith("s") ? "" : "s") + " vanish status");
+		MSG.tell(sender, "&7You " + (vm.toggle(target) ? "&eenabled" : "&edisabled") + " &7" + target.getName() + "'"
+				+ (target.getName().toLowerCase().endsWith("s") ? "" : "s") + " vanish.");
 		return true;
 	}
 }
