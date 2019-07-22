@@ -24,7 +24,8 @@ public class LagModule extends AbstractModule {
 
 	@Override
 	public void disable() {
-		runner.cancel();
+		if (runner != null)
+			runner.cancel();
 	}
 
 	public double getTPS(int ticks) {
@@ -54,7 +55,6 @@ public class LagModule extends AbstractModule {
 				TICK_COUNT += 1;
 			}
 		};
-
 	}
 
 }

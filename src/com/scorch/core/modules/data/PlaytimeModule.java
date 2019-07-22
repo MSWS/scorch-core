@@ -9,7 +9,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
@@ -17,8 +16,6 @@ import com.scorch.core.modules.AbstractModule;
 public class PlaytimeModule extends AbstractModule implements Listener {
 
 	private Map<UUID, Long> loginTimes;
-
-	private BukkitRunnable updater;
 
 	public PlaytimeModule(String id) {
 		super(id);
@@ -29,16 +26,12 @@ public class PlaytimeModule extends AbstractModule implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, ScorchCore.getInstance());
 
 		loginTimes = new HashMap<UUID, Long>();
-
-		updater.runTaskTimerAsynchronously(ScorchCore.getInstance(), 20 * 60, 20 * 60);
 	}
 
 	@Override
 	public void disable() {
 		PlayerJoinEvent.getHandlerList().unregister(this);
 		PlayerQuitEvent.getHandlerList().unregister(this);
-
-		updater.cancel();
 	}
 
 	public long getPlaytime(UUID uuid) {
