@@ -78,7 +78,6 @@ public class PermissionModule extends AbstractModule {
 			YamlConfiguration permissions = YamlConfiguration.loadConfiguration(permissionsFile);
 			for (String group : permissions.getConfigurationSection("groups").getKeys(false)) {
 				// Load group from config
-				Logger.log("&6   - Parsing &e%s", group);
 				String groupPath = "groups." + group;
 				List<String> inherits = permissions.getStringList(groupPath + ".inherits");
 				boolean isDefault = permissions.getBoolean(groupPath + ".default");
@@ -89,7 +88,7 @@ public class PermissionModule extends AbstractModule {
 				PermissionGroup groupObject = new PermissionGroup(group, isDefault, prefix, weight, inherits,
 						permissionList);
 				ymlGroups.add(groupObject);
-				Logger.log("&a       SUCCESS");
+				Logger.log("&a -> Parsed &e%s", group);
 			}
 		}
 
@@ -105,7 +104,7 @@ public class PermissionModule extends AbstractModule {
 			Logger.log("&9Checking for database updates...");
 			for (int i = 0; i < groupList.size(); i++) {
 				PermissionGroup group = groupList.get(i);
-				Logger.log("&7Checking &e%s", group.getGroupName());
+				Logger.log("&9Checking &e%s &9for any updates", group.getGroupName());
 				for (PermissionGroup ymlGroup : ymlGroups) {
 					if (group.getGroupName().equals(ymlGroup.getGroupName())) {
 						// group exists

@@ -49,6 +49,9 @@ public class MessagesModule extends AbstractModule {
 		defaults.add(new CMessage("helpmessage", "Edit this in the database"));
 		defaults.add(new CMessage("vanishenablemessage", "Vanish enabled"));
 		defaults.add(new CMessage("vanishdisablemessage", "Vanish disabled"));
+
+		defaults.add(new CMessage("togglevanish", "&7You %status% &7%target%'%s% &7vanish status."));
+
 		defaults.add(new CMessage("seenformat", "&e%player% &7was last seen &a%time% &7ago."));
 		defaults.add(new CMessage("playtimeformat", "&e%player% &7has played for &a%time%&7."));
 		defaults.add(new CMessage("noplaytime", "&e%player% &7has never played on this server."));
@@ -65,7 +68,7 @@ public class MessagesModule extends AbstractModule {
 		messages = new ArrayList<CMessage>();
 
 		try {
-			Logger.log("Loading messages...");
+			Logger.log("&9Loading messages...");
 
 			ScorchCore.getInstance().getDataManager().createTable("messages", CMessage.class);
 			ScorchCore.getInstance().getDataManager().getAllObjects("messages").forEach(cm -> {
@@ -79,10 +82,11 @@ public class MessagesModule extends AbstractModule {
 					.collect(Collectors.toList())) {
 				ScorchCore.getInstance().getDataManager().saveObject("messages", msg);
 				messages.add(msg);
-				Logger.log(msg.getId() + " does not exist, saving default.");
+				Logger.log("&e" + msg.getId() + " &cdoes not exist&b, saving default.");
 			}
 
-			Logger.log("Successfully loaded " + messages.size() + " message" + (messages.size() == 1 ? "" : "s") + ".");
+			Logger.log("&aSuccessfully loaded &e" + messages.size() + "&a message" + (messages.size() == 1 ? "" : "s")
+					+ ".");
 		} catch (NoDefaultConstructorException | DataObtainException e) {
 			e.printStackTrace();
 		}

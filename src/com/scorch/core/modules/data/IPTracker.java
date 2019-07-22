@@ -43,7 +43,7 @@ public class IPTracker extends AbstractModule implements Listener {
 			@Override
 			public void run() {
 				try {
-					Logger.log("Loading IP data...");
+					Logger.log("&9Loading IP data...");
 					ScorchCore.getInstance().getDataManager().createTable("playerips", IPEntry.class);
 					for (Object entry : ScorchCore.getInstance().getDataManager().getAllObjects("playerips")) {
 						IPEntry ipe = (IPEntry) entry;
@@ -51,8 +51,8 @@ public class IPTracker extends AbstractModule implements Listener {
 						ips += ipe.getIps().size();
 						accounts++;
 					}
-					Logger.log("Successfully loaded " + ips + " IP" + (ips == 1 ? "" : "s") + " of " + accounts
-							+ " account" + (accounts == 1 ? "" : "s") + ".");
+					Logger.log("&aSuccessfully loaded &e" + ips + "&a IP" + (ips == 1 ? "" : "s") + " of &b" + accounts
+							+ " &aaccount" + (accounts == 1 ? "" : "s") + ".");
 				} catch (NoDefaultConstructorException | DataObtainException e) {
 					e.printStackTrace();
 				}

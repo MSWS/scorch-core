@@ -24,7 +24,6 @@ public class ConnectionManager extends AbstractModule {
 
 	@Override
 	public void initialize() {
-		this.driver = "org.mariadb.jdbc.Driver";
 		this.database = ScorchCore.getInstance().getConfig().getString("MySql.database");
 		this.port = ScorchCore.getInstance().getConfig().getString("MySql.port");
 		this.host = "jdbc:mariadb://" + ScorchCore.getInstance().getConfig().getString("MySql.host") + ":" + this.port
@@ -37,7 +36,7 @@ public class ConnectionManager extends AbstractModule {
 
 	@Override
 	public void disable() {
-		if(this.isConnected()){
+		if (this.isConnected()) {
 			try {
 				this.getConnection().close();
 			} catch (SQLException e) {

@@ -1,17 +1,16 @@
 groups:
-   default:
-      inherits:
-      weight: 0
-      default: true
-      prefix: '&7'
-      permissions:
-         - "scorch.command.a"
-         - "-bukkit.command.plugins"
-   gamer:
-      inherits: [default]
-      weight: 1
-      default: false
-      prefix: '&7Gamer'
-      permissions:
-         - "gamer.game.juice"
-         - "gamer.girl.bathwater.use"
+  default:
+    weight: 0
+    default: true
+    prefix: '&7'
+    permissions:
+    - "scorch.command.a"
+    - "-bukkit.command.plugins"
+  gamer:
+    inherits: [default]
+    weight: 1
+    default: false
+    prefix: '&7Gamer'
+    permissions:
+    - "gamer.game.juice"
+    - "gamer.girl.bathwater.use"
