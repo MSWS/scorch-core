@@ -14,7 +14,7 @@ public class PingCommand extends BukkitCommand {
 	public PingCommand(String name) {
 		super(name);
 		setPermission("scorch.command.ping");
-		setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").getMessage());
+		setPermissionMessage(ScorchCore.getInstance().getMessage("noperm"));
 	}
 
 	@Override

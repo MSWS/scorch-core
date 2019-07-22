@@ -37,7 +37,7 @@ public class TPCommand extends BukkitCommand {
 	public TPCommand(String name) {
 		super(name);
 		setPermission("scorch.command.tp");
-		setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").getMessage());
+		setPermissionMessage(ScorchCore.getInstance().getMessage("noperm"));
 		setAliases(Arrays.asList("tp"));
 	}
 

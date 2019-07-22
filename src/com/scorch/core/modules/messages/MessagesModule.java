@@ -49,6 +49,7 @@ public class MessagesModule extends AbstractModule {
 		defaults.add(new CMessage("helpmessage", "Edit this in the database"));
 		defaults.add(new CMessage("vanishenablemessage", "Vanish enabled"));
 		defaults.add(new CMessage("vanishdisablemessage", "Vanish disabled"));
+		defaults.add(new CMessage("seenformat", "&e%player% &7was last seen &a%time% &7ago."));
 	}
 
 	@Override

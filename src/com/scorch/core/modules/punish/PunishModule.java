@@ -62,7 +62,7 @@ public class PunishModule extends AbstractModule {
 			public void run() {
 				refreshPunishments();
 			}
-		}.runTaskTimer(ScorchCore.getInstance(), 600, 600);
+		}.runTaskTimer(ScorchCore.getInstance(), 6000, 6000);
 	}
 
 	@Override

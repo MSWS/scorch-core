@@ -18,7 +18,7 @@ public class VanishCommand extends BukkitCommand {
 	public VanishCommand(String name) {
 		super(name);
 		setPermission("scorch.command.vanish");
-		setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").getMessage());
+		setPermissionMessage(ScorchCore.getInstance().getMessage("noperm"));
 		setAliases(Arrays.asList("v"));
 	}
 

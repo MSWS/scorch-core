@@ -195,6 +195,10 @@ public class ScorchCore extends JavaPlugin {
 		return null;
 	}
 
+	public <T extends AbstractModule> T getModule(String id, Class<T> cast) {
+		return cast.cast(getModule(id));
+	}
+
 	/**
 	 * Returns the {@link DataManager} object without having to use
 	 * {@link ScorchCore#getModule(String)} and cast it This is purely to make it
@@ -214,6 +218,10 @@ public class ScorchCore extends JavaPlugin {
 	 */
 	public MessagesModule getMessages() {
 		return messages;
+	}
+
+	public String getMessage(String id) {
+		return messages.getMessage(id).getMessage();
 	}
 
 	/**

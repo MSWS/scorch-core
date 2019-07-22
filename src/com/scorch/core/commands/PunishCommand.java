@@ -27,7 +27,7 @@ public class PunishCommand extends BukkitCommand {
 	public PunishCommand(String name) {
 		super(name);
 		this.setPermission("scorch.command.punish");
-		this.setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").toString());
+		this.setPermissionMessage(ScorchCore.getInstance().getMessage("noperm"));
 		this.setAliases(Arrays.asList("p"));
 	}
 

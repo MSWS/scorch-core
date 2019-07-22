@@ -120,8 +120,8 @@ public class Punishment implements Comparable<Punishment> {
 		}
 
 		if (punishType == PunishType.WARNING) {
-			String warning = ScorchCore.getInstance().getMessages().getMessage("warningmessage").getMessage()
-					.replace("%staff%", staff).replace("%reason%", reason);
+			String warning = ScorchCore.getInstance().getMessage("warningmessage").replace("%staff%", staff)
+					.replace("%reason%", reason);
 			for (String msg : warning.split("\\|"))
 				if (target.isOnline()) {
 					MSG.tell(target.getPlayer(), msg);
@@ -133,8 +133,8 @@ public class Punishment implements Comparable<Punishment> {
 		}
 
 		MSG.tell("scorch.punish.notify",
-				ScorchCore.getInstance().getMessages().getMessage("punishmessage").getMessage()
-						.replace("%staff%", staff).replace("%target%", target.getName()).replace("%reason%", reason)
+				ScorchCore.getInstance().getMessage("punishmessage").replace("%staff%", staff)
+						.replace("%target%", target.getName()).replace("%reason%", reason)
 						.replace("%duration%", MSG.getTime(duration)).replace("%verb%", getVerb()));
 	}
 

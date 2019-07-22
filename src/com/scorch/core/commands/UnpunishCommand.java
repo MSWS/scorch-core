@@ -20,7 +20,7 @@ public class UnpunishCommand extends BukkitCommand {
 
 	public UnpunishCommand(String name) {
 		super(name);
-		setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").toString());
+		setPermissionMessage(ScorchCore.getInstance().getMessage("noperm"));
 	}
 
 	@SuppressWarnings("deprecation")

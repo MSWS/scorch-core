@@ -26,7 +26,7 @@ public class ACommand extends BukkitCommand {
 	public ACommand(String name) {
 		super(name);
 		this.setPermission("scorch.command.a");
-		this.setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").getMessage());
+		this.setPermissionMessage(ScorchCore.getInstance().getMessage("noperm"));
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class ACommand extends BukkitCommand {
 		for (int i = 0; i < args.length; i++)
 			builder.append(args[i] + " ");
 
-		String msg = ScorchCore.getInstance().getMessages().getMessage("aformat").getMessage();
+		String msg = ScorchCore.getInstance().getMessage("aformat");
 		msg = msg
 				.replace("%prefix%",
 						(sender instanceof Player) ? ScorchCore.getInstance().getPrefix((OfflinePlayer) sender) + ""

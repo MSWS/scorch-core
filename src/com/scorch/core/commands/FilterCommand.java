@@ -19,7 +19,7 @@ public class FilterCommand extends BukkitCommand {
 	public FilterCommand(String name) {
 		super(name);
 		setPermission("scorch.command.filter");
-		setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").getMessage());
+		setPermissionMessage(ScorchCore.getInstance().getMessage("noperm"));
 	}
 
 	@Override

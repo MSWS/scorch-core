@@ -28,7 +28,7 @@ public class RACommand extends BukkitCommand {
 	public RACommand(String name) {
 		super(name);
 		this.setPermission("scorch.command.ra");
-		this.setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").getMessage());
+		this.setPermissionMessage(ScorchCore.getInstance().getMessage("noperm"));
 	}
 
 	@Override
@@ -70,24 +70,18 @@ public class RACommand extends BukkitCommand {
 
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			if (p.equals(sender)) {
-				MSG.tell(p,
-						ScorchCore.getInstance().getMessages().getMessage("maformat-sender").getMessage()
-								.replace("%group%", "").replace("%player%", target.getName())
-								.replace("%message%", builder.toString().trim()));
+				MSG.tell(p, ScorchCore.getInstance().getMessage("maformat-sender").replace("%group%", "")
+						.replace("%player%", target.getName()).replace("%message%", builder.toString().trim()));
 				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 2, 1.5f);
 			}
 			if (p.equals(target)) {
-				MSG.tell(p,
-						ScorchCore.getInstance().getMessages().getMessage("maformat-receiver").getMessage()
-								.replace("%group%", "").replace("%player%", sender.getName())
-								.replace("%message%", builder.toString().trim()));
+				MSG.tell(p, ScorchCore.getInstance().getMessage("maformat-receiver").replace("%group%", "")
+						.replace("%player%", sender.getName()).replace("%message%", builder.toString().trim()));
 				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 2, 2f);
 			} else if (!p.equals(sender) && p.hasPermission("scorch.command.ma.watch")) {
-				MSG.tell(p,
-						ScorchCore.getInstance().getMessages().getMessage("maformat-spec").getMessage()
-								.replace("%senderprefix%", "").replace("%sendername%", sender.getName())
-								.replace("%message%", builder.toString().trim()).replace("%receiverprefix%", "")
-								.replace("%receivername%", target.getName()));
+				MSG.tell(p, ScorchCore.getInstance().getMessage("maformat-spec").replace("%senderprefix%", "")
+						.replace("%sendername%", sender.getName()).replace("%message%", builder.toString().trim())
+						.replace("%receiverprefix%", "").replace("%receivername%", target.getName()));
 			}
 		}
 
