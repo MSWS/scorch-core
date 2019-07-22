@@ -72,18 +72,7 @@ public class DataManager extends AbstractModule {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				try {
-					Logger.log("Saving all player data...");
-					for (Entry<UUID, ScorchPlayer> entry : cache.entrySet()) {
-						updateObject("players", entry.getValue(), new SQLSelector("uuid", entry.getKey().toString()));
-						if (Bukkit.getPlayer(entry.getKey()) == null) // Remove player data if the player is no longer
-																		// on the server
-							cache.remove(entry.getKey());
-					}
-					Logger.log("Finished saving player data.");
-				} catch (DataUpdateException e) {
-					e.printStackTrace();
-				}
+				savePlayerData();
 			}
 		}.runTaskTimerAsynchronously(ScorchCore.getInstance(), 6000, 6000); // 5 Minutes
 	}
@@ -133,8 +122,6 @@ public class DataManager extends AbstractModule {
 	 * @param storageType the column template
 	 */
 	public void createTable(String name, Class<?> storageType) throws NoDefaultConstructorException {
-
-		Logger.log("Ensuring %s table exists", name);
 
 		if (!hasDefaultConstructor(storageType)) {
 			throw new NoDefaultConstructorException();
@@ -816,6 +803,20 @@ public class DataManager extends AbstractModule {
 
 		cache.put(uuid, player);
 		return player;
+	}
+
+	public void savePlayerData() {
+		try {
+			Logger.log("Saving all player data...");
+			for (Entry<UUID, ScorchPlayer> entry : cache.entrySet()) {
+				updateObject("players", entry.getValue(), new SQLSelector("uuid", entry.getKey().toString()));
+				if (Bukkit.getPlayer(entry.getKey()) == null) // Remove player data if the player is no longer
+																// on the server
+					cache.remove(entry.getKey());
+			}
+		} catch (DataUpdateException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

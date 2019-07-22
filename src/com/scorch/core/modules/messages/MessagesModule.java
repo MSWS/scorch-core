@@ -50,6 +50,9 @@ public class MessagesModule extends AbstractModule {
 		defaults.add(new CMessage("vanishenablemessage", "Vanish enabled"));
 		defaults.add(new CMessage("vanishdisablemessage", "Vanish disabled"));
 		defaults.add(new CMessage("seenformat", "&e%player% &7was last seen &a%time% &7ago."));
+		defaults.add(new CMessage("playtimeformat", "&e%player% &7has played for &a%time%&7."));
+		defaults.add(new CMessage("noplaytime", "&e%player% &7has never played on this server."));
+
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import com.scorch.core.modules.AbstractModule;
 public class LagModule extends AbstractModule {
 
 	private int TICK_COUNT = 0;
-	private long[] TICKS = new long[600];
+	private long[] TICKS = new long[60000];
 
 	public LagModule(String id) {
 		super(id);

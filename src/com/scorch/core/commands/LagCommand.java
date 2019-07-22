@@ -20,7 +20,6 @@ public class LagCommand extends BukkitCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-
 		if (!sender.hasPermission(getPermission())) {
 			MSG.tell(sender, getPermissionMessage());
 			return true;
