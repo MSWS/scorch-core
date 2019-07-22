@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -808,7 +809,9 @@ public class DataManager extends AbstractModule {
 	public void savePlayerData() {
 		try {
 			Logger.log("Saving all player data...");
-			for (Entry<UUID, ScorchPlayer> entry : cache.entrySet()) {
+			Iterator<Entry<UUID, ScorchPlayer>> it = cache.entrySet().iterator();
+			while (it.hasNext()) {
+				Entry<UUID, ScorchPlayer> entry = it.next();
 				updateObject("players", entry.getValue(), new SQLSelector("uuid", entry.getKey().toString()));
 				if (Bukkit.getPlayer(entry.getKey()) == null) // Remove player data if the player is no longer
 																// on the server
