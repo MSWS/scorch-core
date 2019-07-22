@@ -7,7 +7,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,6 +17,7 @@ import org.bukkit.event.inventory.InventoryType;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.CPlayer;
+import com.scorch.core.utils.Sounds;
 
 /**
  * Manages Punish GUI
@@ -51,7 +51,7 @@ public class PunishInventoryListener implements Listener {
 			if (event.getClickedInventory().getType() != InventoryType.CHEST)
 				return;
 
-			player.playSound(player.getLocation(), Sound.BLOCK_LEVER_CLICK, 2, 1);
+			player.playSound(player.getLocation(), Sounds.CLICK.bukkitSound(), 2, 1);
 
 			if (event.getRawSlot() == event.getInventory().getSize() - 1) {
 				cp.setTempData("page", page + 1);
@@ -74,12 +74,12 @@ public class PunishInventoryListener implements Listener {
 					if (!p.isActive())
 						return;
 					p.remove(player.getName(), cp.getTempString("reason"));
-					player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 2, 1);
+					player.playSound(player.getLocation(), Sounds.NOTE_BASS_GUITAR.bukkitSound(), 2, 1);
 					player.closeInventory();
 					return;
 				case SHIFT_LEFT:
 					ScorchCore.getInstance().getPunishModule().deletePunishment(p);
-					player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 2, 1);
+					player.playSound(player.getLocation(), Sounds.NOTE_PIANO.bukkitSound(), 2, 1);
 
 					refreshHistory(player, target);
 					return;
@@ -99,7 +99,7 @@ public class PunishInventoryListener implements Listener {
 		if (event.getClickedInventory().getType() != InventoryType.CHEST)
 			return;
 
-		player.playSound(player.getLocation(), Sound.BLOCK_LEVER_CLICK, 2, 1);
+		player.playSound(player.getLocation(), Sounds.CLICK.bukkitSound(), 2, 1);
 
 		String id = "";
 		for (String res : ScorchCore.getInstance().getGui().getConfigurationSection("punish").getKeys(false)) {
@@ -121,7 +121,7 @@ public class PunishInventoryListener implements Listener {
 					PunishType.valueOf(ScorchCore.getInstance().getGui().getString("punish." + id + ".Type")));
 
 			ScorchCore.getInstance().getPunishModule().addPunishment(punishment);
-			player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_XYLOPHONE, 2, 2);
+			player.playSound(player.getLocation(), Sounds.NOTE_BASS.bukkitSound(), 2, 2);
 			player.closeInventory();
 		}
 
@@ -136,13 +136,13 @@ public class PunishInventoryListener implements Listener {
 			case RIGHT:
 				if (!p.isActive())
 					return;
-				player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_GUITAR, 2, 1);
+				player.playSound(player.getLocation(), Sounds.NOTE_BASS_GUITAR.bukkitSound(), 2, 1);
 				p.remove(player.getName(), cp.getTempString("reason"));
 				player.closeInventory();
 				return;
 			case SHIFT_LEFT:
 				ScorchCore.getInstance().getPunishModule().deletePunishment(p);
-				player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_HARP, 2, 1);
+				player.playSound(player.getLocation(), Sounds.NOTE_PIANO.bukkitSound(), 2, 1);
 
 				refreshPunish(player, target);
 				return;

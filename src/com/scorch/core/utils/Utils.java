@@ -209,14 +209,23 @@ public class Utils {
 //		if (gui.contains("Data"))
 //			item.setDurability((short) gui.getInt("Data"));
 		if (gui.contains("Data")) {
-			Damageable dmg = (Damageable) item.getItemMeta();
-			dmg.setDamage(gui.getInt("Data"));
-			item.setItemMeta((ItemMeta) dmg);
+			if (Bukkit.getVersion().contains("1.8")) {
+				item.setDurability((short) gui.getInt("Data"));
+			} else {
+				Damageable dmg = (Damageable) item.getItemMeta();
+				dmg.setDamage(gui.getInt("Data"));
+				item.setItemMeta((ItemMeta) dmg);
+			}
+
 		}
+
 		if (gui.contains("Owner")) {
 			SkullMeta meta = (SkullMeta) item.getItemMeta();
-//			meta.setOwner(gui.getString("Owner"));
-			meta.setOwningPlayer(Bukkit.getOfflinePlayer(parseTemp(cp, gui.getString("Owner"))));
+			if (Bukkit.getVersion().contains("1.8")) {
+				meta.setOwner(parseTemp(cp, gui.getString("Owner")));
+			} else {
+				meta.setOwningPlayer(Bukkit.getOfflinePlayer(parseTemp(cp, gui.getString("Owner"))));
+			}
 			item.setItemMeta(meta);
 		}
 		ItemMeta meta = item.getItemMeta();
