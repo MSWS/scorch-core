@@ -12,8 +12,8 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.data.IPTracker;
-import com.scorch.core.modules.data.ScorchPlayer;
+import com.scorch.core.modules.players.IPTracker;
+import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
 

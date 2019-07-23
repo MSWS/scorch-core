@@ -9,7 +9,7 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.data.CPlayer;
+import com.scorch.core.modules.players.CPlayer;
 import com.scorch.core.utils.MSG;
 
 /**

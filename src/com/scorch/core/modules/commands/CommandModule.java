@@ -14,6 +14,7 @@ import org.bukkit.command.SimpleCommandMap;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.commands.ACommand;
 import com.scorch.core.commands.FilterCommand;
+import com.scorch.core.commands.GamemodeCommand;
 import com.scorch.core.commands.HelpCommand;
 import com.scorch.core.commands.HistoryCommand;
 import com.scorch.core.commands.LagCommand;
@@ -77,6 +78,7 @@ public class CommandModule extends AbstractModule {
 		commands.put(new PingCommand("ping"), true);
 		commands.put(new SeenCommand("seen"), true);
 		commands.put(new PlaytimeCommand("playtime"), true);
+		commands.put(new GamemodeCommand("gamemode"), true);
 
 		enableCommands(commands.keySet().stream().collect(Collectors.toList()));
 	}

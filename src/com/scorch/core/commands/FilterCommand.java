@@ -12,7 +12,7 @@ import com.scorch.core.modules.ModulePriority;
 import com.scorch.core.modules.chat.FilterEntry;
 import com.scorch.core.modules.chat.FilterModule;
 import com.scorch.core.modules.chat.FilterModule.FilterType;
-import com.scorch.core.modules.data.ScorchPlayer;
+import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.MSG;
 
 public class FilterCommand extends BukkitCommand {

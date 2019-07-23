@@ -27,7 +27,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.data.CPlayer;
+import com.scorch.core.modules.players.CPlayer;
 
 public class Utils {
 	/**

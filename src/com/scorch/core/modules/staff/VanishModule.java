@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
-import com.scorch.core.modules.data.ScorchPlayer;
+import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.MSG;
 
 public class VanishModule extends AbstractModule implements Listener {

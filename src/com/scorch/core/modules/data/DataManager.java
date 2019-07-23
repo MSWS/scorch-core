@@ -31,6 +31,8 @@ import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.modules.data.wrappers.JSONLocation;
+import com.scorch.core.modules.players.CPlayer;
+import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
 

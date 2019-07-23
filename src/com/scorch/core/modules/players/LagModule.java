@@ -1,4 +1,4 @@
-package com.scorch.core.modules.data;
+package com.scorch.core.modules.players;
 
 import org.bukkit.scheduler.BukkitRunnable;
 

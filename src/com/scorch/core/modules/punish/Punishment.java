@@ -18,15 +18,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.data.IPTracker;
 import com.scorch.core.modules.data.SQLSelector;
-import com.scorch.core.modules.data.ScorchPlayer;
 import com.scorch.core.modules.data.annotations.DataIgnore;
 import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.messages.CMessage;
 import com.scorch.core.modules.messages.MessagesModule;
 import com.scorch.core.modules.messages.OfflineMessage;
 import com.scorch.core.modules.messages.OfflineMessagesModule;
+import com.scorch.core.modules.players.IPTracker;
+import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
 

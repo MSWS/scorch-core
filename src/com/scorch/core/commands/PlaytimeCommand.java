@@ -7,7 +7,7 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.data.PlaytimeModule;
+import com.scorch.core.modules.players.PlaytimeModule;
 import com.scorch.core.utils.MSG;
 
 public class PlaytimeCommand extends BukkitCommand {

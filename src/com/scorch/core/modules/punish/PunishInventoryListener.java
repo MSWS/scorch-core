@@ -16,7 +16,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.data.CPlayer;
+import com.scorch.core.modules.players.CPlayer;
 import com.scorch.core.utils.Sounds;
 
 /**

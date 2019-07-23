@@ -55,7 +55,8 @@ public class MessagesModule extends AbstractModule {
 		defaults.add(new CMessage("seenformat", "&e%player% &7was last seen &a%time% &7ago."));
 		defaults.add(new CMessage("playtimeformat", "&e%player% &7has played for &a%time%&7."));
 		defaults.add(new CMessage("noplaytime", "&e%player% &7has never played on this server."));
-
+		defaults.add(
+				new CMessage("gamemodeformat", "&aSuccessfully &7set &e%player%&7'%s% gamemode to &e%gamemode%&7."));
 	}
 
 	@Override

@@ -14,9 +14,9 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.chat.FilterModule.FilterType;
-import com.scorch.core.modules.data.ScorchPlayer;
 import com.scorch.core.modules.messages.CMessage;
 import com.scorch.core.modules.messages.MessagesModule;
+import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.modules.punish.Punishment;
 import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
