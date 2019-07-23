@@ -152,6 +152,7 @@ public class TestCommand extends BukkitCommand {
 				return true;
 			}
 			ScorchCore.getInstance().getCommands().enableCommand(cmd);
+			MSG.tell(sender, cmd.getName() + " enabled");
 			break;
 		case "disablecmd":
 			if (args.length < 2) {
@@ -165,6 +166,7 @@ public class TestCommand extends BukkitCommand {
 				return true;
 			}
 			ScorchCore.getInstance().getCommands().disableCommand(cmd);
+			MSG.tell(sender, cmd.getName() + " disabled");
 			break;
 		default:
 			MSG.tell(sender, "Unknown function");

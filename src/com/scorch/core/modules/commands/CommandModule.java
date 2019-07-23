@@ -3,8 +3,10 @@ package com.scorch.core.modules.commands;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -54,7 +56,6 @@ public class CommandModule extends AbstractModule {
 		commands = new HashMap<>();
 
 		try {
-
 			final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
 			bukkitCommandMap.setAccessible(true);
 			map = (SimpleCommandMap) bukkitCommandMap.get(Bukkit.getServer());
@@ -97,17 +98,59 @@ public class CommandModule extends AbstractModule {
 		commands.forEach(cmd -> disableCommand(cmd));
 	}
 
+	@SuppressWarnings("unchecked")
 	public void disableCommand(Command cmd) {
-		// TODO
+		try {
+			final HashMap<String, Command> knownCommands = (HashMap<String, Command>) getPrivateField(map,
+					"knownCommands");
+
+			Iterator<Entry<String, Command>> it = knownCommands.entrySet().iterator();
+
+			while (it.hasNext()) {
+				Entry<String, Command> c = it.next();
+				if (c.getValue().equals(cmd))
+					it.remove();
+			}
+
+			Logger.log("&cDisabled " + cmd.getName() + " command");
+
+		} catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public Command getCommand(String command) {
 		return commands.keySet().stream().filter(cmd -> cmd.getName().equals(command)).findFirst().orElse(null);
 	}
 
+	public boolean isEnabled(Command cmd) {
+		return commands.getOrDefault(cmd, true);
+	}
+
 	@Override
 	public void disable() {
 		disableCommands(new ArrayList<Command>(commands.keySet()));
+	}
+
+	/*
+	 * Code from "zeeveener" at
+	 * https://bukkit.org/threads/how-to-unregister-commands-from-your-plugin.
+	 * 131808/ , edited by RandomHashTags
+	 */
+	private Object getPrivateField(Object object, String field)
+			throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+		Class<?> clazz = object.getClass();
+		Field objectField = field
+				.equals("commandMap")
+						? clazz.getDeclaredField(field)
+						: field.equals("knownCommands")
+								? Bukkit.getVersion().contains("1.13") ? clazz.getSuperclass().getDeclaredField(field)
+										: clazz.getDeclaredField(field)
+								: null;
+		objectField.setAccessible(true);
+		Object result = objectField.get(object);
+		objectField.setAccessible(false);
+		return result;
 	}
 
 }
