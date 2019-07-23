@@ -32,7 +32,11 @@ public class Friendship implements Serializable {
 		return target;
 	}
 
-	enum FriendStatus {
+	public void setStatus(FriendStatus status) {
+		this.status = status;
+	}
+
+	public enum FriendStatus {
 		REQUESTED, DENIED, FRIENDS, FAVORITES;
 	}
 }

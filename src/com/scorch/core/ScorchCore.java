@@ -24,6 +24,7 @@ import com.scorch.core.modules.messages.MessagesModule;
 import com.scorch.core.modules.permissions.PermissionModule;
 import com.scorch.core.modules.permissions.PermissionPlayer;
 import com.scorch.core.modules.players.CPlayer;
+import com.scorch.core.modules.players.FriendModule;
 import com.scorch.core.modules.players.IPTracker;
 import com.scorch.core.modules.players.LagModule;
 import com.scorch.core.modules.players.PlaytimeModule;
@@ -86,6 +87,7 @@ public class ScorchCore extends JavaPlugin {
 		registerModule(new CombatModule("CombatModule"), ModulePriority.LOW);
 		registerModule(new VanishModule("VanishModule"), ModulePriority.LOW);
 		registerModule(new FilterModule("FilterModule"), ModulePriority.LOW);
+		registerModule(new FriendModule("FriendModule"), ModulePriority.LOW);
 
 		registerModule(new LagModule("LagModule"), ModulePriority.LOWEST);
 		registerModule(new PlaytimeModule("PlaytimeModule"), ModulePriority.LOWEST);
