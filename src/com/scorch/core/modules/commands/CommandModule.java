@@ -29,6 +29,7 @@ import com.scorch.core.commands.RACommand;
 import com.scorch.core.commands.SeenCommand;
 import com.scorch.core.commands.TPCommand;
 import com.scorch.core.commands.TestCommand;
+import com.scorch.core.commands.ToggleCommand;
 import com.scorch.core.commands.UnpunishCommand;
 import com.scorch.core.commands.VanishCommand;
 import com.scorch.core.modules.AbstractModule;
@@ -65,6 +66,8 @@ public class CommandModule extends AbstractModule {
 			return;
 		}
 
+		Logger.log("&9Enabling commands...");
+
 		commands.put(new ACommand("a"), true);
 		commands.put(new MACommand("ma"), true);
 		commands.put(new RACommand("ra"), true);
@@ -82,8 +85,10 @@ public class CommandModule extends AbstractModule {
 		commands.put(new PlaytimeCommand("playtime"), true);
 		commands.put(new GamemodeCommand("gamemode"), true);
 		commands.put(new FriendCommand("friend"), true);
+		commands.put(new ToggleCommand("toggle"), true);
 
 		enableCommands(commands.keySet().stream().collect(Collectors.toList()));
+		Logger.log("&aSuccessfully enabled &e" + commands.size() + "&a command" + (commands.size() == 1 ? "" : "s"));
 	}
 
 	public void enableCommands(List<Command> commands) {
@@ -92,6 +97,7 @@ public class CommandModule extends AbstractModule {
 
 	public void enableCommand(Command command) {
 		map.register(ScorchCore.getInstance().getName(), command);
+		commands.put(command, true);
 	}
 
 	public void disableCommands(List<Command> commands) {
@@ -112,11 +118,13 @@ public class CommandModule extends AbstractModule {
 					it.remove();
 			}
 
-			Logger.log("&cDisabled " + cmd.getName() + " command");
+			Logger.log("&cDisabled " + cmd.getName() + " command.");
 
 		} catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
+
+		commands.put(cmd, false);
 	}
 
 	public Command getCommand(String command) {
@@ -125,6 +133,10 @@ public class CommandModule extends AbstractModule {
 
 	public boolean isEnabled(Command cmd) {
 		return commands.getOrDefault(cmd, true);
+	}
+
+	public Map<Command, Boolean> getCommands() {
+		return commands;
 	}
 
 	@Override
