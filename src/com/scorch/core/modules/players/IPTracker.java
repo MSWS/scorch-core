@@ -65,7 +65,7 @@ public class IPTracker extends AbstractModule implements Listener {
 			public void run() {
 				saveIps();
 			}
-		}.runTaskTimerAsynchronously(ScorchCore.getInstance(), 6000, 6000);
+		}.runTaskTimerAsynchronously(ScorchCore.getInstance(), 6000, 6000); // 5 Minutes
 
 		Bukkit.getPluginManager().registerEvents(this, ScorchCore.getInstance());
 	}
@@ -88,14 +88,7 @@ public class IPTracker extends AbstractModule implements Listener {
 	}
 
 	public void addIp(UUID account, List<String> ips) {
-		IPEntry entry = links.getOrDefault(account, new IPEntry(account, new ArrayList<>()));
-
 		ips.forEach(ip -> addIp(account, ip));
-
-		if (!links.containsKey(account))
-			ScorchCore.getInstance().getDataManager().saveObjectAsync("playerips", entry);
-
-		links.put(account, entry);
 	}
 
 	public Set<UUID> linkedAccounts(UUID account) {
@@ -196,6 +189,7 @@ public class IPTracker extends AbstractModule implements Listener {
 	}
 
 	public void saveIps() {
+		Logger.log("&6Saving player IPs...");
 		try {
 			for (IPEntry ent : links.values()) {
 				ScorchCore.getInstance().getDataManager().updateObject("playerips", ent,

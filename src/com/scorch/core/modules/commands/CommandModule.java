@@ -3,8 +3,10 @@ package com.scorch.core.modules.commands;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
@@ -13,6 +15,7 @@ import org.bukkit.command.SimpleCommandMap;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.commands.ACommand;
+import com.scorch.core.commands.BVersionCommand;
 import com.scorch.core.commands.FilterCommand;
 import com.scorch.core.commands.FriendCommand;
 import com.scorch.core.commands.GamemodeCommand;
@@ -27,6 +30,7 @@ import com.scorch.core.commands.RACommand;
 import com.scorch.core.commands.SeenCommand;
 import com.scorch.core.commands.TPCommand;
 import com.scorch.core.commands.TestCommand;
+import com.scorch.core.commands.ToggleCommand;
 import com.scorch.core.commands.UnpunishCommand;
 import com.scorch.core.commands.VanishCommand;
 import com.scorch.core.modules.AbstractModule;
@@ -54,7 +58,6 @@ public class CommandModule extends AbstractModule {
 		commands = new HashMap<>();
 
 		try {
-
 			final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
 			bukkitCommandMap.setAccessible(true);
 			map = (SimpleCommandMap) bukkitCommandMap.get(Bukkit.getServer());
@@ -63,6 +66,8 @@ public class CommandModule extends AbstractModule {
 			e.printStackTrace();
 			return;
 		}
+
+		Logger.log("&9Enabling commands...");
 
 		commands.put(new ACommand("a"), true);
 		commands.put(new MACommand("ma"), true);
@@ -81,8 +86,11 @@ public class CommandModule extends AbstractModule {
 		commands.put(new PlaytimeCommand("playtime"), true);
 		commands.put(new GamemodeCommand("gamemode"), true);
 		commands.put(new FriendCommand("friend"), true);
+		commands.put(new ToggleCommand("toggle"), true);
+		commands.put(new BVersionCommand("buildversion"), true);
 
 		enableCommands(commands.keySet().stream().collect(Collectors.toList()));
+		Logger.log("&aSuccessfully enabled &e" + commands.size() + "&a command" + (commands.size() == 1 ? "" : "s"));
 	}
 
 	public void enableCommands(List<Command> commands) {
@@ -91,6 +99,7 @@ public class CommandModule extends AbstractModule {
 
 	public void enableCommand(Command command) {
 		map.register(ScorchCore.getInstance().getName(), command);
+		commands.put(command, true);
 	}
 
 	public void disableCommands(List<Command> commands) {
@@ -98,16 +107,66 @@ public class CommandModule extends AbstractModule {
 	}
 
 	public void disableCommand(Command cmd) {
-		// TODO
+		Iterator<Entry<String, Command>> it = getKnownCommands().entrySet().iterator();
+
+		while (it.hasNext()) {
+			Entry<String, Command> c = it.next();
+			if (c.getValue().equals(cmd)) {
+				it.remove();
+			}
+		}
+
+		commands.put(cmd, false);
+	}
+
+	@SuppressWarnings("unchecked")
+	public HashMap<String, Command> getKnownCommands() {
+		try {
+			final HashMap<String, Command> knownCommands = (HashMap<String, Command>) getPrivateField(map,
+					"knownCommands");
+			return knownCommands;
+		} catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public Command getCommand(String command) {
 		return commands.keySet().stream().filter(cmd -> cmd.getName().equals(command)).findFirst().orElse(null);
 	}
 
+	public boolean isEnabled(Command cmd) {
+		return commands.getOrDefault(cmd, true);
+	}
+
+	public Map<Command, Boolean> getCommands() {
+		return commands;
+	}
+
 	@Override
 	public void disable() {
 		disableCommands(new ArrayList<Command>(commands.keySet()));
+	}
+
+	/*
+	 * Code from "zeeveener" at
+	 * https://bukkit.org/threads/how-to-unregister-commands-from-your-plugin.
+	 * 131808/ , edited by RandomHashTags
+	 */
+	private Object getPrivateField(Object object, String field)
+			throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+		Class<?> clazz = object.getClass();
+		Field objectField = field
+				.equals("commandMap")
+						? clazz.getDeclaredField(field)
+						: field.equals("knownCommands")
+								? Bukkit.getVersion().contains("1.13") ? clazz.getSuperclass().getDeclaredField(field)
+										: clazz.getDeclaredField(field)
+								: null;
+		objectField.setAccessible(true);
+		Object result = objectField.get(object);
+		objectField.setAccessible(false);
+		return result;
 	}
 
 }

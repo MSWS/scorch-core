@@ -1,6 +1,7 @@
 package com.scorch.core.commands;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -56,16 +57,22 @@ public class HistoryCommand extends BukkitCommand {
 				return true;
 			}
 		} else if (sender.hasPermission("scorch.command.history.others")) {
-			target = Bukkit.getOfflinePlayer(args[0]);
+			try {
+				target = Bukkit.getOfflinePlayer(UUID.fromString(args[0]));
+			} catch (IllegalArgumentException expected) {
+				target = Bukkit.getOfflinePlayer(args[0]);
+			}
 		}
 
+		String name = target.getName() == null ? args[0] : target.getName();
+
 		cp.setTempData("openInventory", "viewing");
-		cp.setTempData("punishing", target.getUniqueId() + "|" + target.getName());
+		cp.setTempData("punishing", target.getUniqueId() + "|" + name);
 
 		player.openInventory(ScorchCore.getInstance().getPunishModule().getHistoryGUI(target, 0));
 
 		cp.setTempData("openInventory", "viewing");
-		cp.setTempData("punishing", target.getUniqueId() + "|" + target.getName());
+		cp.setTempData("punishing", target.getUniqueId() + "|" + name);
 		return true;
 	}
 

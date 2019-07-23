@@ -8,12 +8,13 @@
 	<name>Scorch Core</name>
 	<description>Core plugin for the Scorch Gamez server</description>
 
-    <properties>
-        <project.java.version>1.8</project.java.version>
-		<!-- Would love to use UTF-8 but the paragraph symbol in MSG.java isn't supported -->
-        <!-- <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
-        <!-- <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding> -->
-    </properties>
+	<properties>
+		<project.java.version>1.8</project.java.version>
+		<!-- Would love to use UTF-8 but the paragraph symbol in MSG.java isn't 
+			supported -->
+		<!-- <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> -->
+		<!-- <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding> -->
+	</properties>
 
 
 
@@ -80,14 +81,14 @@
 			</plugin>
 		</plugins>
 		<resources>
-         <resource>
-             <directory/>
-            <includes>
-               <include>config.yml</include>
-               <include>plugin.yml</include>
-               <include>guis.yml</include>
-            </includes>
-         </resource>
-      </resources>
+			<resource>
+				<directory />
+				<includes>
+					<include>config.yml</include>
+					<include>plugin.yml</include>
+					<include>guis.yml</include>
+				</includes>
+			</resource>
+		</resources>
 	</build>
 </project>
