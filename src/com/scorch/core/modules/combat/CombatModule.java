@@ -20,7 +20,7 @@ public class CombatModule extends AbstractModule {
 
 	@Override
 	public void initialize() {
-		if (oldPvp) {
+		if (oldPvp && !Bukkit.getVersion().contains("1.8")) {
 			legacyListener = new LegacyHitListener();
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				p.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(1024);

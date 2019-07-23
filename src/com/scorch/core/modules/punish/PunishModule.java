@@ -62,7 +62,7 @@ public class PunishModule extends AbstractModule {
 			public void run() {
 				refreshPunishments();
 			}
-		}.runTaskTimer(ScorchCore.getInstance(), 600, 600);
+		}.runTaskTimer(ScorchCore.getInstance(), 6000, 6000);
 	}
 
 	@Override
@@ -171,7 +171,7 @@ public class PunishModule extends AbstractModule {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				Logger.log("Loading punishments...");
+				Logger.log("&9Loading punishments...");
 				try {
 					ScorchCore.getInstance().getDataManager().createTable(table, Punishment.class);
 
@@ -189,8 +189,8 @@ public class PunishModule extends AbstractModule {
 				} catch (NoDefaultConstructorException | DataObtainException e) {
 					e.printStackTrace();
 				}
-				Logger.log("Successfully loaded " + punishments.size() + " punishment"
-						+ (punishments.size() == 1 ? "" : "s") + ".");
+				Logger.log("&aSuccessfully loaded &e" + punishments.size() + " punishment"
+						+ (punishments.size() == 1 ? "" : "s") + "&a.");
 			}
 		}.runTaskAsynchronously(ScorchCore.getInstance());
 	}

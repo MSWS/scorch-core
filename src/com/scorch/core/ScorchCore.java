@@ -18,14 +18,16 @@ import com.scorch.core.modules.chat.ChatModule;
 import com.scorch.core.modules.chat.FilterModule;
 import com.scorch.core.modules.combat.CombatModule;
 import com.scorch.core.modules.commands.CommandModule;
-import com.scorch.core.modules.data.CPlayer;
 import com.scorch.core.modules.data.ConnectionManager;
 import com.scorch.core.modules.data.DataManager;
-import com.scorch.core.modules.data.IPTracker;
-import com.scorch.core.modules.data.LagModule;
 import com.scorch.core.modules.messages.MessagesModule;
 import com.scorch.core.modules.permissions.PermissionModule;
 import com.scorch.core.modules.permissions.PermissionPlayer;
+import com.scorch.core.modules.players.CPlayer;
+import com.scorch.core.modules.players.FriendModule;
+import com.scorch.core.modules.players.IPTracker;
+import com.scorch.core.modules.players.LagModule;
+import com.scorch.core.modules.players.PlaytimeModule;
 import com.scorch.core.modules.punish.BanwaveModule;
 import com.scorch.core.modules.punish.PunishModule;
 import com.scorch.core.modules.staff.TeleportModule;
@@ -85,8 +87,10 @@ public class ScorchCore extends JavaPlugin {
 		registerModule(new CombatModule("CombatModule"), ModulePriority.LOW);
 		registerModule(new VanishModule("VanishModule"), ModulePriority.LOW);
 		registerModule(new FilterModule("FilterModule"), ModulePriority.LOW);
+		registerModule(new FriendModule("FriendModule"), ModulePriority.LOW);
 
 		registerModule(new LagModule("LagModule"), ModulePriority.LOWEST);
+		registerModule(new PlaytimeModule("PlaytimeModule"), ModulePriority.LOWEST);
 
 		try {
 			Arrays.stream(ModulePriority.values()).forEach(this::loadModules);
@@ -195,6 +199,10 @@ public class ScorchCore extends JavaPlugin {
 		return null;
 	}
 
+	public <T extends AbstractModule> T getModule(String id, Class<T> cast) {
+		return cast.cast(getModule(id));
+	}
+
 	/**
 	 * Returns the {@link DataManager} object without having to use
 	 * {@link ScorchCore#getModule(String)} and cast it This is purely to make it
@@ -214,6 +222,10 @@ public class ScorchCore extends JavaPlugin {
 	 */
 	public MessagesModule getMessages() {
 		return messages;
+	}
+
+	public String getMessage(String id) {
+		return messages.getMessage(id).getMessage();
 	}
 
 	/**

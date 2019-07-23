@@ -51,6 +51,10 @@ public class TestCommand extends BukkitCommand {
 
 		Command cmd;
 		switch (args[0].toLowerCase()) {
+		case "saveplayerdata":
+			ScorchCore.getInstance().getDataManager().savePlayerData();
+			MSG.tell(sender, "Saving player data");
+			break;
 		case "reloadpunishments":
 			ScorchCore.getInstance().getPunishModule().refreshPunishments();
 			MSG.tell(sender, "Reloaded punishments");
@@ -174,7 +178,7 @@ public class TestCommand extends BukkitCommand {
 		List<String> result = new ArrayList<String>();
 		if (args.length <= 1) {
 			for (String res : new String[] { "sql", "message", "perm", "offline", "enablecmd", "disablecmd",
-					"reloadmessages", "reloadpunishments" }) {
+					"reloadmessages", "reloadpunishments", "saveplayerdata" }) {
 				if (res.toLowerCase().startsWith(args[0].toLowerCase()))
 					result.add(res);
 			}

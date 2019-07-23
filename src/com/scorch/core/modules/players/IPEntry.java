@@ -1,4 +1,4 @@
-package com.scorch.core.modules.data;
+package com.scorch.core.modules.players;
 
 import java.util.List;
 import java.util.UUID;

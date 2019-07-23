@@ -42,7 +42,7 @@ public class PermissionModule extends AbstractModule {
 	@Override
 	public void initialize() {
 
-		Logger.info("&6Initialising permissions...");
+		Logger.info("&9Setting up permissions...");
 
 		// Order doesn't really matter so using HashMap
 		this.permissionAttachments = new HashMap<>();
@@ -68,7 +68,7 @@ public class PermissionModule extends AbstractModule {
 			this.groupList = new ArrayList<>();
 		}
 
-		Logger.log("&6Loaded %s groups from database", groupList.size());
+		Logger.log("&aLoaded &e%s &agroup" + (groupList.size() == 1 ? "" : "s") + " from database", groupList.size());
 
 		// Checking if permissions.yml file exists
 		if (this.permissionsFile.exists()) {
@@ -78,7 +78,6 @@ public class PermissionModule extends AbstractModule {
 			YamlConfiguration permissions = YamlConfiguration.loadConfiguration(permissionsFile);
 			for (String group : permissions.getConfigurationSection("groups").getKeys(false)) {
 				// Load group from config
-				Logger.log("&6   - Parsing &e%s", group);
 				String groupPath = "groups." + group;
 				List<String> inherits = permissions.getStringList(groupPath + ".inherits");
 				boolean isDefault = permissions.getBoolean(groupPath + ".default");
@@ -89,28 +88,28 @@ public class PermissionModule extends AbstractModule {
 				PermissionGroup groupObject = new PermissionGroup(group, isDefault, prefix, weight, inherits,
 						permissionList);
 				ymlGroups.add(groupObject);
-				Logger.log("&a       SUCCESS");
+				Logger.log("&a -> Parsed &e%s", group);
 			}
 		}
 
 		if (groupList == null || groupList.isEmpty()) {
 			// database is empty, save ymlGroups
-			Logger.log("&6Database was empty, saving all groups to database...");
+			Logger.log("&3Database empty, &asaving current groups to database...");
 			groupList = new ArrayList<>(ymlGroups);
 			groupList.forEach(group -> {
 				ScorchCore.getInstance().getDataManager().saveObject("groups", group);
 			});
-			Logger.log("&6Done!");
+			Logger.log("&aSuccessfully saved all groups to database.");
 		} else {
-			Logger.log("&6Checking for any required updates to database...");
+			Logger.log("&9Checking for database updates...");
 			for (int i = 0; i < groupList.size(); i++) {
 				PermissionGroup group = groupList.get(i);
-				Logger.log("&6   - Checking &e%s", group.getGroupName());
+				Logger.log("&9Checking &e%s &9for any updates", group.getGroupName());
 				for (PermissionGroup ymlGroup : ymlGroups) {
 					if (group.getGroupName().equals(ymlGroup.getGroupName())) {
 						// group exists
 						if (!group.equals(ymlGroup)) {
-							Logger.log("      &eCHANGED");
+							Logger.log("&6* &cCHANGED");
 							try {
 								ScorchCore.getInstance().getDataManager().updateObject("groups", ymlGroup,
 										new SQLSelector("groupName", ymlGroup.getGroupName()));
@@ -119,13 +118,13 @@ public class PermissionModule extends AbstractModule {
 							}
 							groupList.set(i, ymlGroup);
 						} else {
-							Logger.log("      &aNO CHANGES");
+							Logger.log("&2* &aNO CHANGES");
 						}
 					}
 				}
 			}
 
-			Logger.log("&6Checking for new groups...");
+			Logger.log("&9Checking for new groups...");
 			for (PermissionGroup ymlGroup : ymlGroups) {
 				boolean exists = false;
 				for (int i = 0; i < groupList.size(); i++) {
@@ -159,7 +158,7 @@ public class PermissionModule extends AbstractModule {
 			}
 		}
 
-		Logger.log("&6Done!");
+		Logger.log("&aSuccessfully finished permission configuration.");
 
 		this.permissionListener = new PermissionListener(this);
 	}

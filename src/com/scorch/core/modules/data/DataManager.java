@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -30,6 +31,8 @@ import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.modules.data.wrappers.JSONLocation;
+import com.scorch.core.modules.players.CPlayer;
+import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
 
@@ -72,18 +75,7 @@ public class DataManager extends AbstractModule {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				try {
-					Logger.log("Saving all player data...");
-					for (Entry<UUID, ScorchPlayer> entry : cache.entrySet()) {
-						updateObject("players", entry.getValue(), new SQLSelector("uuid", entry.getKey().toString()));
-						if (Bukkit.getPlayer(entry.getKey()) == null) // Remove player data if the player is no longer
-																		// on the server
-							cache.remove(entry.getKey());
-					}
-					Logger.log("Finished saving player data.");
-				} catch (DataUpdateException e) {
-					e.printStackTrace();
-				}
+				savePlayerData();
 			}
 		}.runTaskTimerAsynchronously(ScorchCore.getInstance(), 6000, 6000); // 5 Minutes
 	}
@@ -133,8 +125,6 @@ public class DataManager extends AbstractModule {
 	 * @param storageType the column template
 	 */
 	public void createTable(String name, Class<?> storageType) throws NoDefaultConstructorException {
-
-		Logger.log("Ensuring %s table exists", name);
 
 		if (!hasDefaultConstructor(storageType)) {
 			throw new NoDefaultConstructorException();
@@ -816,6 +806,22 @@ public class DataManager extends AbstractModule {
 
 		cache.put(uuid, player);
 		return player;
+	}
+
+	public void savePlayerData() {
+		try {
+			Logger.log("&eSaving all player data...");
+			Iterator<Entry<UUID, ScorchPlayer>> it = cache.entrySet().iterator();
+			while (it.hasNext()) {
+				Entry<UUID, ScorchPlayer> entry = it.next();
+				updateObject("players", entry.getValue(), new SQLSelector("uuid", entry.getKey().toString()));
+				if (Bukkit.getPlayer(entry.getKey()) == null) // Remove player data if the player is no longer
+																// on the server
+					cache.remove(entry.getKey());
+			}
+		} catch (DataUpdateException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

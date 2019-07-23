@@ -76,7 +76,7 @@ public class MSG {
 	 * @param msgId
 	 */
 	public static void cTell(CommandSender sender, String msgId) {
-		tell(sender, ScorchCore.getInstance().getMessages().getMessage(msgId));
+		tell(sender, ScorchCore.getInstance().getMessage(msgId));
 	}
 
 	/**
@@ -381,7 +381,7 @@ public class MSG {
 		}
 		return result;
 	}
-	
+
 	public static String getTPSColor(int tps) {
 		if (tps >= 20) {
 			return "&2";

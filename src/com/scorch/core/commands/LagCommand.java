@@ -15,12 +15,11 @@ public class LagCommand extends BukkitCommand {
 	public LagCommand(String name) {
 		super(name);
 		setPermission("scorch.command.lag");
-		setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").getMessage());
+		setPermissionMessage(ScorchCore.getInstance().getMessage("noperm"));
 	}
 
 	@Override
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-
 		if (!sender.hasPermission(getPermission())) {
 			MSG.tell(sender, getPermissionMessage());
 			return true;

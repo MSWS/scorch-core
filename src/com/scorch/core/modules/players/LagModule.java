@@ -1,4 +1,4 @@
-package com.scorch.core.modules.data;
+package com.scorch.core.modules.players;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -8,7 +8,7 @@ import com.scorch.core.modules.AbstractModule;
 public class LagModule extends AbstractModule {
 
 	private int TICK_COUNT = 0;
-	private long[] TICKS = new long[600];
+	private long[] TICKS = new long[60000];
 
 	public LagModule(String id) {
 		super(id);
@@ -24,7 +24,8 @@ public class LagModule extends AbstractModule {
 
 	@Override
 	public void disable() {
-		runner.cancel();
+		if (runner != null)
+			runner.cancel();
 	}
 
 	public double getTPS(int ticks) {
@@ -54,7 +55,6 @@ public class LagModule extends AbstractModule {
 				TICK_COUNT += 1;
 			}
 		};
-
 	}
 
 }

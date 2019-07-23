@@ -9,7 +9,7 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.data.CPlayer;
+import com.scorch.core.modules.players.CPlayer;
 import com.scorch.core.utils.MSG;
 
 /**
@@ -27,7 +27,7 @@ public class PunishCommand extends BukkitCommand {
 	public PunishCommand(String name) {
 		super(name);
 		this.setPermission("scorch.command.punish");
-		this.setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").toString());
+		this.setPermissionMessage(ScorchCore.getInstance().getMessage("noperm"));
 		this.setAliases(Arrays.asList("p"));
 	}
 

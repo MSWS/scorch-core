@@ -12,14 +12,14 @@ import com.scorch.core.modules.ModulePriority;
 import com.scorch.core.modules.chat.FilterEntry;
 import com.scorch.core.modules.chat.FilterModule;
 import com.scorch.core.modules.chat.FilterModule.FilterType;
-import com.scorch.core.modules.data.ScorchPlayer;
+import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.MSG;
 
 public class FilterCommand extends BukkitCommand {
 	public FilterCommand(String name) {
 		super(name);
 		setPermission("scorch.command.filter");
-		setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").getMessage());
+		setPermissionMessage(ScorchCore.getInstance().getMessage("noperm"));
 	}
 
 	@Override

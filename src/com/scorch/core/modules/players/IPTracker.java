@@ -1,4 +1,4 @@
-package com.scorch.core.modules.data;
+package com.scorch.core.modules.players;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
+import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
@@ -43,7 +44,7 @@ public class IPTracker extends AbstractModule implements Listener {
 			@Override
 			public void run() {
 				try {
-					Logger.log("Loading IP data...");
+					Logger.log("&9Loading IP data...");
 					ScorchCore.getInstance().getDataManager().createTable("playerips", IPEntry.class);
 					for (Object entry : ScorchCore.getInstance().getDataManager().getAllObjects("playerips")) {
 						IPEntry ipe = (IPEntry) entry;
@@ -51,8 +52,8 @@ public class IPTracker extends AbstractModule implements Listener {
 						ips += ipe.getIps().size();
 						accounts++;
 					}
-					Logger.log("Successfully loaded " + ips + " IP" + (ips == 1 ? "" : "s") + " of " + accounts
-							+ " account" + (accounts == 1 ? "" : "s") + ".");
+					Logger.log("&aSuccessfully loaded &e" + ips + "&a IP" + (ips == 1 ? "" : "s") + " of &b" + accounts
+							+ " &aaccount" + (accounts == 1 ? "" : "s") + ".");
 				} catch (NoDefaultConstructorException | DataObtainException e) {
 					e.printStackTrace();
 				}

@@ -49,7 +49,7 @@ public class FilterModule extends AbstractModule implements Listener {
 			@Override
 			public void run() {
 				try {
-					Logger.log("Loading swear messages...");
+					Logger.log("&9Loading swear messages...");
 					ScorchCore.getInstance().getDataManager().createTable("swears", FilterEntry.class);
 					ScorchCore.getInstance().getDataManager().getAllObjects("swears").forEach(cm -> {
 						entries.add((FilterEntry) cm);
@@ -61,7 +61,7 @@ public class FilterModule extends AbstractModule implements Listener {
 							ScorchCore.getInstance().getDataManager().saveObject("swears", msg);
 							entries.add(msg);
 						}
-					Logger.log("Successfully loaded " + entries.size() + " swear word"
+					Logger.log("&aSuccessfully loaded &e" + entries.size() + "&a swear word"
 							+ (entries.size() == 1 ? "" : "s") + ".");
 				} catch (NoDefaultConstructorException | DataObtainException e) {
 					e.printStackTrace();
