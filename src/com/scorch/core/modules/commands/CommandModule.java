@@ -104,27 +104,29 @@ public class CommandModule extends AbstractModule {
 		commands.forEach(cmd -> disableCommand(cmd));
 	}
 
-	@SuppressWarnings("unchecked")
 	public void disableCommand(Command cmd) {
-		try {
-			final HashMap<String, Command> knownCommands = (HashMap<String, Command>) getPrivateField(map,
-					"knownCommands");
+		Iterator<Entry<String, Command>> it = getKnownCommands().entrySet().iterator();
 
-			Iterator<Entry<String, Command>> it = knownCommands.entrySet().iterator();
-
-			while (it.hasNext()) {
-				Entry<String, Command> c = it.next();
-				if (c.getValue().equals(cmd))
-					it.remove();
+		while (it.hasNext()) {
+			Entry<String, Command> c = it.next();
+			if (c.getValue().equals(cmd)) {
+				it.remove();
 			}
-
-			Logger.log("&cDisabled " + cmd.getName() + " command.");
-
-		} catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-			e.printStackTrace();
 		}
 
 		commands.put(cmd, false);
+	}
+
+	@SuppressWarnings("unchecked")
+	public HashMap<String, Command> getKnownCommands() {
+		try {
+			final HashMap<String, Command> knownCommands = (HashMap<String, Command>) getPrivateField(map,
+					"knownCommands");
+			return knownCommands;
+		} catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public Command getCommand(String command) {

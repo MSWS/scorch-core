@@ -1,6 +1,7 @@
 package com.scorch.core.commands;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -10,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.players.CPlayer;
+import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
 
 /**
@@ -58,17 +60,28 @@ public class PunishCommand extends BukkitCommand {
 
 		String reason = sb.toString().trim();
 
-		OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
+		OfflinePlayer target;
+
+		try {
+			target = Bukkit.getOfflinePlayer(UUID.fromString(args[0]));
+		} catch (IllegalArgumentException expected) {
+			target = Bukkit.getOfflinePlayer(args[0]);
+		}
+
 		CPlayer cp = ScorchCore.getInstance().getPlayer(player);
 
+		String name = target.getName() == null ? args[0] : target.getName();
+
+		Logger.log("Name: " + name);
+
 		cp.setTempData("openInventory", "punish");
-		cp.setTempData("punishing", target.getUniqueId() + "|" + args[0]);
+		cp.setTempData("punishing", target.getUniqueId() + "|" + name);
 		cp.setTempData("reason", reason);
 
 		player.openInventory(ScorchCore.getInstance().getPunishModule().getPunishGUI(player, target));
 
 		cp.setTempData("openInventory", "punish");
-		cp.setTempData("punishing", target.getUniqueId() + "|" + args[0]);
+		cp.setTempData("punishing", target.getUniqueId() + "|" + name);
 		cp.setTempData("reason", reason);
 		return true;
 	}

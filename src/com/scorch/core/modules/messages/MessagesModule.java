@@ -57,7 +57,7 @@ public class MessagesModule extends AbstractModule {
 		defaults.add(new CMessage("noplaytime", "&e%player% &7has never played on this server."));
 		defaults.add(
 				new CMessage("gamemodeformat", "&aSuccessfully &7set &e%player%&7'%s% gamemode to &e%gamemode%&7."));
-		defaults.add(new CMessage("commandtoggleformat", "&7The &e%command% &7command has been %status%&7."));
+		defaults.add(new CMessage("commandtoggleformat", "&7The &e/%command% &7command has been %status%&7."));
 	}
 
 	@Override
