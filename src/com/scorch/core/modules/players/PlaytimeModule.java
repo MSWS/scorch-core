@@ -50,8 +50,8 @@ public class PlaytimeModule extends AbstractModule implements Listener {
 		UUID uuid = event.getPlayer().getUniqueId();
 		ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(uuid);
 
-		sp.setData("playtime", System.currentTimeMillis()
-				- sp.getData("playtime", Long.class, loginTimes.getOrDefault(uuid, System.currentTimeMillis())));
+		sp.setData("playtime", System.currentTimeMillis() - sp.getData("playtime", Double.class,
+				loginTimes.getOrDefault(uuid, System.currentTimeMillis()).longValue()));
 
 		loginTimes.remove(uuid);
 	}
