@@ -709,7 +709,7 @@ public class DataManager extends AbstractModule {
 						statement.setString(parameterIndex, DataManager.getGson().toJson(selectorValue));
 					}
 
-					parameterIndex++;
+//					parameterIndex++;
 
 				} catch (IllegalArgumentException e) {
 					Logger.error("An error occurred while trying to serialize a class for a prepared statement");

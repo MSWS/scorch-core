@@ -15,6 +15,7 @@ import org.bukkit.command.SimpleCommandMap;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.commands.ACommand;
+import com.scorch.core.commands.BVersionCommand;
 import com.scorch.core.commands.FilterCommand;
 import com.scorch.core.commands.FriendCommand;
 import com.scorch.core.commands.GamemodeCommand;
@@ -86,6 +87,7 @@ public class CommandModule extends AbstractModule {
 		commands.put(new GamemodeCommand("gamemode"), true);
 		commands.put(new FriendCommand("friend"), true);
 		commands.put(new ToggleCommand("toggle"), true);
+		commands.put(new BVersionCommand("buildversion"), true);
 
 		enableCommands(commands.keySet().stream().collect(Collectors.toList()));
 		Logger.log("&aSuccessfully enabled &e" + commands.size() + "&a command" + (commands.size() == 1 ? "" : "s"));

@@ -54,8 +54,8 @@ public class OfflineMessagesModule extends AbstractModule {
 					e.printStackTrace();
 				}
 
-				Logger.log("Successfully loaded " + linked.size() + " offline message" + (linked.size() == 1 ? "" : "s")
-						+ ".");
+				Logger.log("&aSuccessfully loaded &e" + linked.size() + " &aoffline message"
+						+ (linked.size() == 1 ? "" : "s") + ".");
 			}
 		}.runTaskAsynchronously(ScorchCore.getInstance());
 	}
