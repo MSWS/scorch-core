@@ -73,17 +73,17 @@ public class BuildModeCommand extends BukkitCommand {
 					MSG.tell(sender, "Inspection mode enabled");
 				}
 				return true;
+			default:
+				MSG.tell(sender, "Unknown arguments");
+				return true;
 			}
 		}
 
-		if (bm.inBuildMode(target.getUniqueId())) {
-			bm.disableBuildMode(target.getUniqueId());
-		} else {
-			bm.enableBuildMode(target.getUniqueId());
-		}
+		String msg = ScorchCore.getInstance().getMessage("buildmodetoggle").replace("%player%", target.getName())
+				.replace("%s%", target.getName().toLowerCase().endsWith("s") ? "" : "s")
+				.replace("%status%", bm.toggleBuildMode(target.getUniqueId()) ? "&aenabled" : "&cdisabled");
 
-		MSG.tell(sender, target.getName() + "'" + (target.getName().toLowerCase().endsWith("s") ? "" : "s")
-				+ " build mode: " + MSG.TorF(bm.inBuildMode(target.getUniqueId())));
+		MSG.tell(sender, msg);
 		return true;
 	}
 
@@ -107,7 +107,7 @@ public class BuildModeCommand extends BukkitCommand {
 
 		if (args.length == 2 && args[0].equalsIgnoreCase("revert")) {
 			for (Player p : Bukkit.getOnlinePlayers()) {
-				if (p.getName().toLowerCase().startsWith(args[0].toLowerCase()))
+				if (p.getName().toLowerCase().startsWith(args[1].toLowerCase()))
 					result.add(p.getName());
 			}
 		}

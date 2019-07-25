@@ -7,6 +7,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
@@ -47,6 +48,11 @@ public class WorldProtectionModule extends AbstractModule implements Listener {
 
 	@EventHandler
 	public void onBucketFillEvent(PlayerBucketFillEvent event) {
+		event.setCancelled(true);
+	}
+
+	@EventHandler
+	public void onInteract(PlayerInteractEvent event) {
 		event.setCancelled(true);
 	}
 

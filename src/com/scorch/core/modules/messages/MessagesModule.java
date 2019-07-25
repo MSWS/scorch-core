@@ -58,6 +58,14 @@ public class MessagesModule extends AbstractModule {
 		defaults.add(
 				new CMessage("gamemodeformat", "&aSuccessfully &7set &e%player%&7'%s% gamemode to &e%gamemode%&7."));
 		defaults.add(new CMessage("commandtoggleformat", "&7The &e/%command% &7command has been %status%&7."));
+		defaults.add(new CMessage("buildmodetoggle", "&e%player%&7'%s% build mode has been %status%&7."));
+		defaults.add(
+				new CMessage("buildmodeinspectentity-natural", "&7This entity was not spawned in via build mode."));
+		defaults.add(new CMessage("buildmodeinspectentity-player", "&7This entity was spawned in by &e%player%&7."));
+		defaults.add(
+				new CMessage("buildmodeinspectblock-natural", "&7This block was not placed by someone in build mode."));
+		defaults.add(new CMessage("buildmodeinspectblock-player", "&7This block was placed by &e%player%&7."));
+
 	}
 
 	@Override
