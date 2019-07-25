@@ -50,7 +50,7 @@ public class VanishModule extends AbstractModule implements Listener {
 
 	public void vanish(Player player) {
 		for (Player p : Bukkit.getOnlinePlayers())
-			if (!wouldSee(player, p))
+			if (!wouldSee(p, player))
 				p.hidePlayer(ScorchCore.getInstance(), player);
 
 		MSG.cTell(player, "vanishenablemessage");

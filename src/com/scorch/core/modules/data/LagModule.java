@@ -1,4 +1,4 @@
-package com.scorch.core.modules.players;
+package com.scorch.core.modules.data;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -16,10 +16,14 @@ public class LagModule extends AbstractModule {
 
 	private BukkitRunnable runner;
 
+	private long startTime;
+
 	@Override
 	public void initialize() {
 		runner = run();
 		runner.runTaskTimer(ScorchCore.getInstance(), 0, 1);
+
+		startTime = System.currentTimeMillis();
 	}
 
 	@Override
@@ -55,6 +59,10 @@ public class LagModule extends AbstractModule {
 				TICK_COUNT += 1;
 			}
 		};
+	}
+
+	public long getUptime() {
+		return System.currentTimeMillis() - startTime;
 	}
 
 }

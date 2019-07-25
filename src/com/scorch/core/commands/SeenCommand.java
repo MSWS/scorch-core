@@ -45,7 +45,7 @@ public class SeenCommand extends BukkitCommand implements Listener {
 			return true;
 		}
 
-		long last = System.currentTimeMillis() - sp.getData("lastSeen", Double.class).longValue();
+		long last = System.currentTimeMillis() - sp.getData("lastSeen", Number.class).longValue();
 		MSG.tell(sender, ScorchCore.getInstance().getMessage("seenformat").replace("%player%", target.getName())
 				.replace("%time%", MSG.getTime(last)));
 		return true;

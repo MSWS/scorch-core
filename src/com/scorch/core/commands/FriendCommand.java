@@ -1,6 +1,8 @@
 package com.scorch.core.commands;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -45,10 +47,43 @@ public class FriendCommand extends BukkitCommand {
 		Player player = (Player) sender;
 		OfflinePlayer target;
 
+		List<Friendship> sentFriends = friends.getFriends(player.getUniqueId()).stream()
+				.filter(f -> f.getPlayer().equals(player.getUniqueId())).collect(Collectors.toList()),
+				receivedFriends = friends.getFriends(player.getUniqueId()).stream()
+						.filter(f -> f.getTarget().equals(player.getUniqueId())).collect(Collectors.toList());
+
+		List<Friendship> sentRequests = sentFriends.stream().filter(f -> f.getStatus() == FriendStatus.REQUESTED)
+				.collect(Collectors.toList()),
+				receivedRequests = receivedFriends.stream().filter(f -> f.getStatus() == FriendStatus.REQUESTED)
+						.collect(Collectors.toList());
+
 		if (args.length == 0) {
-			for (Friendship f : friends.getFriends(player.getUniqueId())) {
+			if (!sentRequests.isEmpty()) {
+				MSG.tell(sender, "You have sent " + sentRequests.size() + " pending friend request"
+						+ (sentRequests.size() == 1 ? "" : "s") + ".");
+
+				for (Friendship f : sentRequests) {
+					MSG.tell(sender, "Friend request to " + Bukkit.getOfflinePlayer(f.getTarget()).getName());
+				}
+			}
+
+			if (!receivedRequests.isEmpty()) {
+				MSG.tell(sender, "You have " + receivedRequests.size() + " pending friend request for you"
+						+ (receivedRequests.size() == 1 ? "" : "s") + ".");
+
+				for (Friendship f : receivedRequests) {
+					MSG.tell(sender, "Friend request from " + Bukkit.getOfflinePlayer(f.getTarget()).getName());
+				}
+			}
+
+			for (Friendship f : friends.getFriends(player.getUniqueId()).stream()
+					.filter(f -> f.getStatus() != FriendStatus.REQUESTED).collect(Collectors.toList())) {
 				String name = Bukkit.getOfflinePlayer(f.getTarget()).getName();
-				MSG.tell(sender, name + ": " + f.getStatus());
+				if (f.getTarget().equals(player.getUniqueId())) {
+					MSG.tell(sender, Bukkit.getOfflinePlayer(f.getPlayer()).getName() + " [REQUEST]: " + f.getStatus());
+				} else {
+					MSG.tell(sender, name + ": " + f.getStatus());
+				}
 			}
 			return true;
 		}
@@ -58,7 +93,6 @@ public class FriendCommand extends BukkitCommand {
 			for (Friendship f : friends.getFriends(player.getUniqueId())) {
 				MSG.tell(sender, f.getTarget() + ": " + f.getStatus());
 			}
-
 			break;
 		case "remove":
 			target = Bukkit.getOfflinePlayer(args[1]);
