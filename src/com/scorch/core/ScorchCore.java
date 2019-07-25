@@ -197,7 +197,7 @@ public class ScorchCore extends JavaPlugin {
 	 */
 	public AbstractModule getModule(String id) {
 		for (AbstractModule module : getModules()) {
-			if (module.getId() == id) {
+			if (module.getId().equals(id)) {
 				return module;
 			}
 		}

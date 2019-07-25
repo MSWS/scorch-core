@@ -90,7 +90,7 @@ public class PunishModule extends AbstractModule {
 		Inventory inv = Utils.getGui(punisher, ScorchCore.getInstance().getGui(), "punish", 0);
 		List<Punishment> history = getPunishments(player.getUniqueId());
 		Collections.sort(history);
-
+		
 		for (int i = 0; i < 5 && i < history.size(); i++) {
 			Punishment p = history.get(i);
 			ItemStack item = p.getItem();

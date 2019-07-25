@@ -74,6 +74,8 @@ public class BuildModeModule extends AbstractModule implements Listener {
 			disableBuildMode(it.next());
 
 		BlockPlaceEvent.getHandlerList().unregister(this);
+		BlockBreakEvent.getHandlerList().unregister(this);
+		PlayerInteractEntityEvent.getHandlerList().unregister(this);
 		PlayerInteractEvent.getHandlerList().unregister(this);
 		PlayerChangedWorldEvent.getHandlerList().unregister(this);
 		BlockBreakEvent.getHandlerList().unregister(this);
@@ -82,6 +84,8 @@ public class BuildModeModule extends AbstractModule implements Listener {
 		BlockPhysicsEvent.getHandlerList().unregister(this);
 		BlockFadeEvent.getHandlerList().unregister(this);
 		SpongeAbsorbEvent.getHandlerList().unregister(this);
+		StructureGrowEvent.getHandlerList().unregister(this);
+		BlockSpreadEvent.getHandlerList().unregister(this);
 	}
 
 	public boolean toggleBuildMode(UUID uuid) {

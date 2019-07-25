@@ -7,6 +7,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.scorch.core.ScorchCore;
@@ -29,6 +30,8 @@ public class WorldProtectionModule extends AbstractModule implements Listener {
 		BlockBreakEvent.getHandlerList().unregister(this);
 		PlayerBucketEmptyEvent.getHandlerList().unregister(this);
 		PlayerBucketFillEvent.getHandlerList().unregister(this);
+		PlayerInteractEvent.getHandlerList().unregister(this);
+		PlayerDropItemEvent.getHandlerList().unregister(this);
 	}
 
 	@EventHandler
@@ -53,6 +56,11 @@ public class WorldProtectionModule extends AbstractModule implements Listener {
 
 	@EventHandler
 	public void onInteract(PlayerInteractEvent event) {
+		event.setCancelled(true);
+	}
+
+	@EventHandler
+	public void onItemDrop(PlayerDropItemEvent event) {
 		event.setCancelled(true);
 	}
 
