@@ -39,8 +39,11 @@ import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -64,6 +67,8 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	private Map<UUID, ItemStack[]> invTracker;
 	private Map<UUID, BuildStatus> status;
 
+	private boolean changeWorld, changeQuit, changeGamemode;
+
 	@Override
 	public void initialize() {
 		tracker = new HashMap<UUID, List<Location>>();
@@ -71,17 +76,19 @@ public class BuildModeModule extends AbstractModule implements Listener {
 		invTracker = new HashMap<>();
 		status = new HashMap<>();
 
+		changeWorld = ScorchCore.getInstance().getConfig().getBoolean("Rollback.OnChangeWorld");
+		changeQuit = ScorchCore.getInstance().getConfig().getBoolean("Rollback.OnQuit");
+		changeGamemode = ScorchCore.getInstance().getConfig().getBoolean("Rollback.OnGameModechange");
+
 		Bukkit.getPluginManager().registerEvents(this, ScorchCore.getInstance());
 	}
 
 	@Override
 	public void disable() {
 		Iterator<UUID> it = tracker.keySet().iterator();
-		while (it.hasNext()) {
-			UUID uuid = it.next();
+		it.forEachRemaining(uuid -> {
 			setStatus(uuid, BuildStatus.NONE, true);
-		}
-
+		});
 		BlockPlaceEvent.getHandlerList().unregister(this);
 		BlockBreakEvent.getHandlerList().unregister(this);
 		PlayerInteractEntityEvent.getHandlerList().unregister(this);
@@ -427,7 +434,33 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onChangeWorld(PlayerChangedWorldEvent event) {
 		Player player = event.getPlayer();
+		if (!changeWorld)
+			return;
 		if (getStatus(player.getUniqueId()) != BuildStatus.BUILD)
+			return;
+
+		setStatus(player.getUniqueId(), BuildStatus.NONE, false);
+	}
+
+	@EventHandler(priority = EventPriority.HIGH)
+	public void onQuit(PlayerQuitEvent event) {
+		Player player = event.getPlayer();
+		if (!changeQuit)
+			return;
+		if (getStatus(player.getUniqueId()) != BuildStatus.BUILD)
+			return;
+
+		setStatus(player.getUniqueId(), BuildStatus.NONE, false);
+	}
+
+	@EventHandler(priority = EventPriority.HIGH)
+	public void onGamemodeChange(PlayerGameModeChangeEvent event) {
+		Player player = event.getPlayer();
+		if (!changeGamemode)
+			return;
+		if (getStatus(player.getUniqueId()) != BuildStatus.BUILD)
+			return;
+		if (event.getNewGameMode() == GameMode.CREATIVE)
 			return;
 
 		setStatus(player.getUniqueId(), BuildStatus.NONE, false);
@@ -519,6 +552,16 @@ public class BuildModeModule extends AbstractModule implements Listener {
 				event.setRadius(0);
 				break;
 			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGH)
+	public void dropItem(PlayerDropItemEvent event) {
+		Player player = event.getPlayer();
+
+		if (getStatus(player.getUniqueId()) == BuildStatus.OVERRIDE) {
+			event.setCancelled(false);
+			return;
 		}
 	}
 

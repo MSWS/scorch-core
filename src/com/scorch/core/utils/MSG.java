@@ -1,9 +1,12 @@
 package com.scorch.core.utils;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -330,8 +333,26 @@ public class MSG {
 		return result;
 	}
 
-	public static String filter(String msg, List<String> swears) {
+	public static String filter(String msg, List<String> swears, List<String> allow) {
 		String raw = msg; /** plugin.getSwears() is a List of all words that should be filtered */
+
+		String[] replace = new String[raw.split(" ").length];
+
+		int pos = 0;
+		for (String m : raw.split(" ")) {
+			if (allow.contains(m.toLowerCase()))
+				replace[pos] = m;
+			pos++;
+		}
+
+		Collections.sort(swears, new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				return o2.length() - o1.length();
+			}
+		});
+
+		allow = allow.stream().map(s -> s.toLowerCase()).collect(Collectors.toList());
 		for (String word : swears) {
 			char[] letters = raw.toCharArray();
 			for (int i = 0; i < raw.length() && i < letters.length; i++) {
@@ -354,6 +375,17 @@ public class MSG {
 				}
 			}
 		}
+
+		StringBuilder builder = new StringBuilder();
+
+		for (int i = 0; i < raw.split(" ").length; i++) {
+			if (replace[i] != null)
+				builder.append(replace[i] + " ");
+			else
+				builder.append(raw.split(" ")[i] + " ");
+		}
+
+		raw = builder.toString();
 
 		Pattern p = Pattern.compile(
 				"(.+(.|,|dot|)(com|net|org|me|edu|info)|[0-9]+(.|,|dot|)[0-9]+(.|,|dot|)[0-9]+(.|,|dot|)[0-9]+)");

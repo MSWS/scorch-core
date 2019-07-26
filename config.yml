@@ -4,3 +4,7 @@ MySql:
    database: "db"
    user: "root"
    password: "password"
+Rollback:
+  OnQuit: false
+  OnChangeWorld: false
+  OnGameModechange: true

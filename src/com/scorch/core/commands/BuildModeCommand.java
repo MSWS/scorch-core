@@ -59,7 +59,8 @@ public class BuildModeCommand extends BukkitCommand {
 			switch (args[0].toLowerCase()) {
 			case "revert":
 			case "reset":
-				if (!sender.hasPermission("scorch.command.buildmode.revert")) {
+			case "rollback":
+				if (!sender.hasPermission("scorch.command.buildmode.rollback")) {
 					MSG.tell(sender, getPermissionMessage());
 					return true;
 				}
@@ -68,7 +69,7 @@ public class BuildModeCommand extends BukkitCommand {
 					for (UUID uuid : bm.getBuilders())
 						bm.rollback(uuid, false);
 
-					MSG.tell(sender, "Reverted everyone's builds.");
+					MSG.tell(sender, "Rolled back everyone's builds.");
 					return true;
 				}
 
@@ -78,7 +79,7 @@ public class BuildModeCommand extends BukkitCommand {
 				}
 
 				bm.rollback(target.getUniqueId(), false);
-				MSG.tell(sender, "Reverted " + target.getName() + "'"
+				MSG.tell(sender, "Rolled back " + target.getName() + "'"
 						+ (target.getName().toLowerCase().endsWith("s") ? "" : "s") + " builds");
 				return true;
 			case "inspect":
@@ -138,7 +139,7 @@ public class BuildModeCommand extends BukkitCommand {
 		}
 
 		if (args.length == 1) {
-			for (String res : new String[] { "revert", "inspect", "override" }) {
+			for (String res : new String[] { "rollback", "inspect", "override" }) {
 				if (sender.hasPermission("scorch.command.buildmode." + res))
 					if (res.toLowerCase().startsWith(args[0].toLowerCase()))
 						result.add(res);
@@ -150,7 +151,7 @@ public class BuildModeCommand extends BukkitCommand {
 				if (p.getName().toLowerCase().startsWith(args[1].toLowerCase()))
 					result.add(p.getName());
 			}
-			if (args[0].matches("(?i)(revert|reset)") && "all".toLowerCase().startsWith(args[1].toLowerCase()))
+			if (args[0].matches("(?i)(revert|reset|rollback)") && "all".toLowerCase().startsWith(args[1].toLowerCase()))
 				result.add("all");
 		}
 

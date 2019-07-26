@@ -8,7 +8,6 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.ModulePriority;
 import com.scorch.core.modules.chat.FilterEntry;
 import com.scorch.core.modules.chat.FilterModule;
 import com.scorch.core.modules.chat.FilterModule.FilterType;
@@ -56,33 +55,32 @@ public class FilterCommand extends BukkitCommand {
 			}
 			break;
 		case "enable":
-			if (fm != null) {
+			if (fm.isEnabled()) {
 				MSG.tell(sender, "Filter is already enabled");
 				return true;
 			}
 
-			fm = (FilterModule) ScorchCore.getInstance().registerModule(new FilterModule("FilterModule"),
-					ModulePriority.MEDIUM);
-
 			fm.initialize();
 			break;
 		case "disable":
-			if (fm == null) {
+			if (!fm.isEnabled()) {
 				MSG.tell(sender, "Filter is already disabled");
 				return true;
 			}
 
-			ScorchCore.getInstance().disableModule(ScorchCore.getInstance().getModule("FilterModule"));
+			fm.disable();
 			MSG.tell(sender, "Filter disabled.");
 			break;
 		case "addword":
-			if (args.length < 3) {
-				MSG.tell(sender, "/filter addword [word] [wordtype]");
-				return true;
+			FilterType type = FilterType.REGULAR;
+			if (args.length == 3) {
+				type = FilterType.valueOf(args[2].toUpperCase());
 			}
 
-			entry = new FilterEntry(args[1], FilterType.valueOf(args[2].toUpperCase()));
+			entry = new FilterEntry(args[1], type);
 			fm.addWord(entry);
+
+			MSG.tell(sender, "Added word " + args[1] + " with level of " + entry.getType());
 			break;
 		case "removeword":
 			if (args.length < 2) {
@@ -92,11 +90,18 @@ public class FilterCommand extends BukkitCommand {
 
 			entry = fm.getFilterEntry(args[1]);
 			if (entry == null) {
-				MSG.tell(sender, "Word is not filtered");
+				MSG.tell(sender, args[1] + " is not filtered");
 				return true;
 			}
 
 			fm.removeWord(entry);
+			MSG.tell(sender, "Removed word " + entry.getWord());
+			break;
+		case "addbypass":
+			entry = new FilterEntry(args[1], FilterType.ALLOW);
+			fm.addWord(entry);
+
+			MSG.tell(sender, "Added " + args[1] + " to the bypass");
 			break;
 		}
 
@@ -107,7 +112,8 @@ public class FilterCommand extends BukkitCommand {
 	public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
 		List<String> result = new ArrayList<String>();
 		if (args.length == 1) {
-			for (String res : new String[] { "preference", "enable", "disable", "addword" }) {
+			for (String res : new String[] { "preference", "enable", "disable", "addword", "removeword",
+					"addbypass" }) {
 				if (sender.hasPermission("scorch.command.filter." + res)
 						&& res.toLowerCase().startsWith(args[0].toLowerCase())) {
 					result.add(res);
