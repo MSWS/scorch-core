@@ -20,6 +20,7 @@ import com.scorch.core.commands.BuildModeCommand;
 import com.scorch.core.commands.FilterCommand;
 import com.scorch.core.commands.FriendCommand;
 import com.scorch.core.commands.GamemodeCommand;
+import com.scorch.core.commands.HealCommand;
 import com.scorch.core.commands.HelpCommand;
 import com.scorch.core.commands.HistoryCommand;
 import com.scorch.core.commands.LagCommand;
@@ -90,6 +91,7 @@ public class CommandModule extends AbstractModule {
 		commands.put(new ToggleCommand("toggle"), true);
 		commands.put(new BVersionCommand("buildversion"), true);
 		commands.put(new BuildModeCommand("buildmode"), true);
+		commands.put(new HealCommand("heal"), true);
 
 		enableCommands(commands.keySet().stream().collect(Collectors.toList()));
 		Logger.log("&aSuccessfully enabled &e" + commands.size() + "&a command" + (commands.size() == 1 ? "" : "s"));

@@ -52,8 +52,10 @@ public class VanishCommand extends BukkitCommand {
 
 		String msg = ScorchCore.getInstance().getMessage("togglevanish");
 
-		MSG.tell(sender, msg.replace("%status%", vm.toggle(target) ? "&aenabled" : "disabled").replace("%s%",
-				target.getName().toLowerCase().endsWith("s") ? "" : "s"));
+		MSG.tell(sender,
+				msg.replace("%status%", vm.toggle(target) ? "&aenabled" : "disabled")
+						.replace("%s%", target.getName().toLowerCase().endsWith("s") ? "" : "s")
+						.replace("%target%", target.getName()));
 		return true;
 	}
 }

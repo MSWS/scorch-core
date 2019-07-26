@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -26,11 +27,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFadeEvent;
+import org.bukkit.event.block.BlockFertilizeEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.SpongeAbsorbEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -43,7 +48,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
-import com.scorch.core.modules.players.CPlayer;
 import com.scorch.core.utils.MSG;
 import com.scorch.core.utils.Utils;
 
@@ -57,12 +61,14 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	private Map<UUID, List<Entity>> entityTracker;
 
 	private Map<UUID, ItemStack[]> invTracker;
+	private Map<UUID, BuildStatus> status;
 
 	@Override
 	public void initialize() {
 		tracker = new HashMap<UUID, List<Location>>();
 		entityTracker = new HashMap<UUID, List<Entity>>();
 		invTracker = new HashMap<>();
+		status = new HashMap<>();
 
 		Bukkit.getPluginManager().registerEvents(this, ScorchCore.getInstance());
 	}
@@ -71,7 +77,7 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	public void disable() {
 		Iterator<UUID> it = tracker.keySet().iterator();
 		while (it.hasNext())
-			disableBuildMode(it.next());
+			setStatus(it.next(), BuildStatus.NONE);
 
 		BlockPlaceEvent.getHandlerList().unregister(this);
 		BlockBreakEvent.getHandlerList().unregister(this);
@@ -86,54 +92,21 @@ public class BuildModeModule extends AbstractModule implements Listener {
 		SpongeAbsorbEvent.getHandlerList().unregister(this);
 		StructureGrowEvent.getHandlerList().unregister(this);
 		BlockSpreadEvent.getHandlerList().unregister(this);
-	}
-
-	public boolean toggleBuildMode(UUID uuid) {
-		if (inBuildMode(uuid)) {
-			disableBuildMode(uuid);
-		} else {
-			enableBuildMode(uuid);
-		}
-
-		return inBuildMode(uuid);
-	}
-
-	public void enableBuildMode(UUID uuid) {
-		if (inBuildMode(uuid))
-			return;
-
-		Player player = Bukkit.getPlayer(uuid);
-		if (player != null) {
-			player.setGameMode(GameMode.CREATIVE);
-			invTracker.put(uuid, player.getInventory().getStorageContents());
-			player.getInventory().clear();
-		}
-
-		tracker.put(uuid, new ArrayList<>());
-		entityTracker.put(uuid, new ArrayList<>());
-	}
-
-	public void disableBuildMode(UUID uuid) {
-		rollback(uuid);
-
-		Player player = Bukkit.getPlayer(uuid);
-		if (player != null) {
-			player.setGameMode(GameMode.SURVIVAL);
-			player.getInventory().setContents(invTracker.getOrDefault(uuid, new ItemStack[0]));
-		}
-
-		invTracker.remove(uuid);
-		tracker.remove(uuid);
-		entityTracker.remove(uuid);
+		EntityExplodeEvent.getHandlerList().unregister(this);
+		CreatureSpawnEvent.getHandlerList().unregister(this);
 	}
 
 	public boolean inBuildMode(UUID uuid) {
-		return tracker.containsKey(uuid);
+		return getStatus(uuid) == BuildStatus.BUILD;
 	}
 
 	public void rollback(UUID uuid) {
 		tracker.getOrDefault(uuid, new ArrayList<Location>()).forEach(loc -> loc.getBlock().setType(Material.AIR));
 		entityTracker.getOrDefault(uuid, new ArrayList<>()).forEach(ent -> ent.remove());
+	}
+
+	public Set<UUID> getBuilders() {
+		return tracker.keySet();
 	}
 
 	public UUID getResponsible(Location loc) {
@@ -155,7 +128,13 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
-		if (!tracker.containsKey(player.getUniqueId()))
+
+		if (getStatus(player.getUniqueId()) == BuildStatus.OVERRIDE) {
+			event.setCancelled(false);
+			return;
+		}
+
+		if (getStatus(player.getUniqueId()) != BuildStatus.BUILD)
 			return;
 
 		Block block = event.getBlock();
@@ -180,7 +159,13 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
-		if (!tracker.containsKey(player.getUniqueId()))
+
+		if (getStatus(player.getUniqueId()) == BuildStatus.OVERRIDE) {
+			event.setCancelled(false);
+			return;
+		}
+
+		if (getStatus(player.getUniqueId()) != BuildStatus.BUILD)
 			return;
 
 		Block block = event.getBlock();
@@ -196,6 +181,12 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onEntityInteract(PlayerInteractEntityEvent event) {
 		Player player = event.getPlayer();
+
+		if (getStatus(player.getUniqueId()) == BuildStatus.OVERRIDE) {
+			event.setCancelled(false);
+			return;
+		}
+
 		if (!tracker.containsKey(player.getUniqueId()))
 			return;
 
@@ -229,8 +220,13 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onInteract(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
-		CPlayer cp = ScorchCore.getInstance().getPlayer(player);
-		if (cp.hasTempData("buildModeInspection") && event.getAction() == Action.LEFT_CLICK_BLOCK) {
+
+		if (getStatus(player.getUniqueId()) == BuildStatus.OVERRIDE) {
+			event.setCancelled(false);
+			return;
+		}
+
+		if (getStatus(player.getUniqueId()) == BuildStatus.INSPECT && event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			event.setCancelled(true);
 
 			UUID uuid = getResponsible(event.getClickedBlock().getLocation());
@@ -255,6 +251,30 @@ public class BuildModeModule extends AbstractModule implements Listener {
 		ItemStack item = event.getItem();
 		if (item == null || item.getType() == Material.AIR)
 			return;
+
+		if (item.getType() == Material.FLINT_AND_STEEL) {
+			for (BlockFace face : BlockFace.values()) {
+				if (event.getClickedBlock().getRelative(event.getBlockFace()).getRelative(face)
+						.getType() == Material.TNT) {
+					event.setCancelled(true);
+					break;
+				}
+			}
+			return;
+		}
+
+		if (item.getType() == Material.TNT) {
+			for (BlockFace face : BlockFace.values()) {
+				Block block = event.getClickedBlock().getRelative(event.getBlockFace()).getRelative(face);
+				if (block.isBlockPowered() || isRedstone(block.getType())) {
+					event.setCancelled(true);
+					break;
+				}
+			}
+			if (isRedstone(event.getClickedBlock().getType()) || event.getClickedBlock().isBlockPowered())
+				event.setCancelled(true);
+			return;
+		}
 
 		EntityType type = null;
 
@@ -308,8 +328,12 @@ public class BuildModeModule extends AbstractModule implements Listener {
 
 		Player damager = (Player) event.getDamager();
 
-		CPlayer cp = ScorchCore.getInstance().getPlayer(damager);
-		if (cp.hasTempData("buildModeInspection")) {
+		if (getStatus(damager.getUniqueId()) == BuildStatus.OVERRIDE) {
+			event.setCancelled(false);
+			return;
+		}
+
+		if (getStatus(damager.getUniqueId()) == BuildStatus.INSPECT) {
 			event.setCancelled(true);
 
 			UUID uuid = getResponsible(event.getEntity());
@@ -331,8 +355,12 @@ public class BuildModeModule extends AbstractModule implements Listener {
 
 		Player damager = (Player) event.getAttacker();
 
-		CPlayer cp = ScorchCore.getInstance().getPlayer(damager);
-		if (cp.hasTempData("buildModeInspection")) {
+		if (getStatus(damager.getUniqueId()) == BuildStatus.OVERRIDE) {
+			event.setCancelled(false);
+			return;
+		}
+
+		if (getStatus(damager.getUniqueId()) == BuildStatus.INSPECT) {
 			event.setCancelled(true);
 
 			UUID uuid = getResponsible(event.getVehicle());
@@ -350,9 +378,10 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onChangeWorld(PlayerChangedWorldEvent event) {
 		Player player = event.getPlayer();
-		if (!tracker.containsKey(player.getUniqueId()))
+		if (getStatus(player.getUniqueId()) != BuildStatus.BUILD)
 			return;
-		disableBuildMode(player.getUniqueId());
+
+		setStatus(player.getUniqueId(), BuildStatus.NONE);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
@@ -388,7 +417,7 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void structureGrow(StructureGrowEvent event) {
 		Player player = event.getPlayer();
-		if (!tracker.containsKey(player.getUniqueId()))
+		if (getStatus(player.getUniqueId()) != BuildStatus.BUILD)
 			return;
 
 		List<Location> locs = tracker.get(player.getUniqueId());
@@ -401,7 +430,7 @@ public class BuildModeModule extends AbstractModule implements Listener {
 				.map(b -> b.getLocation()).collect(Collectors.toList()));
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void blockSpread(BlockSpreadEvent event) {
 		for (List<Location> locs : tracker.values()) {
 			if (locs.contains(event.getSource().getLocation()) || locs.contains(event.getBlock().getLocation())) {
@@ -409,5 +438,108 @@ public class BuildModeModule extends AbstractModule implements Listener {
 				break;
 			}
 		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGH)
+	public void entityExplode(EntityExplodeEvent event) {
+		for (List<Entity> ents : entityTracker.values()) {
+			if (ents.contains(event.getEntity())) {
+				event.setCancelled(true);
+				break;
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGH)
+	public void entitySpawn(CreatureSpawnEvent event) {
+		for (List<Location> locs : tracker.values()) {
+			if (locs.contains(event.getLocation().getBlock().getLocation())) {
+				event.setCancelled(true);
+				break;
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGH)
+	public void entitySpawn(BlockFertilizeEvent event) {
+		Player player = event.getPlayer();
+
+		if (getStatus(player.getUniqueId()) == BuildStatus.OVERRIDE) {
+			event.setCancelled(false);
+			return;
+		}
+
+		if (getStatus(player.getUniqueId()) != BuildStatus.BUILD)
+			return;
+
+		List<Location> locs = tracker.get(player.getUniqueId());
+		locs.addAll(event.getBlocks().stream().map(b -> b.getLocation()).collect(Collectors.toList()));
+		tracker.put(player.getUniqueId(), locs);
+	}
+
+	@EventHandler(priority = EventPriority.HIGH)
+	public void explosionCreate(ExplosionPrimeEvent event) {
+		MSG.announce("Explosion Primed");
+	}
+
+	public boolean toggleMode(UUID uuid, BuildStatus status) {
+		if (getStatus(uuid) == status) {
+			setStatus(uuid, BuildStatus.NONE);
+		} else {
+			setStatus(uuid, status);
+		}
+		return getStatus(uuid) == status;
+	}
+
+	public void setStatus(UUID uuid, BuildStatus status) {
+		Player player = Bukkit.getPlayer(uuid);
+		BuildStatus old = getStatus(uuid);
+		this.status.put(uuid, status);
+		if (status == BuildStatus.NONE)
+			rollback(uuid);
+
+		if (player == null)
+			return;
+		if (status == BuildStatus.NONE) {
+			if (player.isFlying()) {
+				Block highest = player.getWorld().getHighestBlockAt(player.getLocation());
+				int diff = player.getLocation().getBlockY() - highest.getY();
+				if (diff >= 3) {
+					Location target = highest.getLocation().add(.5, 0, .5);
+					target.setPitch(player.getLocation().getPitch());
+					target.setYaw(player.getLocation().getYaw());
+					player.teleport(target);
+				}
+			}
+			player.setGameMode(GameMode.SURVIVAL);
+			player.getInventory().setContents(invTracker.getOrDefault(uuid, new ItemStack[0]));
+			invTracker.remove(uuid);
+			tracker.remove(uuid);
+			entityTracker.remove(uuid);
+		} else if (old == BuildStatus.NONE) {
+			player.setGameMode(GameMode.CREATIVE);
+			invTracker.put(uuid, player.getInventory().getStorageContents());
+			player.getInventory().clear();
+			tracker.put(uuid, new ArrayList<>());
+			entityTracker.put(uuid, new ArrayList<>());
+		}
+	}
+
+	public void resetMode(UUID uuid) {
+		status.put(uuid, BuildStatus.NONE);
+	}
+
+	public BuildStatus getStatus(UUID uuid) {
+		return status.getOrDefault(uuid, BuildStatus.NONE);
+	}
+
+	public enum BuildStatus {
+		NONE, BUILD, INSPECT, OVERRIDE
+	}
+
+	private boolean isRedstone(Material mat) {
+		List<Material> arrays = Arrays.asList(Material.REDSTONE_BLOCK, Material.REDSTONE_TORCH,
+				Material.REDSTONE_WALL_TORCH);
+		return arrays.contains(mat);
 	}
 }

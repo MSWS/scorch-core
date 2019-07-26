@@ -3,6 +3,7 @@ package com.scorch.core.commands;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -10,8 +11,8 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.players.CPlayer;
 import com.scorch.core.modules.staff.BuildModeModule;
+import com.scorch.core.modules.staff.BuildModeModule.BuildStatus;
 import com.scorch.core.utils.MSG;
 
 public class BuildModeCommand extends BukkitCommand {
@@ -41,49 +42,91 @@ public class BuildModeCommand extends BukkitCommand {
 				MSG.tell(sender, "Specify Player");
 				return true;
 			}
-		} else if (sender.hasPermission("scorch.command.buildmode.others")) {
-			target = Bukkit.getPlayer(args[0]);
+		} else if (args.length == 2) {
+			target = Bukkit.getPlayer(args[1]);
 		} else {
-			MSG.tell(sender, ScorchCore.getInstance().getMessage("noperm"));
-			return true;
+			if (sender instanceof Player) {
+				target = (Player) sender;
+			} else {
+				MSG.tell(sender, "Specify Player");
+				return true;
+			}
 		}
+
+		String msg;
 
 		if (args.length > 0) {
 			switch (args[0].toLowerCase()) {
 			case "revert":
 			case "reset":
+				if (!sender.hasPermission("scorch.command.buildmode.revert")) {
+					MSG.tell(sender, getPermissionMessage());
+					return true;
+				}
 				if (args.length < 2) {
 					MSG.tell(sender, "/buildmode " + args[0] + " [Player]");
 					return true;
 				}
 
-				target = Bukkit.getPlayer(args[1]);
+				if (args[1].equalsIgnoreCase("all")) {
+					for (UUID uuid : bm.getBuilders())
+						bm.rollback(uuid);
+
+					MSG.tell(sender, "Reverted everyone's builds.");
+					return true;
+				}
+
+				if (target == null) {
+					MSG.tell(sender, "Unknown Player");
+					return true;
+				}
 
 				bm.rollback(target.getUniqueId());
 				MSG.tell(sender, "Reverted " + target.getName() + "'"
 						+ (target.getName().toLowerCase().endsWith("s") ? "" : "s") + " builds");
 				return true;
 			case "inspect":
-				CPlayer cp = ScorchCore.getInstance().getPlayer((Player) sender);
-				if (cp.hasTempData("buildModeInspection")) {
-					cp.removeTempData("buildModeInspection");
-					MSG.tell(sender, "Inspection mode disabled");
-				} else {
-					cp.setTempData("buildModeInspection", true);
-					MSG.tell(sender, "Inspection mode enabled");
+				if (!sender.hasPermission("scorch.command.buildmode.inspect")) {
+					MSG.tell(sender, getPermissionMessage());
+					return true;
 				}
+				msg = ScorchCore.getInstance().getMessage("buildmodeinspecttoggle")
+						.replace("%target%", target.getName())
+						.replace("%status%",
+								bm.toggleMode(target.getUniqueId(), BuildStatus.INSPECT) ? "&aenabled" : "&cdisabled")
+						.replace("%s%", target.getName().toLowerCase().endsWith("s") ? "" : "s");
+
+				MSG.tell(sender, msg);
+				return true;
+			case "override":
+				if (!sender.hasPermission("scorch.command.buildmode.override")) {
+					MSG.tell(sender, getPermissionMessage());
+					return true;
+				}
+				msg = ScorchCore.getInstance().getMessage("buildmodeoverridetoggle")
+						.replace("%target%", target.getName())
+						.replace("%status%",
+								bm.toggleMode(target.getUniqueId(), BuildStatus.OVERRIDE) ? "&aenabled" : "&cdisabled")
+						.replace("%s%", target.getName().toLowerCase().endsWith("s") ? "" : "s");
+
+				MSG.tell(sender, msg);
 				return true;
 			default:
-				MSG.tell(sender, "Unknown arguments");
-				return true;
+				if (target == null) {
+					MSG.tell(sender, "Unknown Player");
+					return true;
+				}
+				break;
 			}
 		}
 
-		String msg = ScorchCore.getInstance().getMessage("buildmodetoggle").replace("%player%", target.getName())
-				.replace("%s%", target.getName().toLowerCase().endsWith("s") ? "" : "s")
-				.replace("%status%", bm.toggleBuildMode(target.getUniqueId()) ? "&aenabled" : "&cdisabled");
+		msg = ScorchCore.getInstance().getMessage("buildmodebuildtoggle").replace("%target%", target.getName())
+				.replace("%status%",
+						bm.toggleMode(target.getUniqueId(), BuildStatus.BUILD) ? "&aenabled" : "&cdisabled")
+				.replace("%s%", target.getName().toLowerCase().endsWith("s") ? "" : "s");
 
 		MSG.tell(sender, msg);
+
 		return true;
 	}
 
@@ -99,17 +142,20 @@ public class BuildModeCommand extends BukkitCommand {
 		}
 
 		if (args.length == 1) {
-			for (String res : new String[] { "revert", "inspect" }) {
-				if (res.toLowerCase().startsWith(args[0].toLowerCase()))
-					result.add(res);
+			for (String res : new String[] { "revert", "inspect", "override" }) {
+				if (sender.hasPermission("scorch.command.buildmode." + res))
+					if (res.toLowerCase().startsWith(args[0].toLowerCase()))
+						result.add(res);
 			}
 		}
 
-		if (args.length == 2 && args[0].equalsIgnoreCase("revert")) {
+		if (args.length == 2) {
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				if (p.getName().toLowerCase().startsWith(args[1].toLowerCase()))
 					result.add(p.getName());
 			}
+			if (args[0].matches("(?i)(revert|reset)") && "all".toLowerCase().startsWith(args[1].toLowerCase()))
+				result.add("all");
 		}
 
 		return result;
