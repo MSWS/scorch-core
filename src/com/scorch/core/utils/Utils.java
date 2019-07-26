@@ -627,12 +627,31 @@ public class Utils {
 		case STONE:
 		case ANDESITE:
 		case GRANITE:
-		case ANDESITE_SLAB:
-		case GRANITE_SLAB:
-		case ANDESITE_STAIRS:
-		case GRANITE_STAIRS:
-		case ANDESITE_WALL:
-		case GRANITE_WALL:
+		case ACACIA_SLAB:
+		case BIRCH_SLAB:
+		case BRICK_SLAB:
+		case COBBLESTONE_SLAB:
+		case DARK_OAK_SLAB:
+		case DARK_PRISMARINE_SLAB:
+		case JUNGLE_SLAB:
+		case NETHER_BRICK_SLAB:
+		case OAK_SLAB:
+		case PETRIFIED_OAK_SLAB:
+		case PRISMARINE_BRICK_SLAB:
+		case PRISMARINE_SLAB:
+		case PURPUR_SLAB:
+		case QUARTZ_SLAB:
+		case RED_SANDSTONE_SLAB:
+		case SANDSTONE_SLAB:
+		case SPRUCE_SLAB:
+		case STONE_BRICK_SLAB:
+		case STONE_SLAB:
+//		case ANDESITE_SLAB:
+//		case GRANITE_SLAB:
+//		case ANDESITE_STAIRS:
+//		case GRANITE_STAIRS:
+//		case ANDESITE_WALL:
+//		case GRANITE_WALL:
 		case COAL_ORE:
 		case DIAMOND_ORE:
 		case EMERALD_ORE:
@@ -734,7 +753,7 @@ public class Utils {
 		switch (mat) {
 		case BAT_SPAWN_EGG:
 		case BLAZE_SPAWN_EGG:
-		case CAT_SPAWN_EGG:
+//		case CAT_SPAWN_EGG:
 		case CAVE_SPIDER_SPAWN_EGG:
 		case CHICKEN_SPAWN_EGG:
 		case COD_SPAWN_EGG:
@@ -747,7 +766,7 @@ public class Utils {
 		case ENDERMAN_SPAWN_EGG:
 		case ENDERMITE_SPAWN_EGG:
 		case EVOKER_SPAWN_EGG:
-		case FOX_SPAWN_EGG:
+//		case FOX_SPAWN_EGG:
 		case GHAST_SPAWN_EGG:
 		case GUARDIAN_SPAWN_EGG:
 		case HORSE_SPAWN_EGG:
@@ -757,15 +776,15 @@ public class Utils {
 		case MOOSHROOM_SPAWN_EGG:
 		case MULE_SPAWN_EGG:
 		case OCELOT_SPAWN_EGG:
-		case PANDA_SPAWN_EGG:
+//		case PANDA_SPAWN_EGG:
 		case PARROT_SPAWN_EGG:
 		case PHANTOM_SPAWN_EGG:
 		case PIG_SPAWN_EGG:
-		case PILLAGER_SPAWN_EGG:
+//		case PILLAGER_SPAWN_EGG:
 		case POLAR_BEAR_SPAWN_EGG:
 		case PUFFERFISH_SPAWN_EGG:
 		case RABBIT_SPAWN_EGG:
-		case RAVAGER_SPAWN_EGG:
+//		case RAVAGER_SPAWN_EGG:
 		case SALMON_SPAWN_EGG:
 		case SHEEP_SPAWN_EGG:
 		case SHULKER_SPAWN_EGG:
@@ -776,13 +795,13 @@ public class Utils {
 		case SPIDER_SPAWN_EGG:
 		case SQUID_SPAWN_EGG:
 		case STRAY_SPAWN_EGG:
-		case TRADER_LLAMA_SPAWN_EGG:
+//		case TRADER_LLAMA_SPAWN_EGG:
 		case TROPICAL_FISH_SPAWN_EGG:
 		case TURTLE_SPAWN_EGG:
 		case VEX_SPAWN_EGG:
 		case VILLAGER_SPAWN_EGG:
 		case VINDICATOR_SPAWN_EGG:
-		case WANDERING_TRADER_SPAWN_EGG:
+//		case WANDERING_TRADER_SPAWN_EGG:
 		case WITCH_SPAWN_EGG:
 		case WITHER_SKELETON_SPAWN_EGG:
 		case WOLF_SPAWN_EGG:

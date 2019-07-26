@@ -3,7 +3,6 @@ package com.scorch.core.modules.staff;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -45,6 +44,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
+import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -85,10 +85,10 @@ public class BuildModeModule extends AbstractModule implements Listener {
 
 	@Override
 	public void disable() {
-		Iterator<UUID> it = tracker.keySet().iterator();
-		it.forEachRemaining(uuid -> {
-			setStatus(uuid, BuildStatus.NONE, true);
-		});
+		List<UUID> uuids = new ArrayList<>(tracker.keySet());
+		for (int i = 0; i < uuids.size(); i++)
+			setStatus(uuids.get(i), BuildStatus.NONE, true);
+
 		BlockPlaceEvent.getHandlerList().unregister(this);
 		BlockBreakEvent.getHandlerList().unregister(this);
 		PlayerInteractEntityEvent.getHandlerList().unregister(this);
@@ -470,6 +470,16 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	public void blockStateChange(BlockFadeEvent event) {
 		for (List<Location> locs : tracker.values()) {
 			if (locs.contains(event.getBlock().getLocation())) {
+				event.setCancelled(true);
+				break;
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGH)
+	public void portalCreate(PortalCreateEvent event) {
+		for (List<Location> locs : tracker.values()) {
+			if (event.getBlocks().stream().anyMatch(bs -> locs.contains(bs.getLocation()))) {
 				event.setCancelled(true);
 				break;
 			}

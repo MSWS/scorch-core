@@ -117,6 +117,15 @@ public class BuildModeCommand extends BukkitCommand {
 			}
 		}
 
+		if (args.length == 1) {
+			target = Bukkit.getPlayer(args[0]);
+		}
+
+		if (target == null) {
+			MSG.tell(sender, "Unknown Player");
+			return true;
+		}
+
 		msg = ScorchCore.getInstance().getMessage("buildmodebuildtoggle").replace("%target%", target.getName())
 				.replace("%status%",
 						bm.toggleMode(target.getUniqueId(), BuildStatus.BUILD) ? "&aenabled" : "&cdisabled")
