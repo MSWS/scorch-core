@@ -45,6 +45,7 @@ import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
@@ -76,8 +77,10 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	@Override
 	public void disable() {
 		Iterator<UUID> it = tracker.keySet().iterator();
-		while (it.hasNext())
-			setStatus(it.next(), BuildStatus.NONE);
+		while (it.hasNext()) {
+			UUID uuid = it.next();
+			setStatus(uuid, BuildStatus.NONE, true);
+		}
 
 		BlockPlaceEvent.getHandlerList().unregister(this);
 		BlockBreakEvent.getHandlerList().unregister(this);
@@ -94,15 +97,46 @@ public class BuildModeModule extends AbstractModule implements Listener {
 		BlockSpreadEvent.getHandlerList().unregister(this);
 		EntityExplodeEvent.getHandlerList().unregister(this);
 		CreatureSpawnEvent.getHandlerList().unregister(this);
+		BlockFertilizeEvent.getHandlerList().unregister(this);
+		ExplosionPrimeEvent.getHandlerList().unregister(this);
 	}
 
 	public boolean inBuildMode(UUID uuid) {
 		return getStatus(uuid) == BuildStatus.BUILD;
 	}
 
-	public void rollback(UUID uuid) {
-		tracker.getOrDefault(uuid, new ArrayList<Location>()).forEach(loc -> loc.getBlock().setType(Material.AIR));
+	public void rollback(UUID uuid, boolean quick) {
 		entityTracker.getOrDefault(uuid, new ArrayList<>()).forEach(ent -> ent.remove());
+		if (quick) {
+			tracker.getOrDefault(uuid, new ArrayList<Location>()).forEach(loc -> loc.getBlock().setType(Material.AIR));
+
+			tracker.put(uuid, new ArrayList<>());
+			return;
+		}
+
+		int rollbackBlocks = Math.max(tracker.getOrDefault(uuid, new ArrayList<>()).size() / 50, 1);
+
+		BukkitRunnable runnable = new BukkitRunnable() {
+			int pos = 0;
+			List<Location> loc = tracker.getOrDefault(uuid, new ArrayList<>());
+
+			@Override
+			public void run() {
+				if (pos >= loc.size()) {
+					tracker.put(uuid, new ArrayList<>());
+					cancel();
+					return;
+				}
+				for (int i = 0; i < rollbackBlocks && pos < loc.size(); i++) {
+					Location l = loc.get(pos);
+					l.getWorld().playSound(l, Utils.getBreakSound(l.getBlock().getType()).bukkitSound(), 2, 1);
+					l.getBlock().setType(Material.AIR);
+					pos++;
+				}
+			}
+		};
+
+		runnable.runTaskTimer(ScorchCore.getInstance(), 0, 1);
 	}
 
 	public Set<UUID> getBuilders() {
@@ -187,7 +221,7 @@ public class BuildModeModule extends AbstractModule implements Listener {
 			return;
 		}
 
-		if (!tracker.containsKey(player.getUniqueId()))
+		if (getStatus(player.getUniqueId()) != BuildStatus.BUILD)
 			return;
 
 		ItemStack item = event.getHand() == EquipmentSlot.HAND ? player.getInventory().getItemInMainHand()
@@ -240,7 +274,7 @@ public class BuildModeModule extends AbstractModule implements Listener {
 			return;
 		}
 
-		if (!tracker.containsKey(player.getUniqueId()))
+		if (getStatus(player.getUniqueId()) != BuildStatus.BUILD)
 			return;
 
 		event.setCancelled(false);
@@ -297,6 +331,9 @@ public class BuildModeModule extends AbstractModule implements Listener {
 		case COMMAND_BLOCK_MINECART:
 			event.setCancelled(true);
 			break;
+		case END_CRYSTAL:
+			type = EntityType.ENDER_CRYSTAL;
+			break;
 		case OAK_BOAT:
 		case ACACIA_BOAT:
 		case DARK_OAK_BOAT:
@@ -313,6 +350,18 @@ public class BuildModeModule extends AbstractModule implements Listener {
 
 		if (type != null) {
 			event.setCancelled(true);
+
+			if (player.getGameMode() != GameMode.CREATIVE) {
+				item.setAmount(item.getAmount() - 1);
+				if (item.getAmount() == 0)
+					item.setType(Material.AIR);
+
+				if (event.getHand() == EquipmentSlot.HAND) {
+					player.getInventory().setItemInMainHand(item);
+				} else {
+					player.getInventory().setItemInOffHand(item);
+				}
+			}
 
 			List<Entity> ents = entityTracker.getOrDefault(player.getUniqueId(), new ArrayList<>());
 			ents.add(player.getWorld().spawnEntity(
@@ -381,7 +430,7 @@ public class BuildModeModule extends AbstractModule implements Listener {
 		if (getStatus(player.getUniqueId()) != BuildStatus.BUILD)
 			return;
 
-		setStatus(player.getUniqueId(), BuildStatus.NONE);
+		setStatus(player.getUniqueId(), BuildStatus.NONE, false);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
@@ -415,22 +464,6 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
-	public void structureGrow(StructureGrowEvent event) {
-		Player player = event.getPlayer();
-		if (getStatus(player.getUniqueId()) != BuildStatus.BUILD)
-			return;
-
-		List<Location> locs = tracker.get(player.getUniqueId());
-
-		if (!locs.contains(event.getLocation()))
-			return;
-
-		locs.addAll(event.getBlocks().stream()
-				.filter(b -> !b.getBlock().getRelative(BlockFace.UP).getType().toString().contains("SAPLING"))
-				.map(b -> b.getLocation()).collect(Collectors.toList()));
-	}
-
-	@EventHandler(priority = EventPriority.HIGH)
 	public void blockSpread(BlockSpreadEvent event) {
 		for (List<Location> locs : tracker.values()) {
 			if (locs.contains(event.getSource().getLocation()) || locs.contains(event.getBlock().getLocation())) {
@@ -461,7 +494,7 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
-	public void entitySpawn(BlockFertilizeEvent event) {
+	public void blockFertilize(BlockFertilizeEvent event) {
 		Player player = event.getPlayer();
 
 		if (getStatus(player.getUniqueId()) == BuildStatus.OVERRIDE) {
@@ -473,30 +506,37 @@ public class BuildModeModule extends AbstractModule implements Listener {
 			return;
 
 		List<Location> locs = tracker.get(player.getUniqueId());
-		locs.addAll(event.getBlocks().stream().map(b -> b.getLocation()).collect(Collectors.toList()));
+		locs.addAll(event.getBlocks().stream()
+				.filter(b -> !b.getBlock().getRelative(BlockFace.UP).getType().toString().contains("SAPLING"))
+				.map(b -> b.getLocation()).collect(Collectors.toList()));
 		tracker.put(player.getUniqueId(), locs);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void explosionCreate(ExplosionPrimeEvent event) {
-		MSG.announce("Explosion Primed");
+		for (List<Entity> ents : entityTracker.values()) {
+			if (ents.contains(event.getEntity())) {
+				event.setRadius(0);
+				break;
+			}
+		}
 	}
 
 	public boolean toggleMode(UUID uuid, BuildStatus status) {
 		if (getStatus(uuid) == status) {
-			setStatus(uuid, BuildStatus.NONE);
+			setStatus(uuid, BuildStatus.NONE, false);
 		} else {
-			setStatus(uuid, status);
+			setStatus(uuid, status, false);
 		}
 		return getStatus(uuid) == status;
 	}
 
-	public void setStatus(UUID uuid, BuildStatus status) {
+	public void setStatus(UUID uuid, BuildStatus status, boolean quick) {
 		Player player = Bukkit.getPlayer(uuid);
 		BuildStatus old = getStatus(uuid);
 		this.status.put(uuid, status);
 		if (status == BuildStatus.NONE)
-			rollback(uuid);
+			rollback(uuid, quick);
 
 		if (player == null)
 			return;

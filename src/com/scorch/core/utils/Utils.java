@@ -609,7 +609,125 @@ public class Utils {
 			e.printStackTrace();
 			return null;
 		}
+	}
 
+	public static Sounds getBreakSound(Material mat) {
+		switch (mat) {
+		case GRASS:
+		case GRASS_BLOCK:
+		case TALL_GRASS:
+		case TNT:
+		case ACACIA_LEAVES:
+		case BIRCH_LEAVES:
+		case DARK_OAK_LEAVES:
+		case JUNGLE_LEAVES:
+		case OAK_LEAVES:
+		case SPRUCE_LEAVES:
+			return Sounds.DIG_GRASS;
+		case STONE:
+		case ANDESITE:
+		case GRANITE:
+		case ANDESITE_SLAB:
+		case GRANITE_SLAB:
+		case ANDESITE_STAIRS:
+		case GRANITE_STAIRS:
+		case ANDESITE_WALL:
+		case GRANITE_WALL:
+		case COAL_ORE:
+		case DIAMOND_ORE:
+		case EMERALD_ORE:
+		case GOLD_ORE:
+		case IRON_ORE:
+		case LAPIS_ORE:
+		case IRON_BLOCK:
+		case GOLD_BLOCK:
+		case DIAMOND_BLOCK:
+		case REDSTONE_BLOCK:
+		case LAPIS_BLOCK:
+		case COAL_BLOCK:
+			return Sounds.DIG_STONE;
+		case GRAVEL:
+			return Sounds.DIG_GRAVEL;
+		case SAND:
+		case RED_SAND:
+			return Sounds.DIG_SAND;
+		case SNOW:
+		case SNOW_BLOCK:
+			return Sounds.DIG_SNOW;
+		case ACACIA_LOG:
+		case BIRCH_LOG:
+		case DARK_OAK_LOG:
+		case JUNGLE_LOG:
+		case OAK_LOG:
+		case SPRUCE_LOG:
+		case STRIPPED_ACACIA_LOG:
+		case STRIPPED_BIRCH_LOG:
+		case STRIPPED_DARK_OAK_LOG:
+		case STRIPPED_JUNGLE_LOG:
+		case STRIPPED_OAK_LOG:
+		case STRIPPED_SPRUCE_LOG:
+		case ACACIA_PLANKS:
+		case BIRCH_PLANKS:
+		case DARK_OAK_PLANKS:
+		case JUNGLE_PLANKS:
+		case OAK_PLANKS:
+		case SPRUCE_PLANKS:
+			return Sounds.DIG_WOOD;
+		case BLACK_WOOL:
+		case BLUE_WOOL:
+		case BROWN_WOOL:
+		case CYAN_WOOL:
+		case GRAY_WOOL:
+		case GREEN_WOOL:
+		case LIGHT_BLUE_WOOL:
+		case LIGHT_GRAY_WOOL:
+		case LIME_WOOL:
+		case MAGENTA_WOOL:
+		case ORANGE_WOOL:
+		case PINK_WOOL:
+		case PURPLE_WOOL:
+		case RED_WOOL:
+		case WHITE_WOOL:
+		case YELLOW_WOOL:
+			return Sounds.DIG_WOOL;
+		case GLASS:
+		case GLASS_PANE:
+		case BLACK_STAINED_GLASS:
+		case BLACK_STAINED_GLASS_PANE:
+		case BLUE_STAINED_GLASS:
+		case BLUE_STAINED_GLASS_PANE:
+		case BROWN_STAINED_GLASS:
+		case BROWN_STAINED_GLASS_PANE:
+		case CYAN_STAINED_GLASS:
+		case CYAN_STAINED_GLASS_PANE:
+		case GRAY_STAINED_GLASS:
+		case GRAY_STAINED_GLASS_PANE:
+		case GREEN_STAINED_GLASS:
+		case GREEN_STAINED_GLASS_PANE:
+		case LIGHT_BLUE_STAINED_GLASS:
+		case LIGHT_BLUE_STAINED_GLASS_PANE:
+		case LIGHT_GRAY_STAINED_GLASS:
+		case LIGHT_GRAY_STAINED_GLASS_PANE:
+		case LIME_STAINED_GLASS:
+		case LIME_STAINED_GLASS_PANE:
+		case MAGENTA_STAINED_GLASS:
+		case MAGENTA_STAINED_GLASS_PANE:
+		case ORANGE_STAINED_GLASS:
+		case ORANGE_STAINED_GLASS_PANE:
+		case PINK_STAINED_GLASS:
+		case PINK_STAINED_GLASS_PANE:
+		case PURPLE_STAINED_GLASS:
+		case PURPLE_STAINED_GLASS_PANE:
+		case RED_STAINED_GLASS:
+		case RED_STAINED_GLASS_PANE:
+		case WHITE_STAINED_GLASS:
+		case WHITE_STAINED_GLASS_PANE:
+		case YELLOW_STAINED_GLASS:
+		case YELLOW_STAINED_GLASS_PANE:
+			return Sounds.GLASS;
+		default:
+			return Sounds.DIG_STONE;
+		}
 	}
 
 	public static boolean isSpawnEgg(Material mat) {

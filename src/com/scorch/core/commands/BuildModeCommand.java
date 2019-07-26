@@ -63,14 +63,10 @@ public class BuildModeCommand extends BukkitCommand {
 					MSG.tell(sender, getPermissionMessage());
 					return true;
 				}
-				if (args.length < 2) {
-					MSG.tell(sender, "/buildmode " + args[0] + " [Player]");
-					return true;
-				}
 
-				if (args[1].equalsIgnoreCase("all")) {
+				if (args.length == 2 && args[1].equalsIgnoreCase("all")) {
 					for (UUID uuid : bm.getBuilders())
-						bm.rollback(uuid);
+						bm.rollback(uuid, false);
 
 					MSG.tell(sender, "Reverted everyone's builds.");
 					return true;
@@ -81,7 +77,7 @@ public class BuildModeCommand extends BukkitCommand {
 					return true;
 				}
 
-				bm.rollback(target.getUniqueId());
+				bm.rollback(target.getUniqueId(), false);
 				MSG.tell(sender, "Reverted " + target.getName() + "'"
 						+ (target.getName().toLowerCase().endsWith("s") ? "" : "s") + " builds");
 				return true;
