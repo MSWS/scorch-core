@@ -36,6 +36,8 @@ public class FilterCommand extends BukkitCommand {
 		FilterModule fm = (FilterModule) ScorchCore.getInstance().getModule("FilterModule");
 		FilterEntry entry;
 
+		String word;
+
 		switch (args[0].toLowerCase()) {
 		case "preference":
 			if (!(sender instanceof Player)) {
@@ -73,14 +75,26 @@ public class FilterCommand extends BukkitCommand {
 			break;
 		case "addword":
 			FilterType type = FilterType.REGULAR;
-			if (args.length == 3) {
-				type = FilterType.valueOf(args[2].toUpperCase());
+			boolean defined = false;
+			if (args.length >= 3) {
+				try {
+					type = FilterType.valueOf(args[args.length - 1].toUpperCase());
+					defined = true;
+				} catch (IllegalArgumentException expected) {
+				}
 			}
 
-			entry = new FilterEntry(args[1], type);
+			word = "";
+			for (int i = 1; i < args.length - (defined ? 1 : 0); i++) {
+				word += args[i] + " ";
+			}
+
+			word = word.trim();
+
+			entry = new FilterEntry(word, type);
 			fm.addWord(entry);
 
-			MSG.tell(sender, "Added word " + args[1] + " with level of " + entry.getType());
+			MSG.tell(sender, "Added word " + entry.getWord() + " with level of " + entry.getType());
 			break;
 		case "removeword":
 			if (args.length < 2) {
@@ -88,7 +102,14 @@ public class FilterCommand extends BukkitCommand {
 				return true;
 			}
 
-			entry = fm.getFilterEntry(args[1]);
+			word = "";
+			for (int i = 1; i < args.length; i++) {
+				word += args[i] + " ";
+			}
+
+			word = word.trim();
+
+			entry = fm.getFilterEntry(word);
 			if (entry == null) {
 				MSG.tell(sender, args[1] + " is not filtered");
 				return true;
@@ -98,10 +119,14 @@ public class FilterCommand extends BukkitCommand {
 			MSG.tell(sender, "Removed word " + entry.getWord());
 			break;
 		case "addbypass":
+			if (args.length < 2) {
+				MSG.tell(sender, "/filter addbypass [word]");
+				return true;
+			}
 			entry = new FilterEntry(args[1], FilterType.ALLOW);
 			fm.addWord(entry);
 
-			MSG.tell(sender, "Added " + args[1] + " to the bypass");
+			MSG.tell(sender, "Added " + entry.getWord() + " to the bypass");
 			break;
 		}
 
@@ -129,9 +154,9 @@ public class FilterCommand extends BukkitCommand {
 			}
 		}
 
-		if (args.length == 3 && args[0].equalsIgnoreCase("addword")) {
+		if (args.length >= 3 && args[0].equalsIgnoreCase("addword")) {
 			for (FilterType type : FilterType.values()) {
-				if (type.toString().toLowerCase().startsWith(args[2].toLowerCase())) {
+				if (type.toString().toLowerCase().startsWith(args[args.length - 1].toLowerCase())) {
 					result.add(type.toString());
 				}
 			}

@@ -121,7 +121,7 @@ public class BuildModeModule extends AbstractModule implements Listener {
 			return;
 		}
 
-		int rollbackBlocks = Math.max(tracker.getOrDefault(uuid, new ArrayList<>()).size() / 50, 1);
+		int rollbackBlocks = Math.max(tracker.getOrDefault(uuid, new ArrayList<>()).size() / 100, 1);
 
 		BukkitRunnable runnable = new BukkitRunnable() {
 			int pos = 0;

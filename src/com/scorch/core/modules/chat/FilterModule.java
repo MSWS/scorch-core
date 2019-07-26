@@ -124,9 +124,15 @@ public class FilterModule extends AbstractModule implements Listener {
 		for (FilterType type : level) {
 			if (type == FilterType.ALLOW)
 				continue;
-			message = MSG.filter(message, links.get(type), links.get(FilterType.ALLOW));
+			message = MSG.filter(message, links.get(type), links.get(FilterType.ALLOW), false);
 		}
 		return message;
+	}
+
+	public boolean testBot(String message) {
+		String filtered = MSG.filter(message, links.get(FilterType.ADVERTISING), links.get(FilterType.ALLOW), true);
+
+		return !filtered.equals(message);
 	}
 
 	public FilterEntry getFilterEntry(String word) {

@@ -30,6 +30,13 @@ public class PlaytimeModule extends AbstractModule implements Listener {
 
 	@Override
 	public void disable() {
+		loginTimes.keySet().forEach(uuid -> {
+			ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(uuid);
+
+			sp.setData("playtime", sp.getData("playtime", Number.class, 0).longValue()
+					+ (System.currentTimeMillis() - loginTimes.getOrDefault(uuid, System.currentTimeMillis())));
+		});
+
 		PlayerJoinEvent.getHandlerList().unregister(this);
 		PlayerQuitEvent.getHandlerList().unregister(this);
 	}
@@ -40,7 +47,7 @@ public class PlaytimeModule extends AbstractModule implements Listener {
 			return sp.getData("playtime", Number.class).longValue()
 					+ (System.currentTimeMillis() - loginTimes.get(uuid));
 		} else {
-			return 0;
+			return sp.getData("playtime", Number.class, 0).longValue();
 		}
 
 	}

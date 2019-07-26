@@ -333,7 +333,7 @@ public class MSG {
 		return result;
 	}
 
-	public static String filter(String msg, List<String> swears, List<String> allow) {
+	public static String filter(String msg, List<String> swears, List<String> allow, boolean botCheck) {
 		String raw = msg; /** plugin.getSwears() is a List of all words that should be filtered */
 
 		String[] replace = new String[raw.split(" ").length];
@@ -360,7 +360,11 @@ public class MSG {
 				String w = "";
 				int p = 0;
 				while (p + i < letters.length && tmp.length() < word.length()) {
-					tmp += (letters[p + i] + "").replaceAll("[^a-zA-Z]", "").toLowerCase();
+					if (botCheck) {
+						tmp += (letters[p + i] + "").replaceAll("[^a-zA-Z\\.\\s]", "").toLowerCase();
+					} else {
+						tmp += (letters[p + i] + "").replaceAll("[^a-zA-Z]", "").toLowerCase();
+					}
 					w += letters[p + i] + "";
 					p++;
 				}
@@ -385,7 +389,10 @@ public class MSG {
 				builder.append(raw.split(" ")[i] + " ");
 		}
 
-		raw = builder.toString();
+		raw = builder.toString().trim();
+
+		if (botCheck)
+			return raw;
 
 		Pattern p = Pattern.compile(
 				"(.+(.|,|dot|)(com|net|org|me|edu|info)|[0-9]+(.|,|dot|)[0-9]+(.|,|dot|)[0-9]+(.|,|dot|)[0-9]+)");

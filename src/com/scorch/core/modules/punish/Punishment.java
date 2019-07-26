@@ -44,7 +44,7 @@ public class Punishment implements Comparable<Punishment> {
 	private final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a");
 
 	private UUID id, target;
-	private String staff, reason, remover, removeReason, ip;
+	private String staff, reason, remover, removeReason, ip, info;
 
 	private long date, duration, removeDate;
 
@@ -204,6 +204,18 @@ public class Punishment implements Comparable<Punishment> {
 
 	public String getIP() {
 		return ip;
+	}
+
+	public String getInfo() {
+		return info;
+	}
+
+	public boolean hasInfo() {
+		return info != null;
+	}
+
+	public void setInfo(String info) {
+		this.info = info;
 	}
 
 	public ItemStack getItem() {

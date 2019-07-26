@@ -11,12 +11,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.chat.FilterModule.FilterType;
 import com.scorch.core.modules.messages.CMessage;
 import com.scorch.core.modules.messages.MessagesModule;
 import com.scorch.core.modules.players.ScorchPlayer;
+import com.scorch.core.modules.punish.PunishType;
 import com.scorch.core.modules.punish.Punishment;
 import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
@@ -30,7 +32,7 @@ public class ChatListener implements Listener {
 	public void onChat(AsyncPlayerChatEvent event) {
 		event.setCancelled(true);
 		Player player = event.getPlayer();
-
+		
 		List<Punishment> punishments = ScorchCore.getInstance().getPunishModule().getPunishments(player.getUniqueId());
 
 		punishments = punishments.stream().filter(Punishment::isActive)
@@ -60,6 +62,21 @@ public class ChatListener implements Listener {
 
 		Logger.log(player.getName() + ": " + event.getMessage());
 		FilterModule fm = (FilterModule) ScorchCore.getInstance().getModule("FilterModule");
+
+		if (fm.testBot(event.getMessage())) {
+			Punishment punishment = new Punishment(player.getUniqueId(), "MSWS", "Bot Spam", System.currentTimeMillis(),
+					-1, PunishType.PERM_BAN);
+			punishment.setInfo("Message: " + event.getMessage());
+
+			new BukkitRunnable() {
+
+				@Override
+				public void run() {
+					ScorchCore.getInstance().getPunishModule().addPunishment(punishment);
+				}
+			}.runTask(ScorchCore.getInstance());
+			return;
+		}
 
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(p.getUniqueId());

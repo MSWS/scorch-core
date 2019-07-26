@@ -30,9 +30,9 @@ public class MessagesModule extends AbstractModule {
 		defaults.add(new CMessage("punishmessage", "&c&l[PUNISH] &a%staff% &c%verb% &e%target%&7. Reason: &e%reason%"));
 		defaults.add(new CMessage("appeallink", "https://yourwebsite.com/appeallink"));
 		defaults.add(new CMessage("tempbanmessage",
-				"&c&lYou have been &4&l%verb% &c&lby &6&l%staff% &c&lfor &e&l%duration%\n&b%reason%\n&c&lTime Left: %timeleft%\n%appeal%"));
+				"&c&lYou have been &4&l%verb% &c&lby &6&l%staff% &c&lfor &e&l%duration%\n&r%reason%\n&c&lTime Left: %timeleft%\n%appeal%"));
 		defaults.add(new CMessage("permbanmessage",
-				"&c&lYou have been &4&l%verb% &c&lby &6&l%staff% \n&b%reason%\n%appeal%"));
+				"&c&lYou have been &4&l%verb% &c&lby &6&l%staff% \n&r%reason%\n%appeal%"));
 		defaults.add(new CMessage("warningmessage",
 				"&c&l[&4&lWARNING&c&l] &7You have been issued a punishment by &c%staff%|&c&lReason&7: %reason%|&dPlease make sure to read the rules to avoid further punishment."));
 		defaults.add(new CMessage("tempmutemessage",
