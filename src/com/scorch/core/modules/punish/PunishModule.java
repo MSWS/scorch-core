@@ -25,7 +25,6 @@ import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.exceptions.DataDeleteException;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
-import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
 import com.scorch.core.utils.Utils;
 
@@ -90,7 +89,7 @@ public class PunishModule extends AbstractModule {
 		Inventory inv = Utils.getGui(punisher, ScorchCore.getInstance().getGui(), "punish", 0);
 		List<Punishment> history = getPunishments(player.getUniqueId());
 		Collections.sort(history);
-		
+
 		for (int i = 0; i < 5 && i < history.size(); i++) {
 			Punishment p = history.get(i);
 			ItemStack item = p.getItem();
@@ -171,7 +170,6 @@ public class PunishModule extends AbstractModule {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				Logger.log("&9Loading punishments...");
 				try {
 					ScorchCore.getInstance().getDataManager().createTable(table, Punishment.class);
 
@@ -189,8 +187,6 @@ public class PunishModule extends AbstractModule {
 				} catch (NoDefaultConstructorException | DataObtainException e) {
 					e.printStackTrace();
 				}
-				Logger.log("&aSuccessfully loaded &e" + punishments.size() + " punishment"
-						+ (punishments.size() == 1 ? "" : "s") + "&a.");
 			}
 		}.runTaskAsynchronously(ScorchCore.getInstance());
 	}
