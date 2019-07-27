@@ -395,18 +395,27 @@ public class MSG {
 			return raw;
 
 		Pattern p = Pattern.compile(
-				"(.+(.|,|dot|)(com|net|org|me|edu|info)|[0-9]+(.|,|dot|)[0-9]+(.|,|dot|)[0-9]+(.|,|dot|)[0-9]+)");
+				"(.+(.|,|dot|)(c.m|net|.rg|m.|edu|info|xyz)|[0-9]+(.|,|dot| )[0-9]+(.|,|dot| )[0-9]+(.|,|dot| )[0-9]+)");
 		Matcher m = p.matcher(raw);
 
 		/**
 		 * This part filters any URLs that you do not want. You can change [YOUR URL] to
 		 * allow your own server's URL
 		 */
-		if (m.matches() && !m.group(0).matches("(https:\\/\\/)?(www\\.)?scorchgamez\\.com")) {
-			String r = "";
-			for (int i = 0; i < m.group(0).length(); i++)
-				r += "*";
-			raw = raw.replace(m.group(0), r);
+
+		while (m.find()) {
+			try {
+				if (m.group().matches("(https:\\/\\/)?(www\\.)?scorchgamez\\.com"))
+					continue;
+
+				String r = "";
+				for (int i = 0; i < m.group().length(); i++)
+					r += "*";
+				raw = raw.replace(m.group(), r);
+
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			}
 		}
 
 		String result = "";

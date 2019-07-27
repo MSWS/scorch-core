@@ -59,18 +59,20 @@ public class MessagesModule extends AbstractModule {
 				new CMessage("gamemodeformat", "&aSuccessfully &7set &e%player%&7'%s% gamemode to &e%gamemode%&7."));
 		defaults.add(new CMessage("commandtoggleformat", "&7The &e/%command% &7command has been %status%&7."));
 		defaults.add(new CMessage("moduletoggleformat", "&7The &e%module% &7module has been %status%&7."));
-		defaults.add(new CMessage("buildmodetoggle", "&e%player%&7'%s% build mode has been %status%&7."));
 		defaults.add(
 				new CMessage("buildmodeinspectentity-natural", "&7This entity was not spawned in via build mode."));
 		defaults.add(new CMessage("buildmodeinspectentity-player", "&7This entity was spawned in by &e%player%&7."));
 		defaults.add(
 				new CMessage("buildmodeinspectblock-natural", "&7This block was not placed by someone in build mode."));
 		defaults.add(new CMessage("buildmodeinspectblock-player", "&7This block was placed by &e%player%&7."));
-		defaults.add(
-				new CMessage("buildmodeinspecttoggle", "&e%target%&7'%s% &6inspection &7mode has been %status%&7."));
-		defaults.add(
-				new CMessage("buildmodeoverridetoggle", "&e%target%&7'%s% &6override &7mode has been %status%&7."));
-		defaults.add(new CMessage("buildmodebuildtoggle", "&e%target%&7'%s% &6build &7mode has been %status%&7."));
+//		defaults.add(
+//				new CMessage("buildmodeinspecttoggle", "&e%target%&7'%s% &6inspection &7mode has been %status%&7."));
+//		defaults.add(
+//				new CMessage("buildmodeoverridetoggle", "&e%target%&7'%s% &6override &7mode has been %status%&7."));
+//		defaults.add(new CMessage("buildmodebuildtoggle", "&e%target%&7'%s% &6build &7mode has been %status%&7."));
+		defaults.add(new CMessage("buildmoderollbackall", "&7Rolled back everyone's builds."));
+		defaults.add(new CMessage("buildmoderollback", "&7Rolled back &e%player%&7'%s% builds."));
+		defaults.add(new CMessage("buildmodetoggle", "&e%player%&7'%s% &6%mode% &7mode has been %status%&7."));
 
 	}
 
