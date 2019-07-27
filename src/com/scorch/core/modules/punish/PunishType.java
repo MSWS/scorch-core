@@ -11,14 +11,65 @@ import com.scorch.core.utils.Logger;
  *
  */
 public enum PunishType {
-	IP_BAN("&d&lIP Ban", "BEDROCK", true), PERM_BAN("&4&lPerm Ban", "REDSTONE_BLOCK", true),
-	TEMP_BAN("&c&lTemp Ban", "DIAMOND_SWORD", true), PERM_MUTE("&4&lPerm Mute", "BOOK", false),
-	TEMP_MUTE("&c&lTemp Mute", "BOOK", false), WARNING("&e&lWarning", "PAPER", false),
-	KICK("&b&lKick", "LEATHER_BOOTS", false), BLACKLIST("&4&lBlacklist", "BARRIER", true),
+	/**
+	 * Bans the player's IP permanently
+	 */
+	IP_BAN("&d&lIP Ban", "BEDROCK", true),
+
+	/*
+	 * Permanently bans the player
+	 */
+	PERM_BAN("&4&lPerm Ban", "REDSTONE_BLOCK", true),
+
+	/*
+	 * Temporarily bans the player
+	 */
+	TEMP_BAN("&c&lTemp Ban", "DIAMOND_SWORD", true),
+
+	/*
+	 * Permanently mutes the player
+	 */
+	PERM_MUTE("&4&lPerm Mute", "BOOK", false),
+
+	/*
+	 * Temporarily mutes the player
+	 */
+	TEMP_MUTE("&c&lTemp Mute", "BOOK", false),
+
+	/*
+	 * Issues a warning to the player
+	 */
+	WARNING("&e&lWarning", "PAPER", false),
+
+	/*
+	 * Kicks the player
+	 */
+	KICK("&b&lKick", "LEATHER_BOOTS", false),
+
+	/*
+	 * Blacklists the player Any and all accounts linked either via IP or accounts
+	 * will be banned
+	 */
+	BLACKLIST("&4&lBlacklist", "BARRIER", true),
+
+	/*
+	 * Miscellaneous
+	 */
 	OTHER("&3&lOther", "HOPPER", false);
 
+	/*
+	 * Material to represent the PunishType in an inventory
+	 */
 	private Material mat;
+
+	/**
+	 * Whether or not this will restrict a login once the player leaves/gets kicked
+	 */
 	private boolean restrictLogin;
+
+	/**
+	 * Gets a colored version to display in an inventory
+	 */
 	private String colored;
 
 	PunishType(String colored, String mat, boolean restrictLogin) {

@@ -275,9 +275,7 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
-	public void onBlockBreak(BlockDropItemEvent event) {
-		MSG.announce("triggered");
-
+	public void onDropItem(BlockDropItemEvent event) {
 		if (!isProtected(event.getBlock()))
 			return;
 
