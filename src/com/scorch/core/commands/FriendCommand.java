@@ -16,6 +16,12 @@ import com.scorch.core.modules.players.Friendship;
 import com.scorch.core.modules.players.Friendship.FriendStatus;
 import com.scorch.core.utils.MSG;
 
+/**
+ * TODO Friend Command for cross-server friend management
+ * 
+ * @author imodm
+ *
+ */
 public class FriendCommand extends BukkitCommand {
 
 	private FriendModule friends;

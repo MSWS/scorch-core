@@ -12,6 +12,15 @@ import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.commands.CommandModule;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Command used to toggle commands/modules
+ * 
+ * <b>Permissions</b><br>
+ * scorch.command.toggle - Access to command
+ * 
+ * @author imodm
+ *
+ */
 public class ToggleCommand extends BukkitCommand {
 
 	private List<Command> commands;

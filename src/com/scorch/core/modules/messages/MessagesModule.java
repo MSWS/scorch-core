@@ -65,15 +65,13 @@ public class MessagesModule extends AbstractModule {
 		defaults.add(
 				new CMessage("buildmodeinspectblock-natural", "&7This block was not placed by someone in build mode."));
 		defaults.add(new CMessage("buildmodeinspectblock-player", "&7This block was placed by &e%player%&7."));
-//		defaults.add(
-//				new CMessage("buildmodeinspecttoggle", "&e%target%&7'%s% &6inspection &7mode has been %status%&7."));
-//		defaults.add(
-//				new CMessage("buildmodeoverridetoggle", "&e%target%&7'%s% &6override &7mode has been %status%&7."));
-//		defaults.add(new CMessage("buildmodebuildtoggle", "&e%target%&7'%s% &6build &7mode has been %status%&7."));
 		defaults.add(new CMessage("buildmoderollbackall", "&7Rolled back everyone's builds."));
 		defaults.add(new CMessage("buildmoderollback", "&7Rolled back &e%player%&7'%s% builds."));
 		defaults.add(new CMessage("buildmodetoggle", "&e%player%&7'%s% &6%mode% &7mode has been %status%&7."));
+		defaults.add(new CMessage("healmessage", "&aSuccessfully &2healed &e%target%&a."));
+		defaults.add(new CMessage("feedmessage", "&aSuccessfully &2fed &e%target%&a."));
 
+//		defaults.add(new CMessage("", ""));
 	}
 
 	@Override

@@ -58,6 +58,17 @@ import com.scorch.core.utils.MSG;
 import com.scorch.core.utils.Utils;
 
 @SuppressWarnings("deprecation")
+/**
+ * This module manages and listens to all events related to players in build
+ * mode
+ * 
+ * <b>Permissions</b><br>
+ * scorch.buildmode.modifyothers - Access to modify other staff's buildmode
+ * while in buildmode
+ * 
+ * @author imodm
+ *
+ */
 public class BuildModeModule extends AbstractModule implements Listener {
 
 	public BuildModeModule(String id) {
@@ -254,8 +265,10 @@ public class BuildModeModule extends AbstractModule implements Listener {
 
 		List<Location> locs = tracker.get(player.getUniqueId());
 
-		if (!locs.contains(block.getLocation()))
+		if (!locs.contains(block.getLocation())
+				&& (!player.hasPermission("socrch.buildmode.modifyothers") && !isProtected(block))) {
 			return;
+		}
 
 		event.setCancelled(false);
 		event.setDropItems(false);

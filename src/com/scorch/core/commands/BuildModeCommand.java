@@ -1,6 +1,7 @@
 package com.scorch.core.commands;
 
 import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +16,24 @@ import com.scorch.core.modules.staff.BuildModeModule;
 import com.scorch.core.modules.staff.BuildModeModule.BuildStatus;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Build Mode command, ability to modify the lobby/server physically, however
+ * changes are logged and can be rolled back by an admin<br>
+ * <i>Aliases: bm, build</i>
+ * 
+ * <b>Permissions</b><br>
+ * scorch.command.buildmode - Access to /buildmode <br>
+ * scorch.command.buildmode.rollback - Access to rollback builds via /bm
+ * rollback<br>
+ * scorch.command.buildmode.others - Access to specify a player<br>
+ * scorch.command.buildmode.override - Access to enable override mode via /bm
+ * override<br>
+ * scorch.command.buildmode.inspect - Access to enable inspection mode via /bm
+ * inspect
+ * 
+ * @author imodm
+ *
+ */
 public class BuildModeCommand extends BukkitCommand {
 
 	public BuildModeCommand(String name) {
@@ -42,7 +61,7 @@ public class BuildModeCommand extends BukkitCommand {
 				MSG.tell(sender, "Specify Player");
 				return true;
 			}
-		} else if (args.length == 2) {
+		} else if (args.length == 2 && sender.hasPermission("scorch.command.buildmode.others")) {
 			target = Bukkit.getPlayer(args[1]);
 		} else {
 			if (sender instanceof Player) {

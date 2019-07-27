@@ -12,6 +12,15 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.LagModule;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Get lag information
+ * 
+ * <b>Permissions</b><br>
+ * scorch.command.lag - Access to command
+ * 
+ * @author imodm
+ *
+ */
 public class LagCommand extends BukkitCommand {
 	public LagCommand(String name) {
 		super(name);

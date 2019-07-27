@@ -15,6 +15,14 @@ import com.scorch.core.modules.players.CPlayer;
 import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Manage and update the filter
+ * 
+ * <b>Permissions</b><br>
+ * 
+ * @author imodm
+ *
+ */
 public class FilterCommand extends BukkitCommand {
 	public FilterCommand(String name) {
 		super(name);
@@ -43,6 +51,10 @@ public class FilterCommand extends BukkitCommand {
 
 		switch (args[0].toLowerCase()) {
 		case "preference":
+			if (!sender.hasPermission("scorch.command.filter.preference")) {
+				MSG.cTell(sender, "noperm");
+				return true;
+			}
 			if (!(sender instanceof Player)) {
 				MSG.tell(sender, "You must be a player");
 				return true;
@@ -60,6 +72,10 @@ public class FilterCommand extends BukkitCommand {
 			}
 			break;
 		case "enable":
+			if (!sender.hasPermission("scorch.command.filter.enable")) {
+				MSG.cTell(sender, "noperm");
+				return true;
+			}
 			if (fm.isEnabled()) {
 				MSG.tell(sender, "Filter is already enabled");
 				return true;
@@ -68,6 +84,10 @@ public class FilterCommand extends BukkitCommand {
 			fm.initialize();
 			break;
 		case "disable":
+			if (!sender.hasPermission("scorch.command.filter.disable")) {
+				MSG.cTell(sender, "noperm");
+				return true;
+			}
 			if (!fm.isEnabled()) {
 				MSG.tell(sender, "Filter is already disabled");
 				return true;
@@ -77,6 +97,10 @@ public class FilterCommand extends BukkitCommand {
 			MSG.tell(sender, "Filter disabled.");
 			break;
 		case "addword":
+			if (!sender.hasPermission("scorch.command.filter.addword")) {
+				MSG.cTell(sender, "noperm");
+				return true;
+			}
 			FilterType type = FilterType.REGULAR;
 			boolean defined = false;
 			if (args.length >= 3) {
@@ -100,6 +124,10 @@ public class FilterCommand extends BukkitCommand {
 			MSG.tell(sender, "Added word " + entry.getWord() + " with level of " + entry.getType());
 			break;
 		case "removeword":
+			if (!sender.hasPermission("scorch.command.filter.removeword")) {
+				MSG.cTell(sender, "noperm");
+				return true;
+			}
 			if (args.length < 2) {
 				MSG.tell(sender, "/filter removeword [word]");
 				return true;
@@ -122,6 +150,10 @@ public class FilterCommand extends BukkitCommand {
 			MSG.tell(sender, "Removed word " + entry.getWord());
 			break;
 		case "addbypass":
+			if (!sender.hasPermission("scorch.command.filter.addword")) {
+				MSG.cTell(sender, "noperm");
+				return true;
+			}
 			if (args.length < 2) {
 				MSG.tell(sender, "/filter addbypass [word]");
 				return true;
@@ -132,6 +164,10 @@ public class FilterCommand extends BukkitCommand {
 			MSG.tell(sender, "Added " + entry.getWord() + " to the bypass");
 			break;
 		case "gui":
+			if (!sender.hasPermission("scorch.command.filter.gui")) {
+				MSG.cTell(sender, "noperm");
+				return true;
+			}
 			if (!(sender instanceof Player)) {
 				MSG.tell(sender, "You must be a player");
 				return true;

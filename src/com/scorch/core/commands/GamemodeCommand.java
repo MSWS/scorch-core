@@ -13,6 +13,17 @@ import org.bukkit.entity.Player;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Improved Gamemmode command for utility usage
+ * 
+ * <b>Permissions</b><br>
+ * scorch.command.gamemode.others - Access to change other player's
+ * gamemodes<br>
+ * scorch.command.gamemode.[GAMEMODE] - Access to specified gamemode
+ * 
+ * @author imodm
+ *
+ */
 public class GamemodeCommand extends BukkitCommand {
 
 	public GamemodeCommand(String name) {
@@ -63,6 +74,11 @@ public class GamemodeCommand extends BukkitCommand {
 			return true;
 		}
 
+		if (!sender.hasPermission("scorch.command.gamemode." + gm)) {
+			MSG.cTell(sender, "noperm");
+			return true;
+		}
+
 		target.setGameMode(gm);
 
 		String msg = ScorchCore.getInstance().getMessage("gamemodeformat")
@@ -87,11 +103,12 @@ public class GamemodeCommand extends BukkitCommand {
 		List<String> result = new ArrayList<String>();
 
 		for (GameMode mode : GameMode.values()) {
-			if (mode.toString().toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
+			if (sender.hasPermission("scorch.command.gamemode." + mode)
+					&& mode.toString().toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
 				result.add(mode.toString());
 		}
 
-		if (args.length == 1) {
+		if (args.length == 1 && sender.hasPermission("scorch.command.gamemode.others")) {
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				if (p.getName().toLowerCase().startsWith(args[0].toLowerCase()))
 					result.add(p.getName());

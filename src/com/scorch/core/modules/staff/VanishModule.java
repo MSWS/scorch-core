@@ -15,6 +15,13 @@ import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Manages vanish status of staff, listens to quit/join events to ensure staff
+ * are hidden
+ * 
+ * @author imodm
+ *
+ */
 public class VanishModule extends AbstractModule implements Listener {
 
 	private List<Player> vanished;
