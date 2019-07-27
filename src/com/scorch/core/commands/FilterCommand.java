@@ -8,13 +8,21 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.ModulePriority;
 import com.scorch.core.modules.chat.FilterEntry;
+import com.scorch.core.modules.chat.FilterEntry.FilterType;
 import com.scorch.core.modules.chat.FilterModule;
-import com.scorch.core.modules.chat.FilterModule.FilterType;
+import com.scorch.core.modules.players.CPlayer;
 import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Manage and update the filter
+ * 
+ * <b>Permissions</b><br>
+ * 
+ * @author imodm
+ *
+ */
 public class FilterCommand extends BukkitCommand {
 	public FilterCommand(String name) {
 		super(name);
@@ -37,13 +45,21 @@ public class FilterCommand extends BukkitCommand {
 		FilterModule fm = (FilterModule) ScorchCore.getInstance().getModule("FilterModule");
 		FilterEntry entry;
 
+		String word;
+
+		Player player;
+
 		switch (args[0].toLowerCase()) {
 		case "preference":
+			if (!sender.hasPermission("scorch.command.filter.preference")) {
+				MSG.cTell(sender, "noperm");
+				return true;
+			}
 			if (!(sender instanceof Player)) {
 				MSG.tell(sender, "You must be a player");
 				return true;
 			}
-			Player player = (Player) sender;
+			player = (Player) sender;
 			ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(player.getUniqueId());
 			if (args.length == 1) {
 				MSG.tell(sender, "/filter preference NONE/REGULAR");
@@ -56,47 +72,113 @@ public class FilterCommand extends BukkitCommand {
 			}
 			break;
 		case "enable":
-			if (fm != null) {
+			if (!sender.hasPermission("scorch.command.filter.enable")) {
+				MSG.cTell(sender, "noperm");
+				return true;
+			}
+			if (fm.isEnabled()) {
 				MSG.tell(sender, "Filter is already enabled");
 				return true;
 			}
 
-			fm = (FilterModule) ScorchCore.getInstance().registerModule(new FilterModule("FilterModule"),
-					ModulePriority.MEDIUM);
-
 			fm.initialize();
 			break;
 		case "disable":
-			if (fm == null) {
+			if (!sender.hasPermission("scorch.command.filter.disable")) {
+				MSG.cTell(sender, "noperm");
+				return true;
+			}
+			if (!fm.isEnabled()) {
 				MSG.tell(sender, "Filter is already disabled");
 				return true;
 			}
 
-			ScorchCore.getInstance().disableModule(ScorchCore.getInstance().getModule("FilterModule"));
+			fm.disable();
 			MSG.tell(sender, "Filter disabled.");
 			break;
 		case "addword":
-			if (args.length < 3) {
-				MSG.tell(sender, "/filter addword [word] [wordtype]");
+			if (!sender.hasPermission("scorch.command.filter.addword")) {
+				MSG.cTell(sender, "noperm");
 				return true;
 			}
+			FilterType type = FilterType.REGULAR;
+			boolean defined = false;
+			if (args.length >= 3) {
+				try {
+					type = FilterType.valueOf(args[args.length - 1].toUpperCase());
+					defined = true;
+				} catch (IllegalArgumentException expected) {
+				}
+			}
 
-			entry = new FilterEntry(args[1], FilterType.valueOf(args[2].toUpperCase()));
+			word = "";
+			for (int i = 1; i < args.length - (defined ? 1 : 0); i++) {
+				word += args[i] + " ";
+			}
+
+			word = word.trim();
+
+			entry = new FilterEntry(word, type);
 			fm.addWord(entry);
+
+			MSG.tell(sender, "Added word " + entry.getWord() + " with level of " + entry.getType());
 			break;
 		case "removeword":
+			if (!sender.hasPermission("scorch.command.filter.removeword")) {
+				MSG.cTell(sender, "noperm");
+				return true;
+			}
 			if (args.length < 2) {
 				MSG.tell(sender, "/filter removeword [word]");
 				return true;
 			}
 
-			entry = fm.getFilterEntry(args[1]);
+			word = "";
+			for (int i = 1; i < args.length; i++) {
+				word += args[i] + " ";
+			}
+
+			word = word.trim();
+
+			entry = fm.getFilterEntry(word);
 			if (entry == null) {
-				MSG.tell(sender, "Word is not filtered");
+				MSG.tell(sender, args[1] + " is not filtered");
 				return true;
 			}
 
 			fm.removeWord(entry);
+			MSG.tell(sender, "Removed word " + entry.getWord());
+			break;
+		case "addbypass":
+			if (!sender.hasPermission("scorch.command.filter.addword")) {
+				MSG.cTell(sender, "noperm");
+				return true;
+			}
+			if (args.length < 2) {
+				MSG.tell(sender, "/filter addbypass [word]");
+				return true;
+			}
+			entry = new FilterEntry(args[1], FilterType.ALLOW);
+			fm.addWord(entry);
+
+			MSG.tell(sender, "Added " + entry.getWord() + " to the bypass");
+			break;
+		case "gui":
+			if (!sender.hasPermission("scorch.command.filter.gui")) {
+				MSG.cTell(sender, "noperm");
+				return true;
+			}
+			if (!(sender instanceof Player)) {
+				MSG.tell(sender, "You must be a player");
+				return true;
+			}
+
+			player = (Player) sender;
+			CPlayer cp = ScorchCore.getInstance().getPlayer(player);
+
+			player.openInventory(fm.getFilterGUI(0));
+			cp.setTempData("openInventory", "FilterGUI");
+			cp.setTempData("page", 0);
 			break;
 		}
 
@@ -107,7 +189,8 @@ public class FilterCommand extends BukkitCommand {
 	public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
 		List<String> result = new ArrayList<String>();
 		if (args.length == 1) {
-			for (String res : new String[] { "preference", "enable", "disable", "addword" }) {
+			for (String res : new String[] { "gui", "preference", "enable", "disable", "addword", "removeword",
+					"addbypass" }) {
 				if (sender.hasPermission("scorch.command.filter." + res)
 						&& res.toLowerCase().startsWith(args[0].toLowerCase())) {
 					result.add(res);
@@ -123,9 +206,9 @@ public class FilterCommand extends BukkitCommand {
 			}
 		}
 
-		if (args.length == 3 && args[0].equalsIgnoreCase("addword")) {
+		if (args.length >= 3 && args[0].equalsIgnoreCase("addword")) {
 			for (FilterType type : FilterType.values()) {
-				if (type.toString().toLowerCase().startsWith(args[2].toLowerCase())) {
+				if (type.toString().toLowerCase().startsWith(args[args.length - 1].toLowerCase())) {
 					result.add(type.toString());
 				}
 			}

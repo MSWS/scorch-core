@@ -8,6 +8,14 @@ import org.bukkit.command.defaults.BukkitCommand;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Get information on the latest build version that is currently on the server.
+ * 
+ * TODO: Link with online git repo
+ * 
+ * @author imodm
+ *
+ */
 public class BVersionCommand extends BukkitCommand {
 
 	public BVersionCommand(String name) {

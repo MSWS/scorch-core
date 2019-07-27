@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.players.CPlayer;
-import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
 
 /**
@@ -71,8 +70,6 @@ public class PunishCommand extends BukkitCommand {
 		CPlayer cp = ScorchCore.getInstance().getPlayer(player);
 
 		String name = target.getName() == null ? args[0] : target.getName();
-
-		Logger.log("Name: " + name);
 
 		cp.setTempData("openInventory", "punish");
 		cp.setTempData("punishing", target.getUniqueId() + "|" + name);

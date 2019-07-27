@@ -30,14 +30,26 @@ public class PlaytimeModule extends AbstractModule implements Listener {
 
 	@Override
 	public void disable() {
+		loginTimes.keySet().forEach(uuid -> {
+			ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(uuid);
+
+			sp.setData("playtime", sp.getData("playtime", Number.class, 0).longValue()
+					+ (System.currentTimeMillis() - loginTimes.getOrDefault(uuid, System.currentTimeMillis())));
+		});
+
 		PlayerJoinEvent.getHandlerList().unregister(this);
 		PlayerQuitEvent.getHandlerList().unregister(this);
 	}
 
 	public long getPlaytime(UUID uuid) {
 		ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(uuid);
-		return System.currentTimeMillis()
-				- sp.getData("playtime", Long.class, loginTimes.getOrDefault(uuid, System.currentTimeMillis()));
+		if (loginTimes.containsKey(uuid)) {
+			return sp.getData("playtime", Number.class).longValue()
+					+ (System.currentTimeMillis() - loginTimes.get(uuid));
+		} else {
+			return sp.getData("playtime", Number.class, 0).longValue();
+		}
+
 	}
 
 	@EventHandler
@@ -50,8 +62,8 @@ public class PlaytimeModule extends AbstractModule implements Listener {
 		UUID uuid = event.getPlayer().getUniqueId();
 		ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(uuid);
 
-		sp.setData("playtime", System.currentTimeMillis() - sp.getData("playtime", Double.class,
-				loginTimes.getOrDefault(uuid, System.currentTimeMillis()).longValue()));
+		sp.setData("playtime", sp.getData("playtime", Number.class, 0).longValue()
+				+ (System.currentTimeMillis() - loginTimes.getOrDefault(uuid, System.currentTimeMillis())));
 
 		loginTimes.remove(uuid);
 	}

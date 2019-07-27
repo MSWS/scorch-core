@@ -15,6 +15,13 @@ import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Manages vanish status of staff, listens to quit/join events to ensure staff
+ * are hidden
+ * 
+ * @author imodm
+ *
+ */
 public class VanishModule extends AbstractModule implements Listener {
 
 	private List<Player> vanished;
@@ -50,7 +57,7 @@ public class VanishModule extends AbstractModule implements Listener {
 
 	public void vanish(Player player) {
 		for (Player p : Bukkit.getOnlinePlayers())
-			if (!wouldSee(player, p))
+			if (!wouldSee(p, player))
 				p.hidePlayer(ScorchCore.getInstance(), player);
 
 		MSG.cTell(player, "vanishenablemessage");

@@ -20,6 +20,7 @@ import com.scorch.core.modules.combat.CombatModule;
 import com.scorch.core.modules.commands.CommandModule;
 import com.scorch.core.modules.data.ConnectionManager;
 import com.scorch.core.modules.data.DataManager;
+import com.scorch.core.modules.data.LagModule;
 import com.scorch.core.modules.messages.MessagesModule;
 import com.scorch.core.modules.messages.OfflineMessagesModule;
 import com.scorch.core.modules.permissions.PermissionModule;
@@ -27,12 +28,13 @@ import com.scorch.core.modules.permissions.PermissionPlayer;
 import com.scorch.core.modules.players.CPlayer;
 import com.scorch.core.modules.players.FriendModule;
 import com.scorch.core.modules.players.IPTracker;
-import com.scorch.core.modules.players.LagModule;
 import com.scorch.core.modules.players.PlaytimeModule;
 import com.scorch.core.modules.punish.BanwaveModule;
 import com.scorch.core.modules.punish.PunishModule;
+import com.scorch.core.modules.staff.BuildModeModule;
 import com.scorch.core.modules.staff.TeleportModule;
 import com.scorch.core.modules.staff.VanishModule;
+import com.scorch.core.modules.staff.WorldProtectionModule;
 import com.scorch.core.utils.Logger;
 
 /**
@@ -74,13 +76,14 @@ public class ScorchCore extends JavaPlugin {
 				ModulePriority.HIGHEST);
 
 		this.messages = (MessagesModule) registerModule(new MessagesModule("MessagesModule"), ModulePriority.HIGH);
-
 		this.permissionModule = (PermissionModule) registerModule(new PermissionModule("PermissionModule"),
 				ModulePriority.HIGH);
+		registerModule(new BuildModeModule("BuildModeModule"), ModulePriority.HIGH);
+		registerModule(new WorldProtectionModule("WorldProtectionModule"), ModulePriority.HIGH);
 
 		registerModule(new IPTracker("IPTrackerModule"), ModulePriority.MEDIUM);
 		registerModule(new BanwaveModule("BanwaveModule"), ModulePriority.MEDIUM);
-		registerModule(new OfflineMessagesModule("OfflineMessageModule"), ModulePriority.MEDIUM);
+		registerModule(new OfflineMessagesModule("OfflineMessagesModule"), ModulePriority.MEDIUM);
 		this.pMod = (PunishModule) registerModule(new PunishModule("PunishModule"), ModulePriority.MEDIUM);
 		this.commands = (CommandModule) registerModule(new CommandModule("CommandModule"), ModulePriority.MEDIUM);
 
@@ -194,7 +197,7 @@ public class ScorchCore extends JavaPlugin {
 	 */
 	public AbstractModule getModule(String id) {
 		for (AbstractModule module : getModules()) {
-			if (module.getId() == id) {
+			if (module.getId().equals(id)) {
 				return module;
 			}
 		}

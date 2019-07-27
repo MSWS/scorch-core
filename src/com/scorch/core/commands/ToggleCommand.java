@@ -8,9 +8,19 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 
 import com.scorch.core.ScorchCore;
+import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.commands.CommandModule;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Command used to toggle commands/modules
+ * 
+ * <b>Permissions</b><br>
+ * scorch.command.toggle - Access to command
+ * 
+ * @author imodm
+ *
+ */
 public class ToggleCommand extends BukkitCommand {
 
 	private List<Command> commands;
@@ -40,16 +50,39 @@ public class ToggleCommand extends BukkitCommand {
 
 		Command cmd = mod.getCommand(args[0].toLowerCase());
 
-		if (cmd == null) {
-			MSG.tell(sender, "Unknown Command");
-			return true;
-		}
-
-		boolean status = !mod.isEnabled(cmd);
+		boolean status = true;
 
 		if (args.length == 2) {
 			status = Boolean.parseBoolean(args[1]);
 		}
+
+		if (cmd == null) {
+
+			AbstractModule am = ScorchCore.getInstance().getModule(args[0]);
+
+			if (am == null) {
+				MSG.tell(sender, "Unknown Command/Module");
+				return true;
+			}
+
+			if (args.length == 1)
+				status = !am.isEnabled();
+
+			am.setEnabled(status);
+
+			if (status) {
+				am.initialize();
+			} else {
+				am.disable();
+			}
+
+			String msg = ScorchCore.getInstance().getMessage("moduletoggleformat").replace("%module%", am.getId())
+					.replace("%status%", status ? "&aenabled" : "&cdisabled");
+			MSG.tell(sender, msg);
+			return true;
+		}
+
+		status = !mod.isEnabled(cmd);
 
 		if (status) {
 			mod.enableCommand(cmd);
@@ -72,10 +105,17 @@ public class ToggleCommand extends BukkitCommand {
 			commands = new ArrayList<>(mod.getCommands().keySet());
 		}
 
-		if (args.length == 1)
-			for (Command cmd : commands)
+		if (args.length == 1) {
+			for (Command cmd : commands) {
 				if (cmd.getName().toLowerCase().startsWith(args[0].toLowerCase()))
 					result.add(cmd.getName());
+			}
+
+			for (AbstractModule m : ScorchCore.getInstance().getModules()) {
+				if (m.getId().toLowerCase().startsWith(args[0].toLowerCase()))
+					result.add(m.getId());
+			}
+		}
 
 		if (args.length == 2)
 			for (String bool : new String[] { "true", "false" })

@@ -225,7 +225,7 @@ public class TPCommand extends BukkitCommand {
 					}
 				}
 			} else {
-				if (args.length == 3 && NumberUtils.isNumber(args[0])) {
+				if (args.length >= 3 && NumberUtils.isNumber(args[0])) {
 					if (!(sender instanceof Player)) {
 						MSG.tell(sender, "Unknown Player");
 						return true;

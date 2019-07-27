@@ -810,7 +810,6 @@ public class DataManager extends AbstractModule {
 
 	public void savePlayerData() {
 		try {
-			Logger.log("&eSaving all player data...");
 			Iterator<Entry<UUID, ScorchPlayer>> it = cache.entrySet().iterator();
 			while (it.hasNext()) {
 				Entry<UUID, ScorchPlayer> entry = it.next();

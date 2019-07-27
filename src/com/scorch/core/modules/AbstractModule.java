@@ -2,7 +2,7 @@ package com.scorch.core.modules;
 
 public abstract class AbstractModule {
 	
-	private boolean enabled;
+	private boolean enabled = true;
 	private String id;
 	
 	/**

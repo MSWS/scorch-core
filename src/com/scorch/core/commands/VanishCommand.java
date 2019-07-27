@@ -11,6 +11,17 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.staff.VanishModule;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Staff command for moderation
+ * 
+ * <b>Permissions</b><br>
+ * scorch.command.vanish - Access to command <br>
+ * scorch.vanish.level.[level] - Used to see who can see who, higher level staff
+ * should get higher level numbers (OWNER: 100, CO-OWNER: 99, etc)
+ * 
+ * @author imodm
+ *
+ */
 public class VanishCommand extends BukkitCommand {
 
 	private VanishModule vm;
@@ -50,8 +61,12 @@ public class VanishCommand extends BukkitCommand {
 			return true;
 		}
 
-		MSG.tell(sender, "&7You " + (vm.toggle(target) ? "&eenabled" : "&edisabled") + " &7" + target.getName() + "'"
-				+ (target.getName().toLowerCase().endsWith("s") ? "" : "s") + " vanish.");
+		String msg = ScorchCore.getInstance().getMessage("togglevanish");
+
+		MSG.tell(sender,
+				msg.replace("%status%", vm.toggle(target) ? "&aenabled" : "disabled")
+						.replace("%s%", target.getName().toLowerCase().endsWith("s") ? "" : "s")
+						.replace("%target%", target.getName()));
 		return true;
 	}
 }

@@ -189,7 +189,6 @@ public class IPTracker extends AbstractModule implements Listener {
 	}
 
 	public void saveIps() {
-		Logger.log("&6Saving player IPs...");
 		try {
 			for (IPEntry ent : links.values()) {
 				ScorchCore.getInstance().getDataManager().updateObject("playerips", ent,

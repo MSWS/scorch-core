@@ -5,6 +5,12 @@ import org.bukkit.command.defaults.BukkitCommand;
 
 import com.scorch.core.utils.MSG;
 
+/**
+ * Custom help command that responds with database message
+ * 
+ * @author imodm
+ *
+ */
 public class HelpCommand extends BukkitCommand {
 
 	public HelpCommand(String name) {

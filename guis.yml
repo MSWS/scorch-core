@@ -2,7 +2,7 @@ punish:
   Title: Punishing %punishing%
   Size: 54
   skull:
-    Icon: SKULL_ITEM
+    Icon: PLAYER_HEAD
     Owner: '%punishing%'
     Data: 3
     Slot: 4
@@ -10,7 +10,7 @@ punish:
     Lore:
     - '&7Reason: &e%reason%'
   chatCategory:
-    Icon: BOOK_AND_QUILL
+    Icon: WRITABLE_BOOK
     Name: '&a&lChat Offense'
     Slot: 10
     Lore:
@@ -86,7 +86,7 @@ punish:
     - '&c - Bot Attacks'
     - '&c - 3+ Alts with Hacking Bans'
   permmute:
-    Icon: BOOK_AND_QUILL
+    Icon: WRITABLE_BOOK
     Slot: 34
     Name: '&c&lPermanent Mute'
     Type: PERM_MUTE
@@ -111,7 +111,7 @@ punish:
     - ''
     - '&7Kicks a player with the provided reason'
   chat1:
-    Icon: INK_SACK
+    Icon: CACTUS_GREEN
     Name: '&a&lSeverity 1'
     Slot: 19
     Data: 2
@@ -126,7 +126,7 @@ punish:
     - '&7 - Intentional Advertising (No; Links, IPs, and not spammed)'
     - '&7 - DM Spamming'
   chat2:
-    Icon: INK_SACK
+    Icon: DANDELION_YELLOW
     Name: '&e&lSeverity 2'
     Slot: 28
     Data: 11
@@ -143,7 +143,7 @@ punish:
     - '&7 - Extremely profane language'
     Permission: rank.mod
   chat3:
-    Icon: INK_SACK
+    Icon: ROSE_RED
     Name: '&c&lSeverity 3'
     Slot: 37
     Data: 1
@@ -155,7 +155,7 @@ punish:
     - '&7within 3 months'
     Permission: rank.mod
   gameplay1:
-    Icon: INK_SACK
+    Icon: CACTUS_GREEN
     Name: '&a&lSeverity 1'
     Slot: 21
     Data: 2
@@ -168,7 +168,7 @@ punish:
     - '&7 - Command Spam'
     - '&7 - Inappropriate Faction Name'
   hacking1:
-    Icon: INK_SACK
+    Icon: CACTUS_GREEN
     Name: '&a&lSeverity 1'
     Slot: 23
     Data: 2
@@ -184,7 +184,7 @@ punish:
     - '&7 - Skin Blinker'
     - '&7 - Derp'
   hacking2:
-    Icon: INK_SACK
+    Icon: DANDELION_YELLOW
     Name: '&e&lSeverity 2'
     Slot: 32
     Data: 11
@@ -201,7 +201,7 @@ punish:
     - '&7 - Any Inventory related hacks'
     - '&7 - XRay'
   hacking3:
-    Icon: INK_SACK
+    Icon: ROSE_RED
     Name: '&c&lSeverity 3'
     Slot: 41
     Data: 1

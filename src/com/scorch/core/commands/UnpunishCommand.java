@@ -39,7 +39,8 @@ public class UnpunishCommand extends BukkitCommand {
 		OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
 
 		for (Punishment p : ScorchCore.getInstance().getPunishModule().getPunishments(target.getUniqueId())) {
-			p.remove("CONSOLE", "Removed by console command");
+			if (p.isActive())
+				p.remove("CONSOLE", "Removed by console command");
 		}
 
 		MSG.tell(sender, "Successfully removed all punishments of " + target.getName());

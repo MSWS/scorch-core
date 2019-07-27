@@ -10,6 +10,15 @@ import org.bukkit.entity.Player;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Tells the sender their ping
+ * 
+ * <b>Permissions</b><br>
+ * scorch.command.ping - Access to command
+ * 
+ * @author imodm
+ *
+ */
 public class PingCommand extends BukkitCommand {
 	public PingCommand(String name) {
 		super(name);
@@ -19,6 +28,11 @@ public class PingCommand extends BukkitCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+		if (!sender.hasPermission(getPermission())) {
+			MSG.tell(sender, getPermissionMessage());
+			return true;
+		}
+		
 		if (!(sender instanceof Player)) {
 			MSG.tell(sender, "must be player");
 			return true;

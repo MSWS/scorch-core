@@ -30,9 +30,9 @@ public class MessagesModule extends AbstractModule {
 		defaults.add(new CMessage("punishmessage", "&c&l[PUNISH] &a%staff% &c%verb% &e%target%&7. Reason: &e%reason%"));
 		defaults.add(new CMessage("appeallink", "https://yourwebsite.com/appeallink"));
 		defaults.add(new CMessage("tempbanmessage",
-				"&c&lYou have been &4&l%verb% &c&lby &6&l%staff% &c&lfor &e&l%duration%\n&b%reason%\n&c&lTime Left: %timeleft%\n%appeal%"));
+				"&c&lYou have been &4&l%verb% &c&lby &6&l%staff% &c&lfor &e&l%duration%\n&r%reason%\n&c&lTime Left: %timeleft%\n%appeal%"));
 		defaults.add(new CMessage("permbanmessage",
-				"&c&lYou have been &4&l%verb% &c&lby &6&l%staff% \n&b%reason%\n%appeal%"));
+				"&c&lYou have been &4&l%verb% &c&lby &6&l%staff% \n&r%reason%\n%appeal%"));
 		defaults.add(new CMessage("warningmessage",
 				"&c&l[&4&lWARNING&c&l] &7You have been issued a punishment by &c%staff%|&c&lReason&7: %reason%|&dPlease make sure to read the rules to avoid further punishment."));
 		defaults.add(new CMessage("tempmutemessage",
@@ -58,6 +58,20 @@ public class MessagesModule extends AbstractModule {
 		defaults.add(
 				new CMessage("gamemodeformat", "&aSuccessfully &7set &e%player%&7'%s% gamemode to &e%gamemode%&7."));
 		defaults.add(new CMessage("commandtoggleformat", "&7The &e/%command% &7command has been %status%&7."));
+		defaults.add(new CMessage("moduletoggleformat", "&7The &e%module% &7module has been %status%&7."));
+		defaults.add(
+				new CMessage("buildmodeinspectentity-natural", "&7This entity was not spawned in via build mode."));
+		defaults.add(new CMessage("buildmodeinspectentity-player", "&7This entity was spawned in by &e%player%&7."));
+		defaults.add(
+				new CMessage("buildmodeinspectblock-natural", "&7This block was not placed by someone in build mode."));
+		defaults.add(new CMessage("buildmodeinspectblock-player", "&7This block was placed by &e%player%&7."));
+		defaults.add(new CMessage("buildmoderollbackall", "&7Rolled back everyone's builds."));
+		defaults.add(new CMessage("buildmoderollback", "&7Rolled back &e%player%&7'%s% builds."));
+		defaults.add(new CMessage("buildmodetoggle", "&e%player%&7'%s% &6%mode% &7mode has been %status%&7."));
+		defaults.add(new CMessage("healmessage", "&aSuccessfully &2healed &e%target%&a."));
+		defaults.add(new CMessage("feedmessage", "&aSuccessfully &2fed &e%target%&a."));
+
+//		defaults.add(new CMessage("", ""));
 	}
 
 	@Override

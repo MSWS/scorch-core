@@ -40,7 +40,7 @@ public class OfflineMessagesModule extends AbstractModule {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				Logger.log("Loading offline messages...");
+				Logger.log("&9Loading offline messages...");
 				try {
 					ScorchCore.getInstance().getDataManager().createTable("offlinemessages", OfflineMessage.class);
 					ScorchCore.getInstance().getDataManager().getAllObjects("offlinemessages").forEach(msg -> {

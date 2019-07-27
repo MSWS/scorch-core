@@ -1,9 +1,12 @@
 package com.scorch.core.utils;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -330,8 +333,26 @@ public class MSG {
 		return result;
 	}
 
-	public static String filter(String msg, List<String> swears) {
+	public static String filter(String msg, List<String> swears, List<String> allow, boolean botCheck) {
 		String raw = msg; /** plugin.getSwears() is a List of all words that should be filtered */
+
+		String[] replace = new String[raw.split(" ").length];
+
+		int pos = 0;
+		for (String m : raw.split(" ")) {
+			if (allow.contains(m.toLowerCase()))
+				replace[pos] = m;
+			pos++;
+		}
+
+		Collections.sort(swears, new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				return o2.length() - o1.length();
+			}
+		});
+
+		allow = allow.stream().map(s -> s.toLowerCase()).collect(Collectors.toList());
 		for (String word : swears) {
 			char[] letters = raw.toCharArray();
 			for (int i = 0; i < raw.length() && i < letters.length; i++) {
@@ -339,7 +360,11 @@ public class MSG {
 				String w = "";
 				int p = 0;
 				while (p + i < letters.length && tmp.length() < word.length()) {
-					tmp += (letters[p + i] + "").replaceAll("[^a-zA-Z]", "").toLowerCase();
+					if (botCheck) {
+						tmp += (letters[p + i] + "").replaceAll("[^a-zA-Z\\.\\s]", "").toLowerCase();
+					} else {
+						tmp += (letters[p + i] + "").replaceAll("[^a-zA-Z]", "").toLowerCase();
+					}
 					w += letters[p + i] + "";
 					p++;
 				}
@@ -355,19 +380,42 @@ public class MSG {
 			}
 		}
 
+		StringBuilder builder = new StringBuilder();
+
+		for (int i = 0; i < raw.split(" ").length; i++) {
+			if (replace[i] != null)
+				builder.append(replace[i] + " ");
+			else
+				builder.append(raw.split(" ")[i] + " ");
+		}
+
+		raw = builder.toString().trim();
+
+		if (botCheck)
+			return raw;
+
 		Pattern p = Pattern.compile(
-				"(.+(.|,|dot|)(com|net|org|me|edu|info)|[0-9]+(.|,|dot|)[0-9]+(.|,|dot|)[0-9]+(.|,|dot|)[0-9]+)");
+				"(.+(.|,|dot|)(c.m|net|.rg|m.|edu|info|xyz)|[0-9]+(.|,|dot| )[0-9]+(.|,|dot| )[0-9]+(.|,|dot| )[0-9]+)");
 		Matcher m = p.matcher(raw);
 
 		/**
 		 * This part filters any URLs that you do not want. You can change [YOUR URL] to
 		 * allow your own server's URL
 		 */
-		if (m.matches() && !m.group(0).matches("(https:\\/\\/)?(www\\.)?scorchgamez\\.com")) {
-			String r = "";
-			for (int i = 0; i < m.group(0).length(); i++)
-				r += "*";
-			raw = raw.replace(m.group(0), r);
+
+		while (m.find()) {
+			try {
+				if (m.group().matches("(https:\\/\\/)?(www\\.)?scorchgamez\\.com"))
+					continue;
+
+				String r = "";
+				for (int i = 0; i < m.group().length(); i++)
+					r += "*";
+				raw = raw.replace(m.group(), r);
+
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			}
 		}
 
 		String result = "";

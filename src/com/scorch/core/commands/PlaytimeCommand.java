@@ -10,6 +10,16 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.players.PlaytimeModule;
 import com.scorch.core.utils.MSG;
 
+/**
+ * Get playtime of players
+ * 
+ * <b>Permissions</b><br>
+ * scorch.command.playtime - Access to command scorch.command.playtime.others -
+ * View other player's playtimes
+ * 
+ * @author imodm
+ *
+ */
 public class PlaytimeCommand extends BukkitCommand {
 	public PlaytimeCommand(String name) {
 		super(name);
