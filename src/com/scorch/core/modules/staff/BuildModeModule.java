@@ -109,6 +109,7 @@ public class BuildModeModule extends AbstractModule implements Listener {
 		CreatureSpawnEvent.getHandlerList().unregister(this);
 		BlockFertilizeEvent.getHandlerList().unregister(this);
 		ExplosionPrimeEvent.getHandlerList().unregister(this);
+		PlayerDropItemEvent.getHandlerList().unregister(this);
 	}
 
 	public boolean inBuildMode(UUID uuid) {
@@ -570,21 +571,28 @@ public class BuildModeModule extends AbstractModule implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void blockFertilize(BlockFertilizeEvent event) {
-		Player player = event.getPlayer();
-
-		if (getStatus(player.getUniqueId()) == BuildStatus.OVERRIDE) {
-			event.setCancelled(false);
-			return;
-		}
-
-		if (getStatus(player.getUniqueId()) != BuildStatus.BUILD)
+		UUID player = getResponsible(event.getBlock().getLocation());
+		if (player == null)
 			return;
 
-		List<Location> locs = tracker.get(player.getUniqueId());
+		List<Location> locs = tracker.get(player);
 		locs.addAll(event.getBlocks().stream()
 				.filter(b -> !b.getBlock().getRelative(BlockFace.UP).getType().toString().contains("SAPLING"))
 				.map(b -> b.getLocation()).collect(Collectors.toList()));
-		tracker.put(player.getUniqueId(), locs);
+		tracker.put(player, locs);
+	}
+
+	@EventHandler(priority = EventPriority.HIGH)
+	public void structureGrow(StructureGrowEvent event) {
+		UUID player = getResponsible(event.getLocation());
+		if (player == null)
+			return;
+
+		List<Location> locs = tracker.get(player);
+		locs.addAll(event.getBlocks().stream()
+				.filter(b -> !b.getBlock().getRelative(BlockFace.UP).getType().toString().contains("SAPLING"))
+				.map(b -> b.getLocation()).collect(Collectors.toList()));
+		tracker.put(player, locs);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
