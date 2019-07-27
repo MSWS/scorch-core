@@ -25,8 +25,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockFertilizeEvent;
+import org.bukkit.event.block.BlockMultiPlaceEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
@@ -55,6 +57,7 @@ import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.utils.MSG;
 import com.scorch.core.utils.Utils;
 
+@SuppressWarnings("deprecation")
 public class BuildModeModule extends AbstractModule implements Listener {
 
 	public BuildModeModule(String id) {
@@ -136,6 +139,10 @@ public class BuildModeModule extends AbstractModule implements Listener {
 				}
 				for (int i = 0; i < rollbackBlocks && pos < loc.size(); i++) {
 					Location l = loc.get(pos);
+					if (l.getBlock().getType() == Material.AIR) {
+						pos++;
+						continue;
+					}
 					l.getWorld().playSound(l, Utils.getBreakSound(l.getBlock().getType()).bukkitSound(), 2, 1);
 					l.getBlock().setType(Material.AIR);
 					pos++;
@@ -168,6 +175,8 @@ public class BuildModeModule extends AbstractModule implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockPlace(BlockPlaceEvent event) {
+		if (event instanceof BlockMultiPlaceEvent)
+			return;
 		Player player = event.getPlayer();
 
 		if (getStatus(player.getUniqueId()) == BuildStatus.OVERRIDE) {
@@ -198,6 +207,37 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
+	public void onBlockPlace(BlockMultiPlaceEvent event) {
+		Player player = event.getPlayer();
+
+		if (getStatus(player.getUniqueId()) == BuildStatus.OVERRIDE) {
+			event.setCancelled(false);
+			return;
+		}
+
+		if (getStatus(player.getUniqueId()) != BuildStatus.BUILD)
+			return;
+
+		Block block = event.getBlock();
+
+		if (block.isLiquid())
+			return;
+
+		if (event.getReplacedBlockStates().stream().anyMatch(bs -> bs.getType() != Material.AIR))
+			return;
+
+		List<Material> gravity = Arrays.asList(Material.GRAVEL, Material.SAND, Material.RED_SAND, Material.ANVIL);
+		if (gravity.contains(block.getType()))
+			return;
+
+		List<Location> locs = tracker.get(player.getUniqueId());
+		locs.addAll(event.getReplacedBlockStates().stream().map(bs -> bs.getLocation()).collect(Collectors.toList()));
+		tracker.put(player.getUniqueId(), locs);
+
+		event.setCancelled(false);
+	}
+
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
 
@@ -217,6 +257,17 @@ public class BuildModeModule extends AbstractModule implements Listener {
 			return;
 
 		event.setCancelled(false);
+		event.setDropItems(false);
+	}
+
+	@EventHandler(priority = EventPriority.HIGH)
+	public void onBlockBreak(BlockDropItemEvent event) {
+		MSG.announce("triggered");
+
+		if (!isProtected(event.getBlock()))
+			return;
+
+		event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
@@ -468,72 +519,53 @@ public class BuildModeModule extends AbstractModule implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void blockStateChange(BlockFadeEvent event) {
-		for (List<Location> locs : tracker.values()) {
-			if (locs.contains(event.getBlock().getLocation())) {
-				event.setCancelled(true);
-				break;
-			}
-		}
+		if (!isProtected(event.getBlock()))
+			return;
+		event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void portalCreate(PortalCreateEvent event) {
-		for (List<Location> locs : tracker.values()) {
-			if (event.getBlocks().stream().anyMatch(bs -> locs.contains(bs.getLocation()))) {
-				event.setCancelled(true);
-				break;
-			}
-		}
+		if (!event.getBlocks().stream().anyMatch(bs -> isProtected(bs.getLocation())))
+			return;
+		event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void blockPhysicsEvent(BlockPhysicsEvent event) {
-		for (List<Location> locs : tracker.values()) {
-			if (locs.contains(event.getBlock().getLocation())) {
-				event.setCancelled(true);
-				break;
-			}
-		}
+		if (event.getSourceBlock().getType() != Material.AIR && event.getChangedType().toString().contains("RAIL"))
+			return;
+		if (!isProtected(event.getBlock()))
+			return;
+		event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void spongeAbsorb(SpongeAbsorbEvent event) {
-		for (List<Location> locs : tracker.values()) {
-			if (locs.contains(event.getBlock().getLocation())) {
-				event.setCancelled(true);
-				break;
-			}
-		}
+		if (!isProtected(event.getBlock()))
+			return;
+		event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void blockSpread(BlockSpreadEvent event) {
-		for (List<Location> locs : tracker.values()) {
-			if (locs.contains(event.getSource().getLocation()) || locs.contains(event.getBlock().getLocation())) {
-				event.setCancelled(true);
-				break;
-			}
-		}
+		if (!isProtected(event.getSource()) && !isProtected(event.getBlock()))
+			return;
+		event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void entityExplode(EntityExplodeEvent event) {
-		for (List<Entity> ents : entityTracker.values()) {
-			if (ents.contains(event.getEntity())) {
-				event.setCancelled(true);
-				break;
-			}
-		}
+		if (!isProtected(event.getEntity()))
+			return;
+		event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void entitySpawn(CreatureSpawnEvent event) {
-		for (List<Location> locs : tracker.values()) {
-			if (locs.contains(event.getLocation().getBlock().getLocation())) {
-				event.setCancelled(true);
-				break;
-			}
-		}
+		if (!isProtected(event.getLocation().getBlock()))
+			return;
+		event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
@@ -557,12 +589,9 @@ public class BuildModeModule extends AbstractModule implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void explosionCreate(ExplosionPrimeEvent event) {
-		for (List<Entity> ents : entityTracker.values()) {
-			if (ents.contains(event.getEntity())) {
-				event.setRadius(0);
-				break;
-			}
-		}
+		if (!isProtected(event.getEntity()))
+			return;
+		event.setRadius(0);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
@@ -634,5 +663,27 @@ public class BuildModeModule extends AbstractModule implements Listener {
 		List<Material> arrays = Arrays.asList(Material.REDSTONE_BLOCK, Material.REDSTONE_TORCH,
 				Material.REDSTONE_WALL_TORCH);
 		return arrays.contains(mat);
+	}
+
+	private boolean isProtected(Location loc) {
+		for (List<Location> locs : tracker.values()) {
+			if (locs.contains(loc)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isProtected(Block block) {
+		return isProtected(block.getLocation());
+	}
+
+	private boolean isProtected(Entity ent) {
+		for (List<Entity> ents : entityTracker.values()) {
+			if (ents.contains(ent)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
