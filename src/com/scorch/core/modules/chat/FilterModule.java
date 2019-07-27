@@ -1,16 +1,24 @@
 package com.scorch.core.modules.chat;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
+import com.scorch.core.modules.chat.FilterEntry.FilterType;
 import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
@@ -23,6 +31,8 @@ public class FilterModule extends AbstractModule implements Listener {
 
 	private Map<FilterType, List<String>> links;
 
+	private Listener invListener;
+
 	public FilterModule(String id) {
 		super(id);
 	}
@@ -31,7 +41,10 @@ public class FilterModule extends AbstractModule implements Listener {
 	public void initialize() {
 		entries = new ArrayList<FilterEntry>();
 		def = new ArrayList<>();
-		links = new HashMap<FilterModule.FilterType, List<String>>();
+		links = new HashMap<FilterType, List<String>>();
+
+		invListener = new FilterInventoryListener();
+
 		for (FilterType type : FilterType.values())
 			links.put(type, new ArrayList<>());
 
@@ -97,10 +110,8 @@ public class FilterModule extends AbstractModule implements Listener {
 	@Override
 	public void disable() {
 		entries.clear();
-	}
 
-	public enum FilterType {
-		REGULAR, MANDATORY, ADVERTISING, BOT, NONE, ALLOW;
+		InventoryClickEvent.getHandlerList().unregister(invListener);
 	}
 
 	public void addWord(FilterEntry entry) {
@@ -137,6 +148,78 @@ public class FilterModule extends AbstractModule implements Listener {
 
 	public FilterEntry getFilterEntry(String word) {
 		return entries.stream().filter(filter -> filter.getWord().equalsIgnoreCase(word)).findFirst().orElse(null);
+	}
+
+	public Inventory getFilterGUI(int page) {
+		Inventory hist = Bukkit.createInventory(null, 54, "Swear Words");
+
+		List<FilterEntry> entries = this.entries;
+		Collections.sort(entries);
+
+		int slot = 0;
+
+		for (int i = (page * (hist.getSize() - 9)); i < (page * (hist.getSize() - 9)) + hist.getSize() - 9
+				&& i < entries.size(); i++) {
+//			Punishment p = entries.get(i);
+			FilterEntry fe = entries.get(i);
+			Material type = Material.GLASS;
+			switch (fe.getType()) {
+			case ADVERTISING:
+				type = Material.BEDROCK;
+				break;
+			case ALLOW:
+				type = Material.GREEN_WOOL;
+				break;
+			case MANDATORY:
+				type = Material.REDSTONE_BLOCK;
+				break;
+			case REGULAR:
+				type = Material.STONE;
+				break;
+			}
+
+			ItemStack item = new ItemStack(type, fe.getWord().length());
+
+			ItemMeta meta = item.getItemMeta();
+			meta.setDisplayName(MSG.color("&r" + fe.getWord()));
+			List<String> lore = new ArrayList<>();
+			lore.add(MSG.color("&7" + fe.getType()));
+
+			lore.add("");
+			lore.add(MSG.color("&e&lQ &7- Remove entry"));
+			FilterType next = FilterType.values()[fe.getType().ordinal() - 1 < 0 ? FilterType.values().length - 1
+					: fe.getType().ordinal() - 1],
+					prev = FilterType.values()[(fe.getType().ordinal() + 1) % FilterType.values().length];
+
+			lore.add(MSG.color("&e&lLeft-Click &7- Set to " + prev));
+			lore.add(MSG.color("&e&lRight-Click &7- Set to " + next));
+			meta.setLore(lore);
+			item.setItemMeta(meta);
+
+			hist.setItem(slot, item);
+			slot++;
+		}
+
+		if (page > 0) {
+			ItemStack back = new ItemStack(Material.ARROW);
+			ItemMeta bMeta = back.getItemMeta();
+			bMeta.setDisplayName(MSG.color("&aPrevious Page"));
+			back.setItemMeta(bMeta);
+			hist.setItem(hist.getSize() - 9, back);
+		}
+		if (hist.getItem(hist.getSize() - 10) != null) {
+			ItemStack next = new ItemStack(Material.ARROW);
+			ItemMeta nMeta = next.getItemMeta();
+			nMeta.setDisplayName(MSG.color("&aNext Page"));
+			next.setItemMeta(nMeta);
+			hist.setItem(hist.getSize() - 1, next);
+		}
+		return hist;
+	}
+
+	public List<FilterEntry> getEntries() {
+		Collections.sort(entries);
+		return entries;
 	}
 
 }

@@ -9,8 +9,9 @@ import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.chat.FilterEntry;
+import com.scorch.core.modules.chat.FilterEntry.FilterType;
 import com.scorch.core.modules.chat.FilterModule;
-import com.scorch.core.modules.chat.FilterModule.FilterType;
+import com.scorch.core.modules.players.CPlayer;
 import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.MSG;
 
@@ -38,13 +39,15 @@ public class FilterCommand extends BukkitCommand {
 
 		String word;
 
+		Player player;
+
 		switch (args[0].toLowerCase()) {
 		case "preference":
 			if (!(sender instanceof Player)) {
 				MSG.tell(sender, "You must be a player");
 				return true;
 			}
-			Player player = (Player) sender;
+			player = (Player) sender;
 			ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(player.getUniqueId());
 			if (args.length == 1) {
 				MSG.tell(sender, "/filter preference NONE/REGULAR");
@@ -128,6 +131,19 @@ public class FilterCommand extends BukkitCommand {
 
 			MSG.tell(sender, "Added " + entry.getWord() + " to the bypass");
 			break;
+		case "gui":
+			if (!(sender instanceof Player)) {
+				MSG.tell(sender, "You must be a player");
+				return true;
+			}
+
+			player = (Player) sender;
+			CPlayer cp = ScorchCore.getInstance().getPlayer(player);
+
+			player.openInventory(fm.getFilterGUI(0));
+			cp.setTempData("openInventory", "FilterGUI");
+			cp.setTempData("page", 0);
+			break;
 		}
 
 		return true;
@@ -137,7 +153,7 @@ public class FilterCommand extends BukkitCommand {
 	public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
 		List<String> result = new ArrayList<String>();
 		if (args.length == 1) {
-			for (String res : new String[] { "preference", "enable", "disable", "addword", "removeword",
+			for (String res : new String[] { "gui", "preference", "enable", "disable", "addword", "removeword",
 					"addbypass" }) {
 				if (sender.hasPermission("scorch.command.filter." + res)
 						&& res.toLowerCase().startsWith(args[0].toLowerCase())) {

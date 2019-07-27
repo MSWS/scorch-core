@@ -14,7 +14,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.chat.FilterModule.FilterType;
+import com.scorch.core.modules.chat.FilterEntry.FilterType;
 import com.scorch.core.modules.messages.CMessage;
 import com.scorch.core.modules.messages.MessagesModule;
 import com.scorch.core.modules.players.ScorchPlayer;
@@ -32,7 +32,7 @@ public class ChatListener implements Listener {
 	public void onChat(AsyncPlayerChatEvent event) {
 		event.setCancelled(true);
 		Player player = event.getPlayer();
-		
+
 		List<Punishment> punishments = ScorchCore.getInstance().getPunishModule().getPunishments(player.getUniqueId());
 
 		punishments = punishments.stream().filter(Punishment::isActive)
@@ -84,8 +84,7 @@ public class ChatListener implements Listener {
 
 			if (filterType.equalsIgnoreCase("none")) {
 				if (fm != null)
-					event.setMessage(fm.filter(event.getMessage(), FilterType.ADVERTISING, FilterType.BOT,
-							FilterType.MANDATORY));
+					event.setMessage(fm.filter(event.getMessage(), FilterType.ADVERTISING, FilterType.MANDATORY));
 			} else if (filterType.equalsIgnoreCase("regular")) {
 				if (fm != null)
 					event.setMessage(fm.filter(event.getMessage(), FilterType.values()));
