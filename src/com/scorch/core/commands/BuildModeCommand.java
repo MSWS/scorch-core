@@ -66,6 +66,8 @@ public class BuildModeCommand extends BukkitCommand {
 		} else {
 			if (sender instanceof Player) {
 				target = (Player) sender;
+			} else if (args.length == 1) {
+				target = Bukkit.getPlayer(args[0]);
 			} else {
 				MSG.tell(sender, "Specify Player");
 				return true;

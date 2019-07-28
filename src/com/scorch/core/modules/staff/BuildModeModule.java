@@ -265,8 +265,8 @@ public class BuildModeModule extends AbstractModule implements Listener {
 
 		List<Location> locs = tracker.get(player.getUniqueId());
 
-		if (!locs.contains(block.getLocation())
-				&& (!player.hasPermission("socrch.buildmode.modifyothers") && !isProtected(block))) {
+		if (!(player.hasPermission("scorch.buildmode.modifyothers") && isProtected(block))
+				&& !locs.contains(block.getLocation())) {
 			return;
 		}
 

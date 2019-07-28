@@ -174,7 +174,7 @@ public class FilterModule extends AbstractModule implements Listener {
 				type = Material.REDSTONE_BLOCK;
 				break;
 			case REGULAR:
-				type = Material.STONE;
+				type = Material.PAPER;
 				break;
 			}
 

@@ -371,6 +371,7 @@ public class MSG {
 
 				w = w.trim();
 				if (tmp.toLowerCase().contains(word.toLowerCase())) {
+					Logger.log(tmp + " contains " + word);
 					String r = "";
 					for (int ii = 0; ii < w.trim().length(); ii++)
 						r += "*";
@@ -395,7 +396,7 @@ public class MSG {
 			return raw;
 
 		Pattern p = Pattern.compile(
-				"(.+(.|,|dot|)(c.m|net|.rg|m.|edu|info|xyz)|[0-9]+(.|,|dot| )[0-9]+(.|,|dot| )[0-9]+(.|,|dot| )[0-9]+)");
+				"(.+(.|,|dot|)(c.m|net|.rg|edu|info|xyz)|[0-9]+(.|,|dot| )[0-9]+(.|,|dot| )[0-9]+(.|,|dot| )[0-9]+)");
 		Matcher m = p.matcher(raw);
 
 		/**
