@@ -816,7 +816,7 @@ public class DataManager extends AbstractModule {
 				updateObject("players", entry.getValue(), new SQLSelector("uuid", entry.getKey().toString()));
 				if (Bukkit.getPlayer(entry.getKey()) == null) // Remove player data if the player is no longer
 																// on the server
-					cache.remove(entry.getKey());
+					it.remove();
 			}
 		} catch (DataUpdateException e) {
 			e.printStackTrace();

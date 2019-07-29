@@ -5,6 +5,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -167,12 +168,26 @@ public class TestCommand extends BukkitCommand {
 			MSG.tell(sender, cmd.getName() + " disabled");
 			break;
 		case "trust":
-			if (!(sender instanceof Player))
-				return true;
-			Player player = (Player) sender;
+			UUID target;
+			if (args.length == 1) {
+				if (sender instanceof Player) {
+					target = ((Player) sender).getUniqueId();
+				} else {
+					MSG.tell(sender, "Specify Player.");
+					return true;
+				}
+			} else {
+				target = Bukkit.getOfflinePlayer(args[1]).getUniqueId();
+			}
 			TrustModule tm = ScorchCore.getInstance().getModule("TrustModule", TrustModule.class);
-			double trust = tm.getTrust(player.getUniqueId());
-			MSG.tell(player, "Trust: " + PublicTrust.get(trust) + " (" + trust + ")");
+			double trust = tm.getTrust(target);
+
+			String name = Bukkit.getOfflinePlayer(target).getName();
+			if (name == null)
+				name = target.toString();
+
+			MSG.tell(sender, name + "'" + (name.toLowerCase().endsWith("s") ? "" : "s") + ": "
+					+ PublicTrust.get(trust).getColored() + " &7(&8" + trust + "&7)");
 			break;
 		default:
 			MSG.tell(sender, "Unknown function");
