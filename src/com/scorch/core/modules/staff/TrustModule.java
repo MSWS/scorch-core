@@ -14,6 +14,7 @@ import com.scorch.core.modules.players.IPTracker;
 import com.scorch.core.modules.players.PlaytimeModule;
 import com.scorch.core.modules.players.Friendship.FriendStatus;
 import com.scorch.core.modules.punish.Punishment;
+import com.scorch.core.modules.report.ReportModule;
 
 public class TrustModule extends AbstractModule {
 
@@ -59,8 +60,10 @@ public class TrustModule extends AbstractModule {
 
 		int gamesPlayed = 0;
 
-		int reportsAgainst = 0;
-		int reportsSubmitted = 0;
+		ReportModule rm = ScorchCore.getInstance().getModule("ReportModule", ReportModule.class);
+
+		int reportsAgainst = rm.getReportsAgainst(uuid).size();
+		int reportsSubmitted = rm.getReports(uuid).size();
 
 		long playtime = ScorchCore.getInstance().getModule("PlaytimeModule", PlaytimeModule.class).getPlaytime(uuid);
 

@@ -17,6 +17,8 @@ import com.scorch.core.modules.data.ConnectionManager;
 import com.scorch.core.modules.messages.OfflineMessage;
 import com.scorch.core.modules.messages.OfflineMessagesModule;
 import com.scorch.core.modules.permissions.PermissionPlayer;
+import com.scorch.core.modules.staff.TrustModule;
+import com.scorch.core.modules.staff.TrustModule.PublicTrust;
 import com.scorch.core.utils.MSG;
 
 /**
@@ -51,10 +53,6 @@ public class TestCommand extends BukkitCommand {
 
 		Command cmd;
 		switch (args[0].toLowerCase()) {
-		case "saveplayerdata":
-			ScorchCore.getInstance().getDataManager().savePlayerData();
-			MSG.tell(sender, "Saving player data");
-			break;
 		case "reloadpunishments":
 			ScorchCore.getInstance().getPunishModule().refreshPunishments();
 			MSG.tell(sender, "Reloaded punishments");
@@ -168,6 +166,14 @@ public class TestCommand extends BukkitCommand {
 			ScorchCore.getInstance().getCommands().disableCommand(cmd);
 			MSG.tell(sender, cmd.getName() + " disabled");
 			break;
+		case "trust":
+			if (!(sender instanceof Player))
+				return true;
+			Player player = (Player) sender;
+			TrustModule tm = ScorchCore.getInstance().getModule("TrustModule", TrustModule.class);
+			double trust = tm.getTrust(player.getUniqueId());
+			MSG.tell(player, "Trust: " + PublicTrust.get(trust) + " (" + trust + ")");
+			break;
 		default:
 			MSG.tell(sender, "Unknown function");
 			break;
@@ -180,7 +186,7 @@ public class TestCommand extends BukkitCommand {
 		List<String> result = new ArrayList<String>();
 		if (args.length <= 1) {
 			for (String res : new String[] { "sql", "message", "perm", "offline", "enablecmd", "disablecmd",
-					"reloadmessages", "reloadpunishments", "saveplayerdata", "behind" }) {
+					"reloadmessages", "reloadpunishments", "trust" }) {
 				if (res.toLowerCase().startsWith(args[0].toLowerCase()))
 					result.add(res);
 			}
