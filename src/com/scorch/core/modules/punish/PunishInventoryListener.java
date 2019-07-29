@@ -19,8 +19,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.players.CPlayer;
-import com.scorch.core.modules.staff.TrustModule;
-import com.scorch.core.modules.staff.TrustModule.PublicTrust;
 import com.scorch.core.utils.MSG;
 import com.scorch.core.utils.Sounds;
 import com.scorch.core.utils.Utils;
@@ -197,20 +195,20 @@ public class PunishInventoryListener implements Listener {
 		cp.setTempData("page", tempPage);
 	}
 
-	private void refreshPunish(Player player, OfflinePlayer target) {
-		CPlayer cp = ScorchCore.getInstance().getPlayer(player);
-		String tempPunish = cp.getTempString("punishing");
-		String tempReason = cp.getTempString("reason");
-
-		TrustModule tm = ScorchCore.getInstance().getModule("TrustModule", TrustModule.class);
-
-		cp.setTempData("trustenum", MSG.color(PublicTrust.get(tm.getTrust(target.getUniqueId())).getColored()));
-
-		player.openInventory(ScorchCore.getInstance().getPunishModule().getPunishGUI(player, target));
-		cp.setTempData("openInventory", "punish");
-		cp.setTempData("punishing", tempPunish);
-		cp.setTempData("reason", tempReason);
-	}
+//	private void refreshPunish(Player player, OfflinePlayer target) {
+//		CPlayer cp = ScorchCore.getInstance().getPlayer(player);
+//		String tempPunish = cp.getTempString("punishing");
+//		String tempReason = cp.getTempString("reason");
+//
+//		TrustModule tm = ScorchCore.getInstance().getModule("TrustModule", TrustModule.class);
+//
+//		cp.setTempData("trustenum", MSG.color(PublicTrust.get(tm.getTrust(target.getUniqueId())).getColored()));
+//
+//		player.openInventory(ScorchCore.getInstance().getPunishModule().getPunishGUI(player, target));
+//		cp.setTempData("openInventory", "punish");
+//		cp.setTempData("punishing", tempPunish);
+//		cp.setTempData("reason", tempReason);
+//	}
 
 	private void confirm(Player player, Punishment punishment, String message, String removeType) {
 		CPlayer cp = ScorchCore.getInstance().getPlayer(player);
