@@ -1,6 +1,27 @@
 punish:
   Title: Punishing %punishing%
   Size: 54
+  trust:
+    Icon: SIGN
+    Name: '&a&lTrust Factor'
+    Slot: 0
+    Lore:
+    - '%trustenum%'
+    - ''
+    - '&9&lTrust Factor'
+    - '&7Trust factor measures how trustworthy'
+    - '&7an account is. A high trust factor means'
+    - '&7the account is likely to be a good player.'
+    - ''
+    - '&7Low trust factor may be a sign of poor'
+    - '&7sportsmanship, cheating, breaking of rules'
+    - '&7and other miscellaneous factors.'
+    - ''
+    - '&c&lTrust Factor is only meant for Staff'
+    - '&4It should not affect punishments or how'
+    - '&4you treat a player.'
+    - ''
+    - '&1How trust is calculated is private.'
   skull:
     Icon: PLAYER_HEAD
     Owner: '%punishing%'
@@ -219,3 +240,9 @@ punish:
     - '&7 - Any Movement related hack'
     - ''
     - '&cUse Permanent Ban for 3rd Offense'
+confirm:
+  Icon: GREEN_WOOL
+  Name: '&a&lCONFIRM'
+cancel:
+  Icon: RED_WOOL
+  Name: '&c&lCANCEL'

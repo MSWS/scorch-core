@@ -67,6 +67,10 @@ public class MessagesModule extends AbstractModule {
 		defaults.add(new CMessage("buildmodeinspectblock-player", "&7This block was placed by &e%player%&7."));
 		defaults.add(new CMessage("buildmoderollbackall", "&7Rolled back everyone's builds."));
 		defaults.add(new CMessage("buildmoderollback", "&7Rolled back &e%player%&7'%s% builds."));
+		defaults.add(new CMessage("buildmoderollbacknumber",
+				"&7Rolled back &a%block% &7block%bs% &7of &e%player%&7'%s% blocks."));
+		defaults.add(new CMessage("buildmoderollbackfail",
+				"&e%player% &7does not have &c%block% &7block%s% in build mode."));
 		defaults.add(new CMessage("buildmodetoggle", "&e%player%&7'%s% &6%mode% &7mode has been %status%&7."));
 		defaults.add(new CMessage("healmessage", "&aSuccessfully &2healed &e%target%&a."));
 		defaults.add(new CMessage("feedmessage", "&aSuccessfully &2fed &e%target%&a."));

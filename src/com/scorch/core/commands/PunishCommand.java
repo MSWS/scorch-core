@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.players.CPlayer;
+import com.scorch.core.modules.staff.TrustModule;
+import com.scorch.core.modules.staff.TrustModule.PublicTrust;
 import com.scorch.core.utils.MSG;
 
 /**
@@ -71,15 +73,20 @@ public class PunishCommand extends BukkitCommand {
 
 		String name = target.getName() == null ? args[0] : target.getName();
 
+		TrustModule tm = ScorchCore.getInstance().getModule("TrustModule", TrustModule.class);
+
 		cp.setTempData("openInventory", "punish");
 		cp.setTempData("punishing", target.getUniqueId() + "|" + name);
 		cp.setTempData("reason", reason);
+		cp.setTempData("trustenum", MSG.color(PublicTrust.get(tm.getTrust(target.getUniqueId())).getColored()));
+		MSG.tell(sender, tm.getTrust(target.getUniqueId()));
 
 		player.openInventory(ScorchCore.getInstance().getPunishModule().getPunishGUI(player, target));
 
 		cp.setTempData("openInventory", "punish");
 		cp.setTempData("punishing", target.getUniqueId() + "|" + name);
 		cp.setTempData("reason", reason);
+		cp.setTempData("trustenum", "Unknown");
 		return true;
 	}
 
