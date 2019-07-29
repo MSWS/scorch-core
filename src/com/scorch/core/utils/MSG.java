@@ -17,6 +17,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.messages.CMessage;
 
+import io.netty.util.internal.ThreadLocalRandom;
+
 public class MSG {
 	public static JavaPlugin plugin;
 
@@ -459,5 +461,22 @@ public class MSG {
 		} else {
 			return "&4";
 		}
+	}
+	
+	public static String genUUID(int length) {
+		String[] keys = new String[100];
+		int pos = 0;
+		for (int i = 0; i < 26; i++) {
+			keys[i + pos] = ((char) (i + 65)) + "";
+		}
+		pos += 26;
+		for (int i = 0; i < 10; i++) {
+			keys[i + pos] = i + "";
+		}
+		pos += 10;
+		String res = "";
+		for (int i = 0; i < length; i++)
+			res = res + keys[(int) Math.floor(ThreadLocalRandom.current().nextDouble(pos))];
+		return res;
 	}
 }

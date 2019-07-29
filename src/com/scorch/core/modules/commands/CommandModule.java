@@ -30,6 +30,7 @@ import com.scorch.core.commands.PingCommand;
 import com.scorch.core.commands.PlaytimeCommand;
 import com.scorch.core.commands.PunishCommand;
 import com.scorch.core.commands.RACommand;
+import com.scorch.core.commands.ReportCommand;
 import com.scorch.core.commands.SeenCommand;
 import com.scorch.core.commands.TPCommand;
 import com.scorch.core.commands.TestCommand;
@@ -94,7 +95,7 @@ public class CommandModule extends AbstractModule {
 		commands.put(new BuildModeCommand("buildmode"), true);
 		commands.put(new HealCommand("heal"), true);
 		commands.put(new FeedCommand("feed"), true);
-
+		commands.put(new ReportCommand("report"), true);
 
 		enableCommands(commands.keySet().stream().collect(Collectors.toList()));
 		Logger.log("&aSuccessfully enabled &e" + commands.size() + "&a command" + (commands.size() == 1 ? "" : "s"));

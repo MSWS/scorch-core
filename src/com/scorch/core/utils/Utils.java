@@ -146,6 +146,7 @@ public class Utils {
 			title = title.replace("%world%", player.getPlayer().getWorld().getName());
 		title = title.replace("%world%", "");
 		Inventory inv = Bukkit.createInventory(null, gui.getInt("Size"), MSG.color(title));
+		inv.setMaxStackSize(127);
 		ItemStack bg = null;
 		boolean empty = true;
 		for (String res : gui.getKeys(false)) {
@@ -207,6 +208,7 @@ public class Utils {
 		List<String> lore = new ArrayList<String>();
 		if (gui.contains("Amount"))
 			item.setAmount(gui.getInt("Amount"));
+
 //		if (gui.contains("Data"))
 //			item.setDurability((short) gui.getInt("Data"));
 		if (gui.contains("Data")) {

@@ -31,6 +31,7 @@ import com.scorch.core.modules.players.IPTracker;
 import com.scorch.core.modules.players.PlaytimeModule;
 import com.scorch.core.modules.punish.BanwaveModule;
 import com.scorch.core.modules.punish.PunishModule;
+import com.scorch.core.modules.report.ReportModule;
 import com.scorch.core.modules.staff.BuildModeModule;
 import com.scorch.core.modules.staff.PlayerCombatModule;
 import com.scorch.core.modules.staff.TeleportModule;
@@ -87,6 +88,7 @@ public class ScorchCore extends JavaPlugin {
 		registerModule(new IPTracker("IPTrackerModule"), ModulePriority.MEDIUM);
 		registerModule(new BanwaveModule("BanwaveModule"), ModulePriority.MEDIUM);
 		registerModule(new OfflineMessagesModule("OfflineMessagesModule"), ModulePriority.MEDIUM);
+		registerModule(new ReportModule("ReportModule"), ModulePriority.MEDIUM);
 		this.pMod = (PunishModule) registerModule(new PunishModule("PunishModule"), ModulePriority.MEDIUM);
 		this.commands = (CommandModule) registerModule(new CommandModule("CommandModule"), ModulePriority.MEDIUM);
 
