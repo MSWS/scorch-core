@@ -79,14 +79,13 @@ public class PunishCommand extends BukkitCommand {
 		cp.setTempData("punishing", target.getUniqueId() + "|" + name);
 		cp.setTempData("reason", reason);
 		cp.setTempData("trustenum", MSG.color(PublicTrust.get(tm.getTrust(target.getUniqueId())).getColored()));
-		MSG.tell(sender, tm.getTrust(target.getUniqueId()));
 
 		player.openInventory(ScorchCore.getInstance().getPunishModule().getPunishGUI(player, target));
 
 		cp.setTempData("openInventory", "punish");
 		cp.setTempData("punishing", target.getUniqueId() + "|" + name);
 		cp.setTempData("reason", reason);
-		cp.setTempData("trustenum", "Unknown");
+		cp.setTempData("trustenum", MSG.color(PublicTrust.get(tm.getTrust(target.getUniqueId())).getColored()));
 		return true;
 	}
 

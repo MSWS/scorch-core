@@ -89,7 +89,8 @@ punish:
     Duration: -1
     Lore:
     - ''
-    - '&DIn development'
+    - '&4&LCAUTION'
+    - '&cDo not use without authorization'
     - ''
     - '&cPermanently bans all accounts linked'
     - '&cto this account'

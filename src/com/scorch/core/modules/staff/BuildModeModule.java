@@ -172,7 +172,7 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	}
 
 	public boolean rollback(UUID uuid, int blocks) {
-		if (blocks >= tracker.getOrDefault(uuid, new ArrayList<>()).size())
+		if (blocks > tracker.getOrDefault(uuid, new ArrayList<>()).size())
 			return false;
 
 		List<Location> b = tracker.getOrDefault(uuid, new ArrayList<>()).subList(
