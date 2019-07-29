@@ -194,4 +194,8 @@ public class PunishModule extends AbstractModule {
 	public List<Punishment> getGlobalPunishments() {
 		return globalPunishments;
 	}
+
+	public Punishment getPunishment(UUID uuid) {
+		return punishments.stream().filter(id -> id.getId().equals(uuid)).findFirst().orElse(null);
+	}
 }
