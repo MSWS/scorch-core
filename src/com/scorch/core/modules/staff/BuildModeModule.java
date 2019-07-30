@@ -34,6 +34,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.SpongeAbsorbEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
@@ -251,9 +252,9 @@ public class BuildModeModule extends AbstractModule implements Listener {
 		if (event.getBlockReplacedState().getType() != Material.AIR)
 			return;
 
-		List<Material> gravity = Arrays.asList(Material.GRAVEL, Material.SAND, Material.RED_SAND, Material.ANVIL);
-		if (gravity.contains(block.getType()))
-			return;
+//		List<Material> gravity = Arrays.asList(Material.GRAVEL, Material.SAND, Material.RED_SAND, Material.ANVIL);
+//		if (gravity.contains(block.getType()))
+//			return;
 
 		List<Location> locs = tracker.get(player.getUniqueId());
 		locs.add(block.getLocation());
@@ -594,6 +595,22 @@ public class BuildModeModule extends AbstractModule implements Listener {
 		if (!isProtected(event.getBlock()))
 			return;
 		event.setCancelled(true);
+	}
+
+	@EventHandler
+	public void entityChange(EntityChangeBlockEvent event) {
+		if (!isProtected(event.getBlock()))
+			return;
+		event.setCancelled(true);
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				for (Player p : event.getBlock().getLocation().getWorld().getPlayers()) {
+					p.sendBlockChange(event.getBlock().getLocation(), event.getBlock().getBlockData());
+				}
+			}
+		}.runTaskLater(ScorchCore.getInstance(), 1);
+
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)

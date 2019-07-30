@@ -76,7 +76,12 @@ public class MessagesModule extends AbstractModule {
 		defaults.add(new CMessage("buildmodetoggle", "&e%player%&7'%s% &6%mode% &7mode has been %status%&7."));
 		defaults.add(new CMessage("healmessage", "&aSuccessfully &2healed &e%target%&a."));
 		defaults.add(new CMessage("feedmessage", "&aSuccessfully &2fed &e%target%&a."));
-
+		defaults.add(new CMessage("reportcreated", "&9Report &b#%id% &asuccessfully &9created."));
+		defaults.add(new CMessage("nomessages", "&cYou do not have any recent messages."));
+		defaults.add(new CMessage("noreports", "&cAll reports have been handled. &aYay!"));
+		defaults.add(new CMessage("reportassigned", "&7You are now assigned to report &e%id%&7."));
+		defaults.add(new CMessage("resolvereport", "&7You marked report &e%id% &7as &a%status%&7. Reason: &6%reason%"));
+		defaults.add(new CMessage("notassigned", "&cYou are not assigned to a report"));
 //		defaults.add(new CMessage("", ""));
 	}
 

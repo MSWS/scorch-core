@@ -47,7 +47,7 @@ public class ReportCloseCommand extends BukkitCommand {
 
 		Report report = rm.getReport(sp.getData("assignedreport", String.class));
 		if (report == null) {
-			MSG.tell(sender, "You are not assigned to a report.");
+			MSG.cTell(sender, "notassigned");
 			return true;
 		}
 		player.openInventory(rm.getResolutionGUI());

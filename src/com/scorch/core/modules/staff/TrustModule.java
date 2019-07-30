@@ -106,9 +106,9 @@ public class TrustModule extends AbstractModule {
 
 		double proV = Math.max(minutes + gamesPlayed * 5 + friends * 2.5, 1);
 		double punishV = Math.max(punishmentScore + directAlts * 20 + otherAlts * 10, 1);
-		double reportV = Math.max(reportsAgainst * 40 + reportsSubmitted * 20, 1);
+		double reportV = Math.max(reportsAgainst * 20 + reportsSubmitted * 10, 1);
 
-		return (proV / punishV) / reportV;
+		return (proV / (punishV + reportV));
 	}
 
 	public enum PublicTrust {

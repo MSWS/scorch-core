@@ -78,7 +78,7 @@ public class ReportInventoryListener implements Listener {
 			if (type == ReportType.CHAT) {
 				List<String> lines = rm.getLogs(player.getUniqueId());
 				if (lines.isEmpty()) {
-					MSG.tell(player, "You do not have any recent messages.");
+					MSG.cTell(player, "nomessages");
 					return;
 				}
 
@@ -118,8 +118,11 @@ public class ReportInventoryListener implements Listener {
 
 			ScorchCore.getInstance().getModule("ReportModule", ReportModule.class).addReport(report);
 
-			MSG.tell(player, "Successfully reported " + (Bukkit.getOfflinePlayer(target).getName()) + " for "
-					+ report.getReason());
+			String msg = ScorchCore.getInstance().getMessage("reportcreated");
+
+			msg = msg.replace("%id%", report.getId()).replace("%player%", Bukkit.getOfflinePlayer(target).getName());
+
+			MSG.tell(player, msg);
 
 			player.playSound(player.getLocation(), Sounds.LEVEL_UP.bukkitSound(), 2, 1);
 
@@ -140,14 +143,14 @@ public class ReportInventoryListener implements Listener {
 			Collections.sort(reports);
 
 			if (reports.isEmpty()) {
-				MSG.tell(player, "No open reports of that type.");
+				MSG.cTell(player, "noreports");
 				player.closeInventory();
 				return;
 			}
 
 			Report r = reports.get(0);
 
-			MSG.tell(player, "You are now assigned to report " + r.getId());
+			MSG.tell(player, ScorchCore.getInstance().getMessage("reportassigned").replace("%id%", r.getId()));
 
 			sp.setData("assignedreport", r.getId());
 			player.closeInventory();
@@ -172,7 +175,10 @@ public class ReportInventoryListener implements Listener {
 
 			report.resolve(player.getName(), res, reason);
 			sp.removeData("assignedreport");
-			MSG.tell(player, "Successfully resolved report " + report.getId() + " with reason " + reason);
+			String msg = ScorchCore.getInstance().getMessage("resolvereport");
+			msg = msg.replace("%id%", report.getId()).replace("%reason%", reason).replace("%status%",
+					MSG.camelCase(res + ""));
+			MSG.tell(player, msg);
 			if (res == ResolutionType.CONFIRMED) {
 				ScorchCore.getInstance().getPunishModule().openPunishGUI(player,
 						Bukkit.getOfflinePlayer(report.getTarget()), "Report #" + report.getId() + " - " + reason);

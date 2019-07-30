@@ -219,7 +219,7 @@ public class ReportModule extends AbstractModule {
 				"&7Report ID: &8" + report.getId() + " &7[Submitted &8" + sdf.format(report.getReportDate()) + "&7]");
 		MSG.tell(p, "&3Reporter: &b" + Bukkit.getOfflinePlayer(report.getReporter()).getName());
 		MSG.tell(p, "&3Reported: &c" + Bukkit.getOfflinePlayer(report.getTarget()).getName());
-		MSG.tell(p, "&7Reason: &e" + report.getReason() + " [" + report.getType() + "]");
+		MSG.tell(p, "&7Reason: &e" + report.getReason() + " &7[&6" + MSG.camelCase(report.getType() + "") + "&7]");
 		MSG.tell(p, " ");
 		if (report.getServer() != null) {
 			MSG.tell(p, "&7Server: &a" + report.getServer());
@@ -230,7 +230,7 @@ public class ReportModule extends AbstractModule {
 			MSG.tell(p, "&6Staff: &e" + report.getStaff());
 			MSG.tell(p, "&6Resolution: &e" + report.getResolution() + " &7[&e"
 					+ MSG.camelCase(report.getResolutionType() + "") + "&7]");
-			MSG.tell(p, "&6Resolved On: " + sdf.format(report.getHandledDate()));
+			MSG.tell(p, "&6Resolved On: &e" + sdf.format(report.getHandledDate()));
 		}
 
 		TextComponent cmp = new TextComponent(MSG.color("&d&lChat Logs: &5"));
