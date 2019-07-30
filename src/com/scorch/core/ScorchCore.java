@@ -25,7 +25,6 @@ import com.scorch.core.modules.messages.MessagesModule;
 import com.scorch.core.modules.messages.OfflineMessagesModule;
 import com.scorch.core.modules.permissions.PermissionModule;
 import com.scorch.core.modules.permissions.PermissionPlayer;
-import com.scorch.core.modules.players.CPlayer;
 import com.scorch.core.modules.players.FriendModule;
 import com.scorch.core.modules.players.IPTracker;
 import com.scorch.core.modules.players.PlaytimeModule;
@@ -39,6 +38,7 @@ import com.scorch.core.modules.staff.TeleportModule;
 import com.scorch.core.modules.staff.TrustModule;
 import com.scorch.core.modules.staff.VanishModule;
 import com.scorch.core.modules.staff.WorldProtectionModule;
+import com.scorch.core.pastebin.Paste;
 import com.scorch.core.utils.Logger;
 
 /**
@@ -69,6 +69,8 @@ public class ScorchCore extends JavaPlugin {
 		instance = this;
 
 		loadFiles();
+
+		Paste.setDeveloperKey(getConfig().getString("PastebinKey"));
 
 		this.registeredModules = new HashMap<>();
 		this.modules = new HashSet<>();
@@ -296,18 +298,6 @@ public class ScorchCore extends JavaPlugin {
 		return getPrefix(player.getUniqueId());
 	}
 
-	/**
-	 * @deprecated
-	 * Returns a CPlayer from an OfflinePlayer
-	 * 
-	 * @param player
-	 * @return
-	 */
-	public CPlayer getPlayer(OfflinePlayer player) {
-		return dataManager.getPlayer(player);
-	}
-	
-	
 	public ScorchPlayer getPlayer(UUID uuid) {
 		return dataManager.getScorchPlayer(uuid);
 	}

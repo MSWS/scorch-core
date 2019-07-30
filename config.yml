@@ -8,3 +8,4 @@ Rollback:
   OnQuit: false
   OnChangeWorld: false
   OnGameModechange: true
+PastebinKey: "" # You will have to create a pastebin account and get your developer key from https://pastebin.com/api#1

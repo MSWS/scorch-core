@@ -159,6 +159,12 @@ public class PunishInventoryListener implements Listener {
 			Collections.sort(history);
 			int i = (event.getRawSlot() + 1) / 9 - 1;
 
+			if ((event.getRawSlot() - 8) % 9 != 0)
+				return;
+
+			if (event.getRawSlot() < 0 || i < 0 || i > history.size())
+				return;
+
 			Punishment p = history.get(i);
 
 			switch (event.getClick()) {

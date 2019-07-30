@@ -44,6 +44,10 @@ public class ScorchPlayer {
 		data.put(id, obj);
 	}
 
+	public boolean removeData(String id) {
+		return data.remove(id) != null;
+	}
+
 	public boolean hasData(String id) {
 		return data.containsKey(id);
 	}

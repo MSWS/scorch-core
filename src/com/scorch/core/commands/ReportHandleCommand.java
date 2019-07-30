@@ -37,6 +37,11 @@ public class ReportHandleCommand extends BukkitCommand {
 		Player player = (Player) sender;
 		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(player.getUniqueId());
 
+		if (sp.hasData("assignedreport")) {
+			MSG.tell(sender, "You already are assigned on report " + sp.getData("assignedreport", String.class));
+			return true;
+		}
+
 		player.openInventory(rm.getReportGUI("Handling Report..."));
 		sp.setTempData("openInventory", "reporthandle");
 		return true;

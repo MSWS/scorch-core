@@ -17,7 +17,6 @@ import java.util.stream.IntStream;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.google.gson.Gson;
@@ -31,7 +30,6 @@ import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.modules.data.wrappers.JSONLocation;
-import com.scorch.core.modules.players.CPlayer;
 import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
@@ -47,8 +45,6 @@ public class DataManager extends AbstractModule {
 	private static Gson gson = new GsonBuilder().create();
 
 	private ConnectionManager connectionManager;
-	@Deprecated
-	private Map<OfflinePlayer, CPlayer> players;
 	private Map<UUID, ScorchPlayer> cache;
 
 	public DataManager(String id, ConnectionManager connectionManager) {
@@ -58,7 +54,6 @@ public class DataManager extends AbstractModule {
 
 	@Override
 	public void initialize() {
-		players = new HashMap<>();
 		cache = new HashMap<>();
 
 		new BukkitRunnable() {
@@ -89,31 +84,6 @@ public class DataManager extends AbstractModule {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	public CPlayer getPlayer(OfflinePlayer player) {
-		if (!players.containsKey(player))
-			players.put(player, new CPlayer(player));
-		return players.get(player);
-	}
-
-	public ArrayList<OfflinePlayer> getLoadedPlayers() {
-		return new ArrayList<OfflinePlayer>(players.keySet());
-	}
-
-	public void removePlayer(OfflinePlayer player) {
-		players.remove(player);
-	}
-
-	public void clearPlayers() {
-		for (OfflinePlayer player : players.keySet())
-			removePlayer(player);
-	}
-
-	public void loadData(OfflinePlayer player) {
-		if (players.containsKey(player))
-			throw new IllegalArgumentException("Player data already loaded");
-		players.put(player, new CPlayer(player));
 	}
 
 	/**
