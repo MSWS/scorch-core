@@ -3,13 +3,17 @@ package com.scorch.core.modules.report;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.annotations.DataNotNull;
+import com.scorch.core.modules.staff.TrustModule;
 import com.scorch.core.utils.MSG;
 
 public class Report implements Comparable<Report> {
@@ -177,11 +181,36 @@ public class Report implements Comparable<Report> {
 	@Override
 	public int compareTo(Report o) {
 		if (isOpen() == o.isOpen()) {
-			return o.getReportDate() > reportDate ? -1 : 1;
-		} else if (o.isOpen()) {
-			return -1;
-		} else {
+			OfflinePlayer off = Bukkit.getOfflinePlayer(target), oOff = Bukkit.getOfflinePlayer(o.getTarget());
+
+			if (off.isOnline() != oOff.isOnline() && (type != ReportType.CHAT && o.getType() != ReportType.CHAT)) {
+				return off.isOnline() ? 1 : -1;
+			}
+
+			ReportModule rm = ScorchCore.getInstance().getModule("ReportModule", ReportModule.class);
+
+			List<Report> reports = rm.getReports(target), oReports = rm.getReports(o.getTarget());
+
+			int recent = reports.stream().filter(r -> System.currentTimeMillis() - r.getReportDate() < 2.628e+9)
+					.collect(Collectors.toList()).size(),
+					oRecent = oReports.stream().filter(r -> System.currentTimeMillis() - r.getReportDate() < 2.628e+9)
+							.collect(Collectors.toList()).size();
+
+			if (recent != oRecent) {
+				return recent > oRecent ? 1 : -1;
+			}
+
+			TrustModule tm = ScorchCore.getInstance().getModule("TrustModule", TrustModule.class);
+			double trust = tm.getTrust(target), oTrust = tm.getTrust(o.getTarget());
+
+			if (trust != oTrust)
+				return trust > oTrust ? 1 : -1;
+
+			return 0;
+		} else if (isOpen() && !o.isOpen()) {
 			return 1;
+		} else {
+			return -1;
 		}
 	}
 }
