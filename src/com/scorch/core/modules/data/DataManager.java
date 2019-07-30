@@ -242,7 +242,7 @@ public class DataManager extends AbstractModule {
 					} else if (field.getType() == UUID.class) {
 						statement.setString(parameterIndex, ((UUID) field.get(object)).toString());
 					} else if (field.getType().isEnum()) {
-						statement.setString(parameterIndex, field.get(object).toString());
+						statement.setString(parameterIndex, field.get(object) + "");
 					} else if (Collection.class.isAssignableFrom(field.getType())) {
 						statement.setString(parameterIndex, DataManager.getGson().toJson(field.get(object)));
 					} else if (Map.class.isAssignableFrom(field.getType())) {
@@ -452,8 +452,12 @@ public class DataManager extends AbstractModule {
 					} else if (field.getType() == UUID.class) {
 						field.set(dataObject, UUID.fromString(res.getString(columnIndex)));
 					} else if (field.getType().isEnum()) {
-						field.set(dataObject, field.getType().getMethod("valueOf", String.class).invoke(null,
-								res.getString(columnIndex)));
+						try {
+							field.set(dataObject, field.getType().getMethod("valueOf", String.class).invoke(null,
+									res.getString(columnIndex)));
+						} catch (InvocationTargetException e) {
+							field.set(dataObject, null);
+						}
 					} else if (Collection.class.isAssignableFrom(field.getType())) {
 						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), Collection.class));
 					} else if (Map.class.isAssignableFrom(field.getType())) {
@@ -476,7 +480,7 @@ public class DataManager extends AbstractModule {
 			}
 			return collection;
 		} catch (SQLException | IllegalAccessException | NoSuchMethodException | InstantiationException
-				| ClassNotFoundException | InvocationTargetException e) {
+				| ClassNotFoundException e) {
 			Logger.error("An error occurred while trying to get objects from table: " + e.getMessage());
 			e.printStackTrace();
 			return null;

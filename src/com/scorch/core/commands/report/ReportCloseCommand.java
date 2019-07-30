@@ -1,4 +1,4 @@
-package com.scorch.core.commands;
+package com.scorch.core.commands.report;
 
 import java.util.Arrays;
 
@@ -50,11 +50,9 @@ public class ReportCloseCommand extends BukkitCommand {
 			MSG.tell(sender, "You are not assigned to a report.");
 			return true;
 		}
-
-		report.handle(sender.getName(), resolution);
-		MSG.tell(sender, "You have closed report " + report.getId() + " with resolution: " + resolution);
-		rm.updateReport(report);
-		sp.removeData("assignedreport");
+		player.openInventory(rm.getResolutionGUI());
+		sp.setTempData("closereason", resolution);
+		sp.setTempData("openInventory", "reportclose");
 		return true;
 	}
 

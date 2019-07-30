@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.annotations.DataNotNull;
 import com.scorch.core.utils.MSG;
 
@@ -24,13 +25,18 @@ public class Report implements Comparable<Report> {
 
 	private String pastebin, staff, server, resolution;
 	private long reportDate, handleDate;
+	private ResolutionType resType;
 
 	public Report() {
 
 	}
 
 	public Report(UUID reporter, UUID target, ReportType type, String reason) {
-		this.id = MSG.genUUID(6);
+
+		ReportModule rm = ScorchCore.getInstance().getModule("ReportModule", ReportModule.class);
+		do {
+			this.id = MSG.genUUID(6);
+		} while (rm.getReport(id) != null);
 
 		this.reporter = reporter;
 		this.target = target;
@@ -43,10 +49,11 @@ public class Report implements Comparable<Report> {
 		this.server = server;
 	}
 
-	public void handle(String staff, String resolution) {
+	public void resolve(String staff, ResolutionType type, String resolution) {
 		this.handleDate = System.currentTimeMillis();
 		this.staff = staff;
 		this.resolution = resolution;
+		this.resType = type;
 	}
 
 	public boolean isHandled() {
@@ -97,6 +104,10 @@ public class Report implements Comparable<Report> {
 		return type;
 	}
 
+	public ResolutionType getResolutionType() {
+		return resType;
+	}
+
 	public String getReason() {
 		return reason;
 	}
@@ -134,10 +145,12 @@ public class Report implements Comparable<Report> {
 	}
 
 	public enum ResolutionType {
-		CONFIRMED("CACTUS_GREEN", "&a&lConfirm", "&7Confirm that the report was accurate", "&7and punish the suspect"),
-		REJECTED("ROSE_RED", "&c&lReject", "&7Reject the report due to insufficient evidence,", "&7abuse, etc."),
-		CANCEL("BARRIER", "&e&lCancel", "&7Cancel handling of the report"),
-		ABUSE("BEDROCK", "&6&lAbuse", "&7Mark the report as abuse of the report system and deny it");
+		CONFIRMED("CACTUS_GREEN", "&a&lConfirm", "&7Confirm that the report was accurate", "&7and punish the suspect",
+				"", "&cWill Open Punish GUI"),
+		REJECTED("ROSE_RED", "&c&lReject", "&7Reject the report due to", "&7insufficient evidence, no rules broken,",
+				"&7reported too late, etc."),
+		CANCEL("BARRIER", "&e&lCancel", "&7Cancel handling of the report and let", "&7another staff member handle it."),
+		ABUSE("BEDROCK", "&6&lAbuse", "&7Mark the report as abuse of ", "&7the report system and deny it.");
 		private Material mat;
 		private List<String> desc;
 

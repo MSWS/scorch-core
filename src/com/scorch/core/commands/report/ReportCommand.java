@@ -1,4 +1,4 @@
-package com.scorch.core.commands;
+package com.scorch.core.commands.report;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +28,11 @@ public class ReportCommand extends BukkitCommand {
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 		if (rm == null)
 			rm = ScorchCore.getInstance().getModule("ReportModule", ReportModule.class);
+
+		if (!sender.hasPermission(getPermission())) {
+			MSG.tell(sender, getPermissionMessage());
+			return true;
+		}
 
 		if (!(sender instanceof Player)) {
 			MSG.tell(sender, "You must be a player");

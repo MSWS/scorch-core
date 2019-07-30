@@ -1,4 +1,4 @@
-package com.scorch.core.commands;
+package com.scorch.core.commands.report;
 
 import java.util.Arrays;
 

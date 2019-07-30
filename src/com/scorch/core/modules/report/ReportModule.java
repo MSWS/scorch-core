@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -26,6 +27,7 @@ import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.modules.report.Report.ReportType;
+import com.scorch.core.modules.report.Report.ResolutionType;
 import com.scorch.core.utils.MSG;
 
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -127,8 +129,30 @@ public class ReportModule extends AbstractModule {
 		return inv;
 	}
 
+	public Inventory getResolutionGUI() {
+		Inventory inv = Bukkit.createInventory(null, 27, "Resolving report...");
+
+		inv.setItem(10, ResolutionType.CONFIRMED.getItem());
+		inv.setItem(12, ResolutionType.REJECTED.getItem());
+		inv.setItem(14, ResolutionType.ABUSE.getItem());
+		inv.setItem(16, ResolutionType.CANCEL.getItem());
+
+		ItemStack bg = new ItemStack(Material.RED_STAINED_GLASS_PANE);
+		ItemMeta meta = bg.getItemMeta();
+		meta.setDisplayName(MSG.color("&r"));
+		bg.setItemMeta(meta);
+
+		for (int i = 0; i < inv.getSize(); i++) {
+			if (inv.getItem(i) != null)
+				continue;
+			inv.setItem(i, bg);
+		}
+
+		return inv;
+	}
+
 	public Report getReport(String id) {
-		return reports.stream().filter(r -> r.getId().equals(id)).findFirst().orElse(null);
+		return reports.stream().filter(r -> r.getId().equalsIgnoreCase(id)).findFirst().orElse(null);
 	}
 
 	public BukkitRunnable sendReportMessages() {
@@ -182,7 +206,45 @@ public class ReportModule extends AbstractModule {
 				p.spigot().sendMessage(cmp);
 			}
 		}
+	}
 
+	public void sendReportInfo(CommandSender p, Report report) {
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+
+		MSG.tell(p, " ");
+		MSG.tell(p, "&cReport #" + report.getId() + " Information");
+		MSG.tell(p, " ");
+		MSG.tell(p,
+				"&7Report ID: &8" + report.getId() + " &7[Submitted &8" + sdf.format(report.getReportDate()) + "&7]");
+		MSG.tell(p, "&3Reporter: &b" + Bukkit.getOfflinePlayer(report.getReporter()).getName());
+		MSG.tell(p, "&3Reported: &c" + Bukkit.getOfflinePlayer(report.getTarget()).getName());
+		MSG.tell(p, "&7Reason: &e" + report.getReason() + " [" + report.getType() + "]");
+		MSG.tell(p, " ");
+		if (report.getServer() != null) {
+			MSG.tell(p, "&7Server: &a" + report.getServer());
+			MSG.tell(p, " ");
+		}
+
+		if (report.isHandled()) {
+			MSG.tell(p, "&6Staff: &e" + report.getStaff());
+			MSG.tell(p, "&6Resolution: &e" + report.getResolution() + " &7[&e"
+					+ MSG.camelCase(report.getResolutionType() + "") + "&7]");
+			MSG.tell(p, "&6Resolved On: " + sdf.format(report.getHandledDate()));
+		}
+
+		TextComponent cmp = new TextComponent(MSG.color("&d&lChat Logs: &5"));
+		cmp.setExtra(
+				Arrays.asList(new ComponentBuilder("HERE").event(new ClickEvent(Action.OPEN_URL, report.getPastebin()))
+						.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT,
+								new ComponentBuilder(MSG.color("&7Open Logs")).create()))
+						.create()));
+		if (report.getType() == ReportType.CHAT) {
+			if (report.getPastebin() == null) {
+				MSG.tell(p, "&cChat Logs are Unavailable");
+			} else {
+				p.spigot().sendMessage(cmp);
+			}
+		}
 	}
 
 }

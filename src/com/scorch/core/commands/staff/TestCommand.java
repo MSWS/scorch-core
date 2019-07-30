@@ -1,4 +1,4 @@
-package com.scorch.core.commands;
+package com.scorch.core.commands.staff;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;

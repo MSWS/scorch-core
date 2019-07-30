@@ -97,7 +97,7 @@ public class IPTracker extends AbstractModule implements Listener {
 
 	public Set<UUID> linkedAccounts(UUID account, Set<String> scannedIPs) {
 		Set<UUID> accounts = new HashSet<>();
-		Set<String> currentIPs = new HashSet<>(links.get(account).getIps());
+		Set<String> currentIPs = new HashSet<>(links.getOrDefault(account, new IPEntry(account, new ArrayList<>())).getIps());
 
 		if (scannedIPs == null)
 			scannedIPs = new HashSet<>();

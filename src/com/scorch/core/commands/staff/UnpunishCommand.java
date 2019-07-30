@@ -1,4 +1,4 @@
-package com.scorch.core.commands;
+package com.scorch.core.commands.staff;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

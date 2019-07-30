@@ -19,6 +19,7 @@ import org.bukkit.inventory.ItemStack;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.modules.report.Report.ReportType;
+import com.scorch.core.modules.report.Report.ResolutionType;
 import com.scorch.core.pastebin.Paste;
 import com.scorch.core.pastebin.Paste.Expire;
 import com.scorch.core.pastebin.Paste.Language;
@@ -44,12 +45,20 @@ public class ReportInventoryListener implements Listener {
 			return;
 
 		ReportType type = null;
+		ResolutionType res = null;
 
 		for (ReportType t : ReportType.values())
 			if (item.isSimilar(t.getItem())) {
 				type = t;
 				break;
 			}
+
+		for (ResolutionType t : ResolutionType.values()) {
+			if (item.isSimilar(t.getItem())) {
+				res = t;
+				break;
+			}
+		}
 
 		if ("report".equals(sp.getTempData("openInventory", String.class))) {
 			event.setCancelled(true);
@@ -128,8 +137,6 @@ public class ReportInventoryListener implements Listener {
 
 			Report r = reports.get(0);
 
-			r.handle(player.getName(), "Assigned");
-
 			MSG.tell(player, "You are now assigned to report " + r.getId());
 
 			sp.setData("assignedreport", r.getId());
@@ -137,13 +144,39 @@ public class ReportInventoryListener implements Listener {
 			rm.sendReportInfo(player);
 		}
 
+		if ("reportclose".equals(sp.getTempData("openInventory", String.class))) {
+			event.setCancelled(true);
+			if (res == null)
+				return;
+			Report report = rm.getReport(sp.getData("assignedreport", String.class));
+			String reason = sp.getTempData("closereason", String.class);
+
+			if (res == ResolutionType.CANCEL) {
+				MSG.tell(player, "Cancelled handling of report.");
+				sp.removeData("assignedreport");
+				player.closeInventory();
+				return;
+			}
+
+			report.resolve(player.getName(), res, reason);
+			sp.removeData("assignedreport");
+			MSG.tell(player, "Successfully resolved report " + report.getId() + " with reason " + reason);
+			if (res == ResolutionType.CONFIRMED) {
+				ScorchCore.getInstance().getPunishModule().openPunishGUI(player,
+						Bukkit.getOfflinePlayer(report.getTarget()), "Report #" + report.getId() + " - " + reason);
+				return;
+			}
+
+			player.closeInventory();
+			rm.updateReport(report);
+		}
 	}
 
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent event) {
 		Player player = (Player) event.getPlayer();
 		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(player.getUniqueId());
-		for (String id : new String[] { "openInventory", "reporting", "reason" })
+		for (String id : new String[] { "openInventory", "reporting", "reason", "closereason" })
 			sp.removeTempData(id);
 	}
 
