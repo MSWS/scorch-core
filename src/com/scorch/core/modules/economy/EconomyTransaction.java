@@ -8,7 +8,8 @@ import java.util.UUID;
 
 public class EconomyTransaction {
 
-    private String id;
+    @SuppressWarnings("unused")
+	private String id;
     private long amount;
     private boolean executed;
     private boolean success;

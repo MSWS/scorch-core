@@ -17,7 +17,6 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.ConnectionManager;
 import com.scorch.core.modules.messages.OfflineMessage;
 import com.scorch.core.modules.messages.OfflineMessagesModule;
-import com.scorch.core.modules.permissions.PermissionPlayer;
 import com.scorch.core.modules.staff.TrustModule;
 import com.scorch.core.modules.staff.TrustModule.PublicTrust;
 import com.scorch.core.utils.MSG;
@@ -112,11 +111,6 @@ public class TestCommand extends BukkitCommand {
 			MSG.tell(sender, ScorchCore.getInstance().getMessages().getMessage(args[1]));
 			break;
 		case "perm":
-			PermissionPlayer pp = ScorchCore.getInstance().getPermissionModule().getPermissionPlayer((Player) sender);
-			MSG.tell(sender, "Current Groups");
-			for (String name : pp.getGroupNames()) {
-				MSG.tell(sender, name);
-			}
 			MSG.tell(sender, "&7Have perm &e" + args[1] + "&7: " + MSG.TorF(sender.hasPermission(args[1])));
 			break;
 		case "offline":

@@ -1,20 +1,20 @@
 package com.scorch.core.commands;
 
-import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.data.SQLSelector;
-import com.scorch.core.modules.permissions.PermissionGroup;
-import com.scorch.core.modules.permissions.PermissionPlayer;
-import com.scorch.core.utils.MSG;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
-import java.io.Console;
-import java.util.*;
+import com.scorch.core.ScorchCore;
+import com.scorch.core.modules.permissions.PermissionGroup;
+import com.scorch.core.modules.permissions.PermissionPlayer;
+import com.scorch.core.utils.MSG;
 
 public class PermissionsCommand extends BukkitCommand {
 
