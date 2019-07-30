@@ -1,18 +1,23 @@
 package com.scorch.core.modules.players;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.SQLSelector;
+import com.scorch.core.modules.data.annotations.DataIgnore;
 import com.scorch.core.modules.data.exceptions.DataUpdateException;
 
 public class ScorchPlayer {
 	private UUID uuid;
 	private String username;
 	private Map<String, Object> data;
+	@DataIgnore
+	private Map<String, Object> tempData;
 
 	public ScorchPlayer() {
+		this.tempData = new HashMap<String, Object>();
 	}
 
 	public ScorchPlayer(UUID uuid, String username, Map<String, Object> data) {
@@ -20,6 +25,7 @@ public class ScorchPlayer {
 		this.username = username;
 
 		this.data = data;
+		this.tempData = new HashMap<String, Object>();
 	}
 
 	public Map<String, Object> getData() {
@@ -36,6 +42,10 @@ public class ScorchPlayer {
 
 	public void setData(String id, Object obj) {
 		data.put(id, obj);
+	}
+
+	public boolean removeData(String id) {
+		return data.remove(id) != null;
 	}
 
 	public boolean hasData(String id) {
@@ -73,4 +83,31 @@ public class ScorchPlayer {
 		this.username = name;
 	}
 
+	public void setTempData(String key, Object value) {
+		tempData.put(key, value);
+	}
+
+	public Object getTempData(String key) {
+		return getTempData(key, Object.class);
+	}
+
+	public <T> T getTempData(String key, Class<T> cast) {
+		return getTempData(key, cast, null);
+	}
+
+	public <T> T getTempData(String key, Class<T> cast, Object def) {
+		return cast.cast(tempData.getOrDefault(key, def));
+	}
+
+	public boolean hasTempData(String key) {
+		return tempData.containsKey(key);
+	}
+
+	public Map<String, Object> getTempData() {
+		return tempData;
+	}
+
+	public boolean removeTempData(String key) {
+		return tempData.remove(key) != null;
+	}
 }

@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>core-development</groupId>
 	<artifactId>core-development</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>Scorch Core</name>
 	<description>Core plugin for the Scorch Gamez server</description>
 

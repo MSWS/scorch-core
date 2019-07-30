@@ -229,7 +229,7 @@ public class Punishment implements Comparable<Punishment> {
 			lore.add(MSG.color("&6IP: &e" + ip));
 		lore.add("");
 		lore.add(MSG.color("&2Date: &a" + sdf.format(date)));
-		if (punishType != PunishType.WARNING && punishType != PunishType.KICK) {
+		if (punishType != PunishType.WARNING) {
 			lore.add(MSG.color("&2Duration: &a" + (duration == -1 ? "&cPermanent" : MSG.getTime(duration))));
 			if (duration != -1 && isActive())
 				lore.add(MSG.color("&2Time Left: &a" + MSG.getTime((date + duration - System.currentTimeMillis()))));
@@ -297,8 +297,6 @@ public class Punishment implements Comparable<Punishment> {
 		switch (punishType) {
 		case IP_BAN:
 			return "ip banned";
-		case KICK:
-			return "kicked";
 		case OTHER:
 			return "punished";
 		case PERM_BAN:
@@ -313,6 +311,8 @@ public class Punishment implements Comparable<Punishment> {
 			return "warned";
 		case BLACKLIST:
 			return "blacklisted";
+		case REPORT_BAN:
+			return "report banned";
 		default:
 			Logger.warn("Unknown punish type: " + punishType);
 			return "punished";

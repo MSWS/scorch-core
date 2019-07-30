@@ -10,7 +10,7 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.players.CPlayer;
+import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.MSG;
 
 /**
@@ -46,7 +46,8 @@ public class HistoryCommand extends BukkitCommand {
 		}
 
 		Player player = (Player) sender;
-		CPlayer cp = ScorchCore.getInstance().getPlayer(player);
+		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(player.getUniqueId());
+
 		OfflinePlayer target = null;
 
 		if (args.length == 0) {
@@ -66,13 +67,13 @@ public class HistoryCommand extends BukkitCommand {
 
 		String name = target.getName() == null ? args[0] : target.getName();
 
-		cp.setTempData("openInventory", "viewing");
-		cp.setTempData("punishing", target.getUniqueId() + "|" + name);
+		sp.setTempData("openInventory", "viewing");
+		sp.setTempData("punishing", target.getUniqueId() + "|" + name);
 
 		player.openInventory(ScorchCore.getInstance().getPunishModule().getHistoryGUI(target, 0));
 
-		cp.setTempData("openInventory", "viewing");
-		cp.setTempData("punishing", target.getUniqueId() + "|" + name);
+		sp.setTempData("openInventory", "viewing");
+		sp.setTempData("punishing", target.getUniqueId() + "|" + name);
 		return true;
 	}
 

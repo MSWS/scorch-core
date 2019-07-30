@@ -27,16 +27,20 @@ import com.scorch.core.modules.messages.MessagesModule;
 import com.scorch.core.modules.messages.OfflineMessagesModule;
 import com.scorch.core.modules.permissions.PermissionModule;
 import com.scorch.core.modules.permissions.PermissionPlayer;
-import com.scorch.core.modules.players.CPlayer;
 import com.scorch.core.modules.players.FriendModule;
 import com.scorch.core.modules.players.IPTracker;
 import com.scorch.core.modules.players.PlaytimeModule;
+import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.modules.punish.BanwaveModule;
 import com.scorch.core.modules.punish.PunishModule;
+import com.scorch.core.modules.report.ReportModule;
 import com.scorch.core.modules.staff.BuildModeModule;
+import com.scorch.core.modules.staff.PlayerCombatModule;
 import com.scorch.core.modules.staff.TeleportModule;
+import com.scorch.core.modules.staff.TrustModule;
 import com.scorch.core.modules.staff.VanishModule;
 import com.scorch.core.modules.staff.WorldProtectionModule;
+import com.scorch.core.pastebin.Paste;
 import com.scorch.core.utils.Logger;
 
 /**
@@ -70,6 +74,8 @@ public class ScorchCore extends JavaPlugin {
 
 		loadFiles();
 
+		Paste.setDeveloperKey(getConfig().getString("PastebinKey"));
+
 		this.registeredModules = new HashMap<>();
 		this.modules = new HashSet<>();
 
@@ -85,10 +91,12 @@ public class ScorchCore extends JavaPlugin {
 				ModulePriority.HIGH);
 		registerModule(new BuildModeModule("BuildModeModule"), ModulePriority.HIGH);
 		registerModule(new WorldProtectionModule("WorldProtectionModule"), ModulePriority.HIGH);
+		registerModule(new PlayerCombatModule("PlayerCombatModule"), ModulePriority.HIGH);
 
 		registerModule(new IPTracker("IPTrackerModule"), ModulePriority.MEDIUM);
 		registerModule(new BanwaveModule("BanwaveModule"), ModulePriority.MEDIUM);
 		registerModule(new OfflineMessagesModule("OfflineMessagesModule"), ModulePriority.MEDIUM);
+		registerModule(new ReportModule("ReportModule"), ModulePriority.MEDIUM);
 		this.pMod = (PunishModule) registerModule(new PunishModule("PunishModule"), ModulePriority.MEDIUM);
 		this.commands = (CommandModule) registerModule(new CommandModule("CommandModule"), ModulePriority.MEDIUM);
 		this.economy = (EconomyModule) registerModule(new EconomyModule("EconomyModule"), ModulePriority.MEDIUM);
@@ -103,6 +111,7 @@ public class ScorchCore extends JavaPlugin {
 
 		registerModule(new LagModule("LagModule"), ModulePriority.LOWEST);
 		registerModule(new PlaytimeModule("PlaytimeModule"), ModulePriority.LOWEST);
+		registerModule(new TrustModule("TrustModule"), ModulePriority.LOWEST);
 
 		try {
 			Arrays.stream(ModulePriority.values()).forEach(this::loadModules);
@@ -208,6 +217,8 @@ public class ScorchCore extends JavaPlugin {
 				return module;
 			}
 		}
+
+		Logger.warn("Unknown Module: %s", id);
 		return null;
 	}
 
@@ -301,14 +312,8 @@ public class ScorchCore extends JavaPlugin {
 		return getPrefix(player.getUniqueId());
 	}
 
-	/**
-	 * Returns a CPlayer from an OfflinePlayer
-	 * 
-	 * @param player
-	 * @return
-	 */
-	public CPlayer getPlayer(OfflinePlayer player) {
-		return dataManager.getPlayer(player);
+	public ScorchPlayer getPlayer(UUID uuid) {
+		return dataManager.getScorchPlayer(uuid);
 	}
 
 	/**

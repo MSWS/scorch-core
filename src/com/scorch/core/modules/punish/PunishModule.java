@@ -25,6 +25,9 @@ import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.exceptions.DataDeleteException;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
+import com.scorch.core.modules.players.ScorchPlayer;
+import com.scorch.core.modules.staff.TrustModule;
+import com.scorch.core.modules.staff.TrustModule.PublicTrust;
 import com.scorch.core.utils.MSG;
 import com.scorch.core.utils.Utils;
 
@@ -85,7 +88,27 @@ public class PunishModule extends AbstractModule {
 		ScorchCore.getInstance().getDataManager().saveObject("punishments", punishment);
 	}
 
+	public void openPunishGUI(Player punisher, OfflinePlayer player, String reason) {
+		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(punisher.getUniqueId());
+		TrustModule tm = ScorchCore.getInstance().getModule("TrustModule", TrustModule.class);
+		double trust = tm.getTrust(player.getUniqueId());
+		sp.setTempData("trustenum", MSG.color(PublicTrust.get(trust).getColored()));
+		sp.setTempData("reason", reason);
+
+		punisher.openInventory(getPunishGUI(punisher, player));
+
+		sp.setTempData("openInventory", "punish");
+		sp.setTempData("punishing",
+				player.getUniqueId() + "|" + (player.getName() == null ? player.getUniqueId() + "" : player.getName()));
+		sp.setTempData("reason", reason);
+		sp.setTempData("trustenum", MSG.color(PublicTrust.get(trust).getColored()));
+	}
+
 	public Inventory getPunishGUI(Player punisher, OfflinePlayer player) {
+		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(punisher.getUniqueId());
+		sp.setTempData("punishing",
+				player.getUniqueId() + "|" + (player.getName() == null ? player.getUniqueId() + "" : player.getName()));
+
 		Inventory inv = Utils.getGui(punisher, ScorchCore.getInstance().getGui(), "punish", 0);
 		List<Punishment> history = getPunishments(player.getUniqueId());
 		Collections.sort(history);
@@ -193,5 +216,9 @@ public class PunishModule extends AbstractModule {
 
 	public List<Punishment> getGlobalPunishments() {
 		return globalPunishments;
+	}
+
+	public Punishment getPunishment(UUID uuid) {
+		return punishments.stream().filter(id -> id.getId().equals(uuid)).findFirst().orElse(null);
 	}
 }

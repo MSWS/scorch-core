@@ -15,6 +15,33 @@ import org.bukkit.command.Command;
 import org.bukkit.command.SimpleCommandMap;
 
 import com.scorch.core.ScorchCore;
+import com.scorch.core.commands.FeedCommand;
+import com.scorch.core.commands.FilterCommand;
+import com.scorch.core.commands.FriendCommand;
+import com.scorch.core.commands.HealCommand;
+import com.scorch.core.commands.HelpCommand;
+import com.scorch.core.commands.HistoryCommand;
+import com.scorch.core.commands.LagCommand;
+import com.scorch.core.commands.PingCommand;
+import com.scorch.core.commands.PlaytimeCommand;
+import com.scorch.core.commands.SeenCommand;
+import com.scorch.core.commands.report.ConfirmReportCommand;
+import com.scorch.core.commands.report.ReportCloseCommand;
+import com.scorch.core.commands.report.ReportCommand;
+import com.scorch.core.commands.report.ReportHandleCommand;
+import com.scorch.core.commands.report.ReportInfoCommand;
+import com.scorch.core.commands.staff.ACommand;
+import com.scorch.core.commands.staff.BVersionCommand;
+import com.scorch.core.commands.staff.BuildModeCommand;
+import com.scorch.core.commands.staff.GamemodeCommand;
+import com.scorch.core.commands.staff.MACommand;
+import com.scorch.core.commands.staff.PunishCommand;
+import com.scorch.core.commands.staff.RACommand;
+import com.scorch.core.commands.staff.TPCommand;
+import com.scorch.core.commands.staff.TestCommand;
+import com.scorch.core.commands.staff.ToggleCommand;
+import com.scorch.core.commands.staff.UnpunishCommand;
+import com.scorch.core.commands.staff.VanishCommand;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.utils.Logger;
 
@@ -74,7 +101,11 @@ public class CommandModule extends AbstractModule {
 		commands.put(new BuildModeCommand("buildmode"), true);
 		commands.put(new HealCommand("heal"), true);
 		commands.put(new FeedCommand("feed"), true);
-
+		commands.put(new ReportCommand("report"), true);
+		commands.put(new ReportHandleCommand("reporthandle"), true);
+		commands.put(new ReportCloseCommand("reportclose"), true);
+		commands.put(new ReportInfoCommand("reportinfo"), true);
+		commands.put(new ConfirmReportCommand("confirmreport"), true);
 
 		enableCommands(commands.keySet().stream().collect(Collectors.toList()));
 		Logger.log("&aSuccessfully enabled &e" + commands.size() + "&a command" + (commands.size() == 1 ? "" : "s"));

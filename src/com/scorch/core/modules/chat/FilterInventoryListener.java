@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.chat.FilterEntry.FilterType;
-import com.scorch.core.modules.players.CPlayer;
+import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.Sounds;
 
 public class FilterInventoryListener implements Listener {
@@ -24,9 +24,9 @@ public class FilterInventoryListener implements Listener {
 		FilterModule fm = ScorchCore.getInstance().getModule("FilterModule", FilterModule.class);
 
 		Player player = (Player) event.getWhoClicked();
-		CPlayer cp = ScorchCore.getInstance().getPlayer(player);
+		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(player.getUniqueId());
 
-		if (!"FilterGUI".equals(cp.getTempData("openInventory")))
+		if (!"FilterGUI".equals(sp.getTempData("openInventory")))
 			return;
 
 		ItemStack item = event.getCurrentItem();
@@ -37,7 +37,7 @@ public class FilterInventoryListener implements Listener {
 
 		player.playSound(player.getLocation(), Sounds.CLICK.bukkitSound(), 2, 1);
 
-		int page = cp.getTempInteger("page");
+		int page = sp.getTempData("page", Integer.class, 0);
 
 		if (event.getRawSlot() == event.getInventory().getSize() - 1) {
 			openFilter(player, page + 1);
@@ -75,18 +75,17 @@ public class FilterInventoryListener implements Listener {
 	}
 
 	private void openFilter(Player player, int page) {
-		CPlayer cp = ScorchCore.getInstance().getPlayer(player);
+		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(player.getUniqueId());
 		player.openInventory(ScorchCore.getInstance().getModule("FilterModule", FilterModule.class).getFilterGUI(page));
-		cp.setTempData("openInventory", "FilterGUI");
-		cp.setTempData("page", page);
+		sp.setTempData("openInventory", "FilterGUI");
+		sp.setTempData("page", page);
 	}
 
 	@EventHandler
 	public void onClose(InventoryCloseEvent event) {
-		Player player = (Player) event.getPlayer();
-		CPlayer cp = ScorchCore.getInstance().getPlayer(player);
+		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(event.getPlayer().getUniqueId());
 		for (String id : new String[] { "page", "openInventory" })
-			cp.removeTempData(id);
+			sp.removeTempData(id);
 	}
 
 }

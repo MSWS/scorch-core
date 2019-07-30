@@ -1,6 +1,39 @@
 punish:
   Title: Punishing %punishing%
   Size: 54
+  trust:
+    Icon: SIGN
+    Name: '&a&lTrust Factor'
+    Slot: 0
+    Lore:
+    - '%trustenum%'
+    - ''
+    - '&9&lTrust Factor'
+    - '&7Trust factor measures how trustworthy'
+    - '&7an account is. A high trust factor means'
+    - '&7the account is likely to be a good player.'
+    - ''
+    - '&7Low trust factor may be a sign of poor'
+    - '&7sportsmanship, cheating, breaking of rules'
+    - '&7and other miscellaneous factors.'
+    - ''
+    - '&c&lTrust Factor is only meant for Staff'
+    - '&4It should not affect punishments or how'
+    - '&4you treat a player.'
+    - ''
+    - '&1How trust is calculated is private.'
+  report:
+    Icon: BOOK
+    Name: '&d&lReport Ban'
+    Slot: 43
+    Type: REPORT_BAN
+    Duration: 2.628e+9
+    Lore:
+    - ''
+    - '&cOnly for use by administrative staff'
+    - ''
+    - '&7Direct abusive reports to an admin'
+    - '&7if a player is abusing the report system'
   skull:
     Icon: PLAYER_HEAD
     Owner: '%punishing%'
@@ -68,7 +101,8 @@ punish:
     Duration: -1
     Lore:
     - ''
-    - '&DIn development'
+    - '&4&LCAUTION'
+    - '&cDo not use without authorization'
     - ''
     - '&cPermanently bans all accounts linked'
     - '&cto this account'
@@ -102,14 +136,14 @@ punish:
     - '&cmute on someone with &oreason&c.'
     MuteTime: -1
     Permission: rank.mod
-  kick:
-    Icon: LEATHER_BOOTS
-    Name: '&a&lKick'
-    Type: KICK
-    Slot: 43
-    Lore:
-    - ''
-    - '&7Kicks a player with the provided reason'
+#  kick:
+#    Icon: LEATHER_BOOTS
+#    Name: '&a&lKick'
+#    Type: KICK
+#    Slot: 43
+#    Lore:
+#    - ''
+#    - '&7Kicks a player with the provided reason'
   chat1:
     Icon: CACTUS_GREEN
     Name: '&a&lSeverity 1'
@@ -219,3 +253,9 @@ punish:
     - '&7 - Any Movement related hack'
     - ''
     - '&cUse Permanent Ban for 3rd Offense'
+confirm:
+  Icon: GREEN_WOOL
+  Name: '&a&lCONFIRM'
+cancel:
+  Icon: RED_WOOL
+  Name: '&c&lCANCEL'
