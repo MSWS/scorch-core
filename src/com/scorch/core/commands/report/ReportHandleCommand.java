@@ -42,7 +42,7 @@ public class ReportHandleCommand extends BukkitCommand {
 			return true;
 		}
 
-		player.openInventory(rm.getReportGUI("Handling Report..."));
+		player.openInventory(rm.getReportGUI("Handling Report...", true));
 		sp.setTempData("openInventory", "reporthandle");
 		return true;
 	}

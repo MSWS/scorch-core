@@ -108,12 +108,31 @@ public class ReportModule extends AbstractModule {
 				new SQLSelector("id", report.getId()));
 	}
 
-	public Inventory getReportGUI(String title) {
+	public Inventory getReportGUI(String title, boolean showCount) {
 		Inventory inv = Bukkit.createInventory(null, 27, title);
+		inv.setMaxStackSize(999);
 
-		inv.setItem(10, ReportType.GAMEPLAY.getItem());
-		inv.setItem(13, ReportType.CLIENT.getItem());
-		inv.setItem(16, ReportType.CHAT.getItem());
+		List<Report> open = reports.stream().filter(Report::isOpen).collect(Collectors.toList());
+
+		int conf = open.stream().filter(r -> r.getType() == ReportType.GAMEPLAY).collect(Collectors.toList()).size();
+		int client = open.stream().filter(r -> r.getType() == ReportType.CLIENT).collect(Collectors.toList()).size();
+		int chat = open.stream().filter(r -> r.getType() == ReportType.CHAT).collect(Collectors.toList()).size();
+
+		ItemStack gm = ReportType.GAMEPLAY.getItem(), cl = ReportType.CLIENT.getItem(), ch = ReportType.CHAT.getItem();
+
+		if (showCount) {
+			gm.setAmount(Math.max(1, conf));
+			cl.setAmount(Math.max(1, client));
+			ch.setAmount(Math.max(1, chat));
+		} else {
+			gm.setAmount(1);
+			cl.setAmount(1);
+			ch.setAmount(1);
+		}
+
+		inv.setItem(10, gm);
+		inv.setItem(13, cl);
+		inv.setItem(16, ch);
 
 		ItemStack bg = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
 		ItemMeta meta = bg.getItemMeta();
@@ -121,9 +140,8 @@ public class ReportModule extends AbstractModule {
 		bg.setItemMeta(meta);
 
 		for (int i = 0; i < inv.getSize(); i++) {
-			if (inv.getItem(i) != null)
-				continue;
-			inv.setItem(i, bg);
+			if (inv.getItem(i) == null || inv.getItem(i).getType() == Material.AIR)
+				inv.setItem(i, bg);
 		}
 
 		return inv;

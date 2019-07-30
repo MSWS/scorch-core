@@ -77,7 +77,7 @@ public class ReportCommand extends BukkitCommand {
 		}
 		reason = reason.trim();
 
-		player.openInventory(rm.getReportGUI("Reporting " + target.getName() + "..."));
+		player.openInventory(rm.getReportGUI("Reporting " + target.getName() + "...", false));
 		sp.setTempData("openInventory", "report");
 		sp.setTempData("reporting", target.getUniqueId());
 		sp.setTempData("reason", reason);

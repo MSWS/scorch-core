@@ -139,7 +139,8 @@ public class BuildModeModule extends AbstractModule implements Listener {
 			tracker.put(uuid, new ArrayList<>());
 			return;
 		} else {
-			int rollbackBlocks = Math.max(tracker.getOrDefault(uuid, new ArrayList<>()).size() / 100, 1);
+			int rollbackBlocks = Math.max(tracker.getOrDefault(uuid, new ArrayList<>()).size() / 500, 1);
+			long start = System.currentTimeMillis();
 
 			BukkitRunnable runnable = new BukkitRunnable() {
 				int pos = 0;
@@ -147,18 +148,22 @@ public class BuildModeModule extends AbstractModule implements Listener {
 
 				@Override
 				public void run() {
+					int off = rollbackBlocks;
 					if (pos >= loc.size()) {
 						tracker.put(uuid, new ArrayList<>());
 						cancel();
 						return;
 					}
-					for (int i = 0; i < rollbackBlocks && pos < loc.size(); i++) {
+					if (System.currentTimeMillis() - start > 10000) {
+						off += ((System.currentTimeMillis() - start) / 10000);
+					}
+					for (int i = 0; i < off && pos < loc.size(); i++) {
 						Location l = loc.get(pos);
 						if (l.getBlock().getType() == Material.AIR) {
 							pos++;
 							continue;
 						}
-						l.getWorld().playSound(l, Utils.getBreakSound(l.getBlock().getType()).bukkitSound(), 2, 1);
+						l.getWorld().playSound(l, Utils.getBreakSound(l.getBlock().getType()).bukkitSound(), 1, 1);
 						l.getBlock().setType(Material.AIR);
 						pos++;
 					}
