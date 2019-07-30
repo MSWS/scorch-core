@@ -9,7 +9,7 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.players.CPlayer;
+import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.MSG;
 
 /**
@@ -48,17 +48,17 @@ public class RACommand extends BukkitCommand {
 			return true;
 		}
 
-		CPlayer cp = ScorchCore.getInstance().getPlayer((Player) sender);
+		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(((Player) sender).getUniqueId());
 
 		Player target = null;
 		if (sender instanceof Player) {
-			if (!cp.hasTempData("lastMA")) {
+			if (!sp.hasTempData("lastMA")) {
 				MSG.tell(sender, "You have not MA'd anyone");
 				return true;
 			}
 
-			target = Bukkit.getPlayer(
-					UUID.fromString(ScorchCore.getInstance().getPlayer((Player) sender).getTempString("lastMA")));
+			target = Bukkit.getPlayer(UUID.fromString(ScorchCore.getInstance()
+					.getPlayer(((Player) sender).getUniqueId()).getTempData("lastMA", String.class)));
 		} else {
 			MSG.tell(sender, "You must be a player");
 			return true;

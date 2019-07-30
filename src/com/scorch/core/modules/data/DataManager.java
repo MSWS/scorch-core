@@ -47,7 +47,7 @@ public class DataManager extends AbstractModule {
 	private static Gson gson = new GsonBuilder().create();
 
 	private ConnectionManager connectionManager;
-
+	@Deprecated
 	private Map<OfflinePlayer, CPlayer> players;
 	private Map<UUID, ScorchPlayer> cache;
 
@@ -210,31 +210,36 @@ public class DataManager extends AbstractModule {
 	public void saveObject(String table, Object object) {
 		// Create prepared statement based on the object
 		String query = "INSERT INTO " + table + " (object_type, ";
+
 		for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
 			Field field = object.getClass().getDeclaredFields()[i];
 
 			// Makes sure that the field doesn't have to be ignored for serialisation
-			if (field.isAnnotationPresent(DataIgnore.class))
+			if (field.isAnnotationPresent(DataIgnore.class)) {
 				continue;
+			}
 
-			if (field.getAnnotation(DataIgnore.class) == null) {
-				query += field.getName();
+			query += field.getName();
 
-				if (i == object.getClass().getDeclaredFields().length - 1) {
-					query += ") VALUES (?,";
-					for (int j = 0; j < object.getClass().getDeclaredFields().length; j++) {
-						if (object.getClass().getDeclaredFields()[j].isAnnotationPresent(DataIgnore.class))
-							continue;
-						query += "?";
-						if (j == object.getClass().getDeclaredFields().length - 1) {
-							query += ");";
-						} else {
-							query += ", ";
-						}
+			// if the next field had a DataIgnore class then this code would result in an
+			// unfinished statement "(?,?,?" for example
+
+			if (i == object.getClass().getDeclaredFields().length - 1
+					|| object.getClass().getDeclaredFields()[i + 1].isAnnotationPresent(DataIgnore.class)) {
+				query += ") VALUES (?,";
+				for (int j = 0; j < object.getClass().getDeclaredFields().length; j++) {
+					if (object.getClass().getDeclaredFields()[j].isAnnotationPresent(DataIgnore.class))
+						continue;
+					query += "?";
+					if (j == object.getClass().getDeclaredFields().length - 1
+							|| object.getClass().getDeclaredFields()[j + 1].isAnnotationPresent(DataIgnore.class)) {
+						query += ");";
+					} else {
+						query += ", ";
 					}
-				} else {
-					query += ", ";
 				}
+			} else {
+				query += ", ";
 			}
 		}
 

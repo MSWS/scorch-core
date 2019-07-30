@@ -18,7 +18,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.players.CPlayer;
+import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.MSG;
 import com.scorch.core.utils.Sounds;
 import com.scorch.core.utils.Utils;
@@ -39,21 +39,22 @@ public class PunishInventoryListener implements Listener {
 		Player player = (Player) event.getWhoClicked();
 		PunishModule pm = ScorchCore.getInstance().getPunishModule();
 
-		CPlayer cp = ScorchCore.getInstance().getPlayer(player);
+		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(player.getUniqueId());
 
 		ItemStack item = event.getCurrentItem();
 
 		if (item == null || item.getType() == Material.AIR)
 			return;
 
-		if (!cp.hasTempData("punishing"))
+		if (!sp.hasTempData("punishing"))
 			return;
 
-		OfflinePlayer target = Bukkit.getOfflinePlayer(UUID.fromString(cp.getTempString("punishing").split("\\|")[0]));
+		OfflinePlayer target = Bukkit
+				.getOfflinePlayer(UUID.fromString(sp.getTempData("punishing", String.class).split("\\|")[0]));
 		List<Punishment> history = ScorchCore.getInstance().getPunishModule().getPunishments(target.getUniqueId());
 
-		if ("viewing".equals(cp.getTempString("openInventory"))) {
-			int page = cp.getTempInteger("page");
+		if ("viewing".equals(sp.getTempData("openInventory", String.class))) {
+			int page = sp.getTempData("page", Integer.class, 0);
 			event.setCancelled(true);
 
 			if (event.getClickedInventory().getType() != InventoryType.CHEST)
@@ -62,16 +63,16 @@ public class PunishInventoryListener implements Listener {
 			player.playSound(player.getLocation(), Sounds.CLICK.bukkitSound(), 2, 1);
 
 			if (event.getRawSlot() == event.getInventory().getSize() - 1) {
-				cp.setTempData("page", page + 1);
+				sp.setTempData("page", page + 1);
 				refreshHistory(player, target);
 				return;
 			} else if (event.getRawSlot() == event.getInventory().getSize() - 9) {
-				cp.setTempData("page", page - 1);
+				sp.setTempData("page", page - 1);
 				refreshHistory(player, target);
 				return;
 			}
 
-			if ((event.getClick() == ClickType.RIGHT && cp.hasTempData("reason")
+			if ((event.getClick() == ClickType.RIGHT && sp.hasTempData("reason")
 					&& player.hasPermission("scorch.punish.remove"))
 					|| (event.getClick() == ClickType.SHIFT_LEFT && player.hasPermission("scorch.punish.delete"))) {
 				int i = page * (event.getInventory().getSize() - 9) + event.getRawSlot();
@@ -94,14 +95,14 @@ public class PunishInventoryListener implements Listener {
 			return;
 		}
 
-		if ("confirm".equals(cp.getTempData("openInventory"))) {
+		if ("confirm".equals(sp.getTempData("openInventory"))) {
 			event.setCancelled(true);
 			if (event.getClickedInventory().getType() != InventoryType.CHEST)
 				return;
 			if (item.getType() == Material.GREEN_WOOL) {
-				Punishment p = pm.getPunishment(cp.getTempData("punishremove", UUID.class));
-				String type = cp.getTempString("confirming");
-				String tempReason = cp.getTempString("reason");
+				Punishment p = pm.getPunishment(sp.getTempData("punishremove", UUID.class));
+				String type = sp.getTempData("confirming", String.class);
+				String tempReason = sp.getTempData("reason", String.class);
 				if (type.equals("remove")) {
 					p.remove(player.getName(), tempReason);
 					player.playSound(player.getLocation(), Sounds.VILLAGER_TRADE.bukkitSound(), 2, 1);
@@ -118,7 +119,7 @@ public class PunishInventoryListener implements Listener {
 			return;
 		}
 
-		if (!"punish".equals(cp.getTempData("openInventory")))
+		if (!"punish".equals(sp.getTempData("openInventory")))
 			return;
 
 		event.setCancelled(true);
@@ -137,14 +138,15 @@ public class PunishInventoryListener implements Listener {
 		}
 
 		if (event.getRawSlot() == event.getInventory().getSize() - 1) {
-			cp.setTempData("page", 0);
+			sp.setTempData("page", 0);
 			refreshHistory(player, target);
 			return;
 		}
 
 		if (ScorchCore.getInstance().getGui().contains("punish." + id + ".Type")) {
-			Punishment punishment = new Punishment(target.getUniqueId(), player.getName(), cp.getTempString("reason"),
-					System.currentTimeMillis(), ScorchCore.getInstance().getGui().getLong("punish." + id + ".Duration"),
+			Punishment punishment = new Punishment(target.getUniqueId(), player.getName(),
+					sp.getTempData("reason", String.class), System.currentTimeMillis(),
+					ScorchCore.getInstance().getGui().getLong("punish." + id + ".Duration"),
 					PunishType.valueOf(ScorchCore.getInstance().getGui().getString("punish." + id + ".Type")));
 
 			ScorchCore.getInstance().getPunishModule().addPunishment(punishment);
@@ -177,26 +179,26 @@ public class PunishInventoryListener implements Listener {
 	@EventHandler
 	public void onClose(InventoryCloseEvent event) {
 		Player player = (Player) event.getPlayer();
-		CPlayer cp = ScorchCore.getInstance().getPlayer(player);
+		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(player.getUniqueId());
 		for (String id : new String[] { "punishing", "reason", "page", "openInventory", "trustenum" })
-			cp.removeTempData(id);
+			sp.removeTempData(id);
 	}
 
 	private void refreshHistory(Player player, OfflinePlayer target) {
-		CPlayer cp = ScorchCore.getInstance().getPlayer(player);
-		String tempPunish = cp.getTempString("punishing");
-		String tempReason = cp.getTempString("reason");
-		int tempPage = cp.getTempInteger("page");
-		player.openInventory(
-				ScorchCore.getInstance().getPunishModule().getHistoryGUI(target, cp.getTempInteger("page")));
-		cp.setTempData("openInventory", "viewing");
-		cp.setTempData("punishing", tempPunish);
-		cp.setTempData("reason", tempReason);
-		cp.setTempData("page", tempPage);
+		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(player.getUniqueId());
+		String tempPunish = sp.getTempData("punishing", String.class);
+		String tempReason = sp.getTempData("reason", String.class);
+		int tempPage = sp.getTempData("page", Integer.class, 0);
+		player.openInventory(ScorchCore.getInstance().getPunishModule().getHistoryGUI(target,
+				sp.getTempData("page", Integer.class, 0)));
+		sp.setTempData("openInventory", "viewing");
+		sp.setTempData("punishing", tempPunish);
+		sp.setTempData("reason", tempReason);
+		sp.setTempData("page", tempPage);
 	}
 
 	private void confirm(Player player, Punishment punishment, String message, String removeType) {
-		CPlayer cp = ScorchCore.getInstance().getPlayer(player);
+		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(player.getUniqueId());
 
 		Inventory inv = Bukkit.createInventory(null, 54, MSG.color(message));
 		inv.setItem(13, punishment.getItem());
@@ -215,15 +217,15 @@ public class PunishInventoryListener implements Listener {
 			}
 		}
 
-		String tempPunish = cp.getTempString("punishing");
-		String tempReason = cp.getTempString("reason");
+		String tempPunish = sp.getTempData("punishing", String.class);
+		String tempReason = sp.getTempData("reason", String.class);
 
 		player.openInventory(inv);
-		cp.setTempData("punishremove", punishment.getId());
-		cp.setTempData("openInventory", "confirm");
-		cp.setTempData("confirming", removeType);
-		cp.setTempData("punishing", tempPunish);
-		cp.setTempData("reason", tempReason);
+		sp.setTempData("punishremove", punishment.getId());
+		sp.setTempData("openInventory", "confirm");
+		sp.setTempData("confirming", removeType);
+		sp.setTempData("punishing", tempPunish);
+		sp.setTempData("reason", tempReason);
 	}
 
 }

@@ -11,7 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.scorch.core.modules.data.annotations.DataNotNull;
 import com.scorch.core.utils.MSG;
 
-public class Report {
+public class Report implements Comparable<Report> {
 	@DataNotNull
 	private String id;
 
@@ -116,5 +116,16 @@ public class Report {
 			return stack;
 		}
 
+	}
+
+	@Override
+	public int compareTo(Report o) {
+		if (isOpen() == o.isOpen()) {
+			return o.getReportDate() > reportDate ? -1 : 1;
+		} else if (o.isOpen()) {
+			return -1;
+		} else {
+			return 1;
+		}
 	}
 }

@@ -46,7 +46,8 @@ public class MACommand extends BukkitCommand {
 		}
 
 		if (sender instanceof Player)
-			ScorchCore.getInstance().getPlayer((Player) sender).setTempData("lastMA", target.getUniqueId().toString());
+			ScorchCore.getInstance().getPlayer(((Player) sender).getUniqueId()).setTempData("lastMA",
+					target.getUniqueId().toString());
 
 		StringBuilder builder = new StringBuilder();
 		for (int i = 1; i < args.length; i++)
@@ -61,11 +62,8 @@ public class MACommand extends BukkitCommand {
 			if (p.equals(target)) {
 				MSG.tell(p, ScorchCore.getInstance().getMessage("maformat-receiver").replace("%group%", "")
 						.replace("%player%", sender.getName()).replace("%message%", builder.toString().trim()));
-//				MSG.tell(p, "&5<- &6" + sender.getName() + " &d" + builder.toString().trim());
 				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 2, 2f);
 			} else if (!p.equals(sender) && p.hasPermission("scorch.command.ma.watch")) {
-//				MSG.tell(p,
-//						"&6" + sender.getName() + " &5-> &6" + target.getName() + " &d" + builder.toString().trim());
 				MSG.tell(p, ScorchCore.getInstance().getMessage("maformat-spec").replace("%senderprefix%", "")
 						.replace("%sendername%", sender.getName()).replace("%message%", builder.toString().trim())
 						.replace("%receiverprefix%", "").replace("%receivername%", target.getName()));

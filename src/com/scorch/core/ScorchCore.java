@@ -29,6 +29,7 @@ import com.scorch.core.modules.players.CPlayer;
 import com.scorch.core.modules.players.FriendModule;
 import com.scorch.core.modules.players.IPTracker;
 import com.scorch.core.modules.players.PlaytimeModule;
+import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.modules.punish.BanwaveModule;
 import com.scorch.core.modules.punish.PunishModule;
 import com.scorch.core.modules.report.ReportModule;
@@ -207,6 +208,8 @@ public class ScorchCore extends JavaPlugin {
 				return module;
 			}
 		}
+
+		Logger.warn("Unknown Module: %s", id);
 		return null;
 	}
 
@@ -294,6 +297,7 @@ public class ScorchCore extends JavaPlugin {
 	}
 
 	/**
+	 * @deprecated
 	 * Returns a CPlayer from an OfflinePlayer
 	 * 
 	 * @param player
@@ -301,6 +305,11 @@ public class ScorchCore extends JavaPlugin {
 	 */
 	public CPlayer getPlayer(OfflinePlayer player) {
 		return dataManager.getPlayer(player);
+	}
+	
+	
+	public ScorchPlayer getPlayer(UUID uuid) {
+		return dataManager.getScorchPlayer(uuid);
 	}
 
 	/**

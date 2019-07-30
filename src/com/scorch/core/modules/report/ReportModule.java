@@ -56,6 +56,14 @@ public class ReportModule extends AbstractModule {
 		return reports.parallelStream().filter(r -> r.getTarget().equals(player)).collect(Collectors.toList());
 	}
 
+	public List<Report> getOpenReports() {
+		return reports.stream().filter(Report::isOpen).collect(Collectors.toList());
+	}
+
+	public List<Report> getReports() {
+		return reports;
+	}
+
 	public void addReport(Report report) {
 		reports.add(report);
 
@@ -67,12 +75,8 @@ public class ReportModule extends AbstractModule {
 				new SQLSelector("id", report.getId()));
 	}
 
-	public Inventory getReportGUI(UUID target) {
-		String name = Bukkit.getOfflinePlayer(target).getName();
-		if (name == null)
-			name = target.toString();
-
-		Inventory inv = Bukkit.createInventory(null, 27, "Reporting " + name + "...");
+	public Inventory getReportGUI(String title) {
+		Inventory inv = Bukkit.createInventory(null, 27, title);
 
 		inv.setItem(10, ReportType.GAMEPLAY.getItem());
 		inv.setItem(13, ReportType.CLIENT.getItem());

@@ -9,7 +9,7 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.players.CPlayer;
+import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.modules.report.Report;
 import com.scorch.core.modules.report.ReportModule;
 import com.scorch.core.utils.MSG;
@@ -35,7 +35,7 @@ public class ReportCommand extends BukkitCommand {
 		}
 
 		Player player = (Player) sender, target;
-		CPlayer cp = ScorchCore.getInstance().getPlayer(player);
+		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(player.getUniqueId());
 
 		if (args.length < 2) {
 			MSG.tell(sender, "/report [Player] [Reason]");
@@ -60,10 +60,10 @@ public class ReportCommand extends BukkitCommand {
 		}
 		reason = reason.trim();
 
-		player.openInventory(rm.getReportGUI(target.getUniqueId()));
-		cp.setTempData("openInventory", "report");
-		cp.setTempData("reporting", target.getUniqueId());
-		cp.setTempData("reason", reason);
+		player.openInventory(rm.getReportGUI("Reporting " + target.getName() + "..."));
+		sp.setTempData("openInventory", "report");
+		sp.setTempData("reporting", target.getUniqueId());
+		sp.setTempData("reason", reason);
 		return true;
 	}
 

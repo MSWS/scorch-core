@@ -7,6 +7,11 @@ import java.util.Map;
 
 import org.bukkit.OfflinePlayer;
 
+/**
+ * @deprecated Use {@link ScorchPlayer}
+ * @author imodm
+ *
+ */
 public class CPlayer {
 	private OfflinePlayer player;
 

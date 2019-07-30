@@ -10,7 +10,7 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.players.CPlayer;
+import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.modules.staff.TrustModule;
 import com.scorch.core.modules.staff.TrustModule.PublicTrust;
 import com.scorch.core.utils.MSG;
@@ -48,6 +48,7 @@ public class PunishCommand extends BukkitCommand {
 		}
 
 		Player player = (Player) sender;
+		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(player.getUniqueId());
 
 		if (args.length < 2) {
 			MSG.tell(sender, "/punish [player] [reason]");
@@ -69,23 +70,21 @@ public class PunishCommand extends BukkitCommand {
 			target = Bukkit.getOfflinePlayer(args[0]);
 		}
 
-		CPlayer cp = ScorchCore.getInstance().getPlayer(player);
-
 		String name = target.getName() == null ? args[0] : target.getName();
 
 		TrustModule tm = ScorchCore.getInstance().getModule("TrustModule", TrustModule.class);
 
-		cp.setTempData("openInventory", "punish");
-		cp.setTempData("punishing", target.getUniqueId() + "|" + name);
-		cp.setTempData("reason", reason);
-		cp.setTempData("trustenum", MSG.color(PublicTrust.get(tm.getTrust(target.getUniqueId())).getColored()));
+		sp.setTempData("openInventory", "punish");
+		sp.setTempData("punishing", target.getUniqueId() + "|" + name);
+		sp.setTempData("reason", reason);
+		sp.setTempData("trustenum", MSG.color(PublicTrust.get(tm.getTrust(target.getUniqueId())).getColored()));
 
 		player.openInventory(ScorchCore.getInstance().getPunishModule().getPunishGUI(player, target));
 
-		cp.setTempData("openInventory", "punish");
-		cp.setTempData("punishing", target.getUniqueId() + "|" + name);
-		cp.setTempData("reason", reason);
-		cp.setTempData("trustenum", MSG.color(PublicTrust.get(tm.getTrust(target.getUniqueId())).getColored()));
+		sp.setTempData("openInventory", "punish");
+		sp.setTempData("punishing", target.getUniqueId() + "|" + name);
+		sp.setTempData("reason", reason);
+		sp.setTempData("trustenum", MSG.color(PublicTrust.get(tm.getTrust(target.getUniqueId())).getColored()));
 		return true;
 	}
 

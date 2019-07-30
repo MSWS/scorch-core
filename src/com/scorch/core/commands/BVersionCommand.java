@@ -34,8 +34,8 @@ public class BVersionCommand extends BukkitCommand {
 			return true;
 		}
 		MSG.tell(sender, " ");
-		MSG.tell(sender, "&9&lScorchCore &b[&8UN&b|&7A&b|&a0.0.1&b]");
-		MSG.tell(sender, "&6&lLatest Push &e7/23/19");
+		MSG.tell(sender, "&9&lScorchCore &b[&8UN&b|&7A&b|&a0.0.2&b]");
+		MSG.tell(sender, "&6&lLatest Push &e7/30/19");
 		MSG.tell(sender, " ");
 
 		return true;
