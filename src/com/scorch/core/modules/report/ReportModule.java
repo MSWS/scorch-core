@@ -186,7 +186,7 @@ public class ReportModule extends AbstractModule {
 				"&7Report ID: &8" + report.getId() + " &7[Submitted &8" + sdf.format(report.getReportDate()) + "&7]");
 		MSG.tell(p, "&3Reporter: &b" + Bukkit.getOfflinePlayer(report.getReporter()).getName());
 		MSG.tell(p, "&3Reported: &c" + Bukkit.getOfflinePlayer(report.getTarget()).getName());
-		MSG.tell(p, "&7Reason: &e" + report.getReason() + " [" + report.getType() + "]");
+		MSG.tell(p, "&7Reason: &e" + report.getReason() + " [&6" + report.getType() + "&e]");
 		MSG.tell(p, " ");
 		if (report.getServer() != null) {
 			MSG.tell(p, "&7Server: &a" + report.getServer());
@@ -194,6 +194,7 @@ public class ReportModule extends AbstractModule {
 		}
 
 		TextComponent cmp = new TextComponent(MSG.color("&d&lChat Logs: &5"));
+
 		cmp.setExtra(
 				Arrays.asList(new ComponentBuilder("HERE").event(new ClickEvent(Action.OPEN_URL, report.getPastebin()))
 						.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT,

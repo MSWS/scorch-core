@@ -91,16 +91,17 @@ public class PunishModule extends AbstractModule {
 	public void openPunishGUI(Player punisher, OfflinePlayer player, String reason) {
 		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(punisher.getUniqueId());
 		TrustModule tm = ScorchCore.getInstance().getModule("TrustModule", TrustModule.class);
-		sp.setTempData("trustenum", MSG.color(PublicTrust.get(tm.getTrust(player.getUniqueId())).getColored()));
+		double trust = tm.getTrust(player.getUniqueId());
+		sp.setTempData("trustenum", MSG.color(PublicTrust.get(trust).getColored()));
 		sp.setTempData("reason", reason);
-		
+
 		punisher.openInventory(getPunishGUI(punisher, player));
 
 		sp.setTempData("openInventory", "punish");
 		sp.setTempData("punishing",
 				player.getUniqueId() + "|" + (player.getName() == null ? player.getUniqueId() + "" : player.getName()));
 		sp.setTempData("reason", reason);
-		sp.setTempData("trustenum", MSG.color(PublicTrust.get(tm.getTrust(player.getUniqueId())).getColored()));
+		sp.setTempData("trustenum", MSG.color(PublicTrust.get(trust).getColored()));
 	}
 
 	public Inventory getPunishGUI(Player punisher, OfflinePlayer player) {

@@ -10,9 +10,9 @@ import org.bukkit.OfflinePlayer;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.players.FriendModule;
+import com.scorch.core.modules.players.Friendship.FriendStatus;
 import com.scorch.core.modules.players.IPTracker;
 import com.scorch.core.modules.players.PlaytimeModule;
-import com.scorch.core.modules.players.Friendship.FriendStatus;
 import com.scorch.core.modules.punish.Punishment;
 import com.scorch.core.modules.report.ReportModule;
 
@@ -40,6 +40,7 @@ public class TrustModule extends AbstractModule {
 	 */
 	@SuppressWarnings("unused")
 	public double getTrust(UUID uuid) {
+		long start = System.currentTimeMillis();
 		OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
 		if (!player.hasPlayedBefore())
 			return .5;
@@ -79,8 +80,8 @@ public class TrustModule extends AbstractModule {
 			case IP_BAN:
 				punishmentScore += 90.0;
 				break;
-			case KICK:
-				punishmentScore += 20.0;
+			case REPORT_BAN:
+				punishmentScore += 40.0;
 				break;
 			case OTHER:
 				punishmentScore += 20.0;

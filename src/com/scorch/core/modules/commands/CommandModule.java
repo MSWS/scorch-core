@@ -23,8 +23,8 @@ import com.scorch.core.commands.HistoryCommand;
 import com.scorch.core.commands.LagCommand;
 import com.scorch.core.commands.PingCommand;
 import com.scorch.core.commands.PlaytimeCommand;
-import com.scorch.core.commands.PunishCommand;
 import com.scorch.core.commands.SeenCommand;
+import com.scorch.core.commands.report.ConfirmReportCommand;
 import com.scorch.core.commands.report.ReportCloseCommand;
 import com.scorch.core.commands.report.ReportCommand;
 import com.scorch.core.commands.report.ReportHandleCommand;
@@ -34,6 +34,7 @@ import com.scorch.core.commands.staff.BVersionCommand;
 import com.scorch.core.commands.staff.BuildModeCommand;
 import com.scorch.core.commands.staff.GamemodeCommand;
 import com.scorch.core.commands.staff.MACommand;
+import com.scorch.core.commands.staff.PunishCommand;
 import com.scorch.core.commands.staff.RACommand;
 import com.scorch.core.commands.staff.TPCommand;
 import com.scorch.core.commands.staff.TestCommand;
@@ -102,6 +103,7 @@ public class CommandModule extends AbstractModule {
 		commands.put(new ReportHandleCommand("reporthandle"), true);
 		commands.put(new ReportCloseCommand("reportclose"), true);
 		commands.put(new ReportInfoCommand("reportinfo"), true);
+		commands.put(new ConfirmReportCommand("confirmreport"), true);
 
 		enableCommands(commands.keySet().stream().collect(Collectors.toList()));
 		Logger.log("&aSuccessfully enabled &e" + commands.size() + "&a command" + (commands.size() == 1 ? "" : "s"));

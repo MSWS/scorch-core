@@ -77,11 +77,20 @@ public class ReportInventoryListener implements Listener {
 			Report report = new Report(player.getUniqueId(), target, type, sp.getTempData("reason", String.class));
 			if (type == ReportType.CHAT) {
 				List<String> lines = rm.getLogs(player.getUniqueId());
+				if (lines.isEmpty()) {
+					MSG.tell(player, "You do not have any recent messages.");
+					return;
+				}
+
 				List<String> f = new ArrayList<String>();
 				f.add(ScorchCore.getInstance().getName() + " chat logs for " + MSG.camelCase(type.toString())
-						+ " report against " + Bukkit.getPlayer(target).getName() + " (" + target + ")" + " for "
-						+ report.getReason());
-				f.add("[WARNING] Chat logs are for staff eyes only, any leaking, sharking, or other malicious intent used by this service is unallowed and will result in disciplinary actions.");
+						+ " report against " + Bukkit.getPlayer(target).getName() + " (" + target + ")");
+				f.add("Reason: " + report.getReason());
+				f.add("");
+				f.add("[WARNING] Chat logs are for staff eyes only.");
+				f.add("");
+				f.add("Chat Log Hash: " + MSG.hashWithSalt(report.getId(), report.getReason(), 16, 5));
+				f.add("(Confirm this with '/confirmreport " + report.getId() + " " + report.getReason() + "')");
 				f.add(" ");
 				if (report.getServer() != null)
 					f.add("Server: " + report.getServer());
@@ -119,6 +128,7 @@ public class ReportInventoryListener implements Listener {
 
 		if ("reporthandle".equals(sp.getTempData("openInventory", String.class))) {
 			event.setCancelled(true);
+			player.playSound(player.getLocation(), Sounds.CLICK.bukkitSound(), 2, 1);
 
 			if (type == null)
 				return;
@@ -146,6 +156,8 @@ public class ReportInventoryListener implements Listener {
 
 		if ("reportclose".equals(sp.getTempData("openInventory", String.class))) {
 			event.setCancelled(true);
+			player.playSound(player.getLocation(), Sounds.CLICK.bukkitSound(), 2, 1);
+
 			if (res == null)
 				return;
 			Report report = rm.getReport(sp.getData("assignedreport", String.class));

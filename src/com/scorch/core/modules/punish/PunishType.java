@@ -44,13 +44,18 @@ public enum PunishType {
 	/*
 	 * Kicks the player
 	 */
-	KICK("&b&lKick", "LEATHER_BOOTS", false),
+//	KICK("&b&lKick", "LEATHER_BOOTS", false),
 
 	/*
 	 * Blacklists the player Any and all accounts linked either via IP or accounts
 	 * will be banned
 	 */
 	BLACKLIST("&4&lBlacklist", "BARRIER", true),
+
+	/**
+	 * 
+	 */
+	REPORT_BAN("&d&lReport Ban", "REDSTONE_LAMP", false),
 
 	/*
 	 * Miscellaneous

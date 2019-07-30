@@ -22,6 +22,18 @@ punish:
     - '&4you treat a player.'
     - ''
     - '&1How trust is calculated is private.'
+  report:
+    Icon: BOOK
+    Name: '&d&lReport Ban'
+    Slot: 43
+    Type: REPORT_BAN
+    Duration: 2.628e+9
+    Lore:
+    - ''
+    - '&cOnly for use by administrative staff'
+    - ''
+    - '&7Direct abusive reports to an admin'
+    - '&7if a player is abusing the report system'
   skull:
     Icon: PLAYER_HEAD
     Owner: '%punishing%'
@@ -124,14 +136,14 @@ punish:
     - '&cmute on someone with &oreason&c.'
     MuteTime: -1
     Permission: rank.mod
-  kick:
-    Icon: LEATHER_BOOTS
-    Name: '&a&lKick'
-    Type: KICK
-    Slot: 43
-    Lore:
-    - ''
-    - '&7Kicks a player with the provided reason'
+#  kick:
+#    Icon: LEATHER_BOOTS
+#    Name: '&a&lKick'
+#    Type: KICK
+#    Slot: 43
+#    Lore:
+#    - ''
+#    - '&7Kicks a player with the provided reason'
   chat1:
     Icon: CACTUS_GREEN
     Name: '&a&lSeverity 1'

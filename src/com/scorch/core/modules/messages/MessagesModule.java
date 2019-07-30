@@ -39,6 +39,8 @@ public class MessagesModule extends AbstractModule {
 				"&cYou are muted for &e%timeleft% &7by &a%staff%&c for &e%reason%.&c &7(Time Left: &8%timeleft%&7)"));
 		defaults.add(
 				new CMessage("permmutemessage", "&cYou are &4Permanentely &cmuted by &a%staff% &cfor &e%reason%&7."));
+		defaults.add(new CMessage("reportbanmessage",
+				"&7&e%staff% &7has restricted your ability to create reports. Reason: &e%reason%"));
 		defaults.add(new CMessage("offlinemessageheader", "&7You have &e%amo% &7unread message%s%."));
 		defaults.add(new CMessage("offlinemessageformat", "&1%sender%&9: &b%message% &7[&8%time%&7]"));
 		defaults.add(new CMessage("aformat", "%prefix%%player%&d %message%"));

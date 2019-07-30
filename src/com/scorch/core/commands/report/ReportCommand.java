@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.players.ScorchPlayer;
+import com.scorch.core.modules.punish.PunishType;
+import com.scorch.core.modules.punish.Punishment;
 import com.scorch.core.modules.report.Report;
 import com.scorch.core.modules.report.ReportModule;
 import com.scorch.core.utils.MSG;
@@ -41,6 +43,16 @@ public class ReportCommand extends BukkitCommand {
 
 		Player player = (Player) sender, target;
 		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(player.getUniqueId());
+
+		List<Punishment> history = ScorchCore.getInstance().getPunishModule().getPunishments(player.getUniqueId());
+		Punishment p = history.stream().filter(h -> h.getType() == PunishType.REPORT_BAN && h.isActive()).findFirst()
+				.orElse(null);
+
+		if (p != null) {
+			MSG.tell(sender, ScorchCore.getInstance().getMessage("reportbanmessage")
+					.replace("%staff%", p.getStaffName()).replace("%reason%", p.getReason()));
+			return true;
+		}
 
 		if (args.length < 2) {
 			MSG.tell(sender, "/report [Player] [Reason]");

@@ -774,9 +774,10 @@ public class DataManager extends AbstractModule {
 			e.printStackTrace();
 		}
 
-		if (player == null) {
+		if (player == null) { // TODO
+			Logger.warn("Player data is null, saving new instance");
 			player = new ScorchPlayer(uuid, Bukkit.getOfflinePlayer(uuid).getName(), new HashMap<>());
-			saveObject("players", player);
+			saveObjectAsync("players", player);
 		}
 
 		if (player.getName() == null) {

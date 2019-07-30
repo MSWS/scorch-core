@@ -1,4 +1,4 @@
-package com.scorch.core.commands;
+package com.scorch.core.commands.staff;
 
 import java.util.Arrays;
 import java.util.UUID;
@@ -60,9 +60,13 @@ public class PunishCommand extends BukkitCommand {
 
 		OfflinePlayer target;
 
-		try {
-			target = Bukkit.getOfflinePlayer(UUID.fromString(args[0]));
-		} catch (IllegalArgumentException expected) {
+		if (args[0].length() > 16) {
+			try {
+				target = Bukkit.getOfflinePlayer(UUID.fromString(args[0]));
+			} catch (IllegalArgumentException expected) {
+				target = Bukkit.getOfflinePlayer(args[0]);
+			}
+		} else {
 			target = Bukkit.getOfflinePlayer(args[0]);
 		}
 
