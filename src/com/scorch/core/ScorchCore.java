@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import com.scorch.core.modules.communication.CommunicationModule;
+import com.scorch.core.modules.economy.EconomyModule;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -57,6 +59,8 @@ public class ScorchCore extends JavaPlugin {
 	private PunishModule pMod;
 	private CommandModule commands;
 
+	private EconomyModule economy;
+
 	private File guiYml = new File(getDataFolder(), "guis.yml");
 	private YamlConfiguration gui;
 
@@ -74,6 +78,7 @@ public class ScorchCore extends JavaPlugin {
 		this.dataManager = (DataManager) registerModule(
 				new DataManager("DataManager", (ConnectionManager) getModule("ConnectionManager")),
 				ModulePriority.HIGHEST);
+		registerModule(new CommunicationModule("CommunicationModule"), ModulePriority.HIGHEST);
 
 		this.messages = (MessagesModule) registerModule(new MessagesModule("MessagesModule"), ModulePriority.HIGH);
 		this.permissionModule = (PermissionModule) registerModule(new PermissionModule("PermissionModule"),
@@ -86,6 +91,8 @@ public class ScorchCore extends JavaPlugin {
 		registerModule(new OfflineMessagesModule("OfflineMessagesModule"), ModulePriority.MEDIUM);
 		this.pMod = (PunishModule) registerModule(new PunishModule("PunishModule"), ModulePriority.MEDIUM);
 		this.commands = (CommandModule) registerModule(new CommandModule("CommandModule"), ModulePriority.MEDIUM);
+		this.economy = (EconomyModule) registerModule(new EconomyModule("EconomyModule"), ModulePriority.MEDIUM);
+
 
 		registerModule(new ChatModule("ChatModule"), ModulePriority.LOW);
 		registerModule(new TeleportModule("TeleportModule"), ModulePriority.LOW);
@@ -210,11 +217,10 @@ public class ScorchCore extends JavaPlugin {
 
 	/**
 	 * Returns the {@link DataManager} object without having to use
-	 * {@link ScorchCore#getModule(String)} and cast it This is purely to make it
+	 * {@link ScorchCore#getModule(String)} and casting it This is purely to make it
 	 * easier to write code using the {@link DataManager}
 	 * 
 	 * @see DataManager
-	 *
 	 * @return the datamanager
 	 */
 	public DataManager getDataManager() {
@@ -222,9 +228,17 @@ public class ScorchCore extends JavaPlugin {
 	}
 
 	/**
-	 * @see ScorchCore#getDataManager
-	 * @return
+	 * Returns the {@link EconomyModule} object without having to use
+	 * {@link ScorchCore#getModule(String)} and casting it. This is purely to make it
+	 * easier to write code using the {@link EconomyModule}
+	 *
+	 * @see EconomyModule
+	 * @return the economy module
 	 */
+	public EconomyModule getEconomy() {
+		return economy;
+	}
+
 	public MessagesModule getMessages() {
 		return messages;
 	}

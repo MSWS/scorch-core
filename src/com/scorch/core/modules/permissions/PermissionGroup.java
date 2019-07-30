@@ -1,6 +1,7 @@
 package com.scorch.core.modules.permissions;
 
 import com.scorch.core.ScorchCore;
+import com.scorch.core.modules.data.SQLSelector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -139,7 +140,8 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 	 * @see PermissionGroup#setGroupName(String)
 	 */
 	public void setPrefix(String prefix) {
-		this.prefix = prefix;
+		this.prefix = prefix.replace("_", " ");
+		ScorchCore.getInstance().getDataManager().updateObjectAsync("groups", this, new SQLSelector(("groupName"), getGroupName()));
 	}
 
 	/**
@@ -227,6 +229,45 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 		if(!getInheritedGroups().contains(group)){
 			// Make sure to add it to the string list and not the getInheritedGroups list since that's a different list
 			this.inheritedGroups.add(group.getGroupName());
+			return true;
+		}
+		return false;
+	}
+
+	public boolean removeInheritedGroup (PermissionGroup group){
+		if(getInheritedGroups().contains(group)){
+			// Make sure to add it to the string list and not the getInheritedGroups list since that's a different list
+			this.inheritedGroups.remove(group.getGroupName());
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Adds the permission to the group
+	 * @param node the permission to add
+	 * @return     whether the operation was successful
+	 */
+	public boolean addPermission(String node){
+		if(node == "" || node == null) return false;
+		if(!getPermissions().contains(node)){
+			getPermissions().add(node);
+			ScorchCore.getInstance().getDataManager().updateObjectAsync("groups", this, new SQLSelector(("groupName"), getGroupName()));
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Removes the permission from the group
+	 * @param node the permission to remove
+	 * @return     whether the operation was successful
+	 */
+	public boolean removePermission (String node){
+		if(node == "" || node == null) return false;
+		if(getPermissions().contains(node)){
+			getPermissions().remove(node);
+			ScorchCore.getInstance().getDataManager().updateObjectAsync("groups", this, new SQLSelector(("groupName"), getGroupName()));
 			return true;
 		}
 		return false;

@@ -9,33 +9,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import com.scorch.core.commands.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.SimpleCommandMap;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.commands.ACommand;
-import com.scorch.core.commands.BVersionCommand;
-import com.scorch.core.commands.BuildModeCommand;
-import com.scorch.core.commands.FeedCommand;
-import com.scorch.core.commands.FilterCommand;
-import com.scorch.core.commands.FriendCommand;
-import com.scorch.core.commands.GamemodeCommand;
-import com.scorch.core.commands.HealCommand;
-import com.scorch.core.commands.HelpCommand;
-import com.scorch.core.commands.HistoryCommand;
-import com.scorch.core.commands.LagCommand;
-import com.scorch.core.commands.MACommand;
-import com.scorch.core.commands.PingCommand;
-import com.scorch.core.commands.PlaytimeCommand;
-import com.scorch.core.commands.PunishCommand;
-import com.scorch.core.commands.RACommand;
-import com.scorch.core.commands.SeenCommand;
-import com.scorch.core.commands.TPCommand;
-import com.scorch.core.commands.TestCommand;
-import com.scorch.core.commands.ToggleCommand;
-import com.scorch.core.commands.UnpunishCommand;
-import com.scorch.core.commands.VanishCommand;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.utils.Logger;
 
@@ -72,6 +51,7 @@ public class CommandModule extends AbstractModule {
 
 		Logger.log("&9Enabling commands...");
 
+		commands.put(new PermissionsCommand("permissions"), true);
 		commands.put(new ACommand("a"), true);
 		commands.put(new MACommand("ma"), true);
 		commands.put(new RACommand("ra"), true);

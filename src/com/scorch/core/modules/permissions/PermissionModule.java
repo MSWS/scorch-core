@@ -22,7 +22,8 @@ import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;
 
 /**
- * A permissions handler TODO Implement a way to add default groups/permissions
+ * A permission handler for ScorchGamez this module will handle adding permissions to players using groups and custom perms
+ * TODO: Sync permission updates across network using events
  */
 public class PermissionModule extends AbstractModule {
 
@@ -226,6 +227,37 @@ public class PermissionModule extends AbstractModule {
 	public boolean addPlayer(UUID uuid, PermissionPlayer permissionPlayer) {
 		if (!getPlayerPermissions().containsKey(uuid)) {
 			getPlayerPermissions().put(uuid, permissionPlayer);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Adds a group to the grouplist and database
+	 * @param group the group to add
+	 * @return      whether the group was added
+	 */
+	public boolean addGroup(PermissionGroup group){
+		if(group == null) return false;
+		if(!this.groupList.contains(group)){
+			groupList.add(group);
+			ScorchCore.getInstance().getDataManager().saveObjectAsync("groups", group);
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Deletes the group from the grouplist and database, this is a permanent action!
+	 * @param groupName the group to delete
+	 * @return          whether the group was deleted
+	 */
+	public boolean deleteGroup (String groupName){
+		PermissionGroup group = getGroup(groupName);
+		if(group == null) return false;
+		if(this.groupList.contains(group)){
+			groupList.remove(group);
+			ScorchCore.getInstance().getDataManager().deleteObjectAsync("groups", new SQLSelector("groupName", group.getGroupName()));
 			return true;
 		}
 		return false;
