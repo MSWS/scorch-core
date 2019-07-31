@@ -9,3 +9,4 @@ Rollback:
   OnChangeWorld: false
   OnGameModechange: true
 PastebinKey: "" # You will have to create a pastebin account and get your developer key from https://pastebin.com/api#1
+TFAExpiration: 8.64e+7 #1 Day

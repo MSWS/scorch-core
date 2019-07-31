@@ -29,7 +29,7 @@ public class ChatListener implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, ScorchCore.getInstance());
 	}
 
-	@EventHandler(priority = EventPriority.HIGH) // TODO
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true) // TODO
 	public void onChat(AsyncPlayerChatEvent event) {
 		event.setCancelled(true);
 		Player player = event.getPlayer();

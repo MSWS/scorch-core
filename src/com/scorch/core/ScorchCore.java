@@ -34,6 +34,7 @@ import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.modules.punish.BanwaveModule;
 import com.scorch.core.modules.punish.PunishModule;
 import com.scorch.core.modules.report.ReportModule;
+import com.scorch.core.modules.staff.AuthenticationModule;
 import com.scorch.core.modules.staff.BuildModeModule;
 import com.scorch.core.modules.staff.PlayerCombatModule;
 import com.scorch.core.modules.staff.TeleportModule;
@@ -101,13 +102,13 @@ public class ScorchCore extends JavaPlugin {
 		this.commands = (CommandModule) registerModule(new CommandModule("CommandModule"), ModulePriority.MEDIUM);
 		this.economy = (EconomyModule) registerModule(new EconomyModule("EconomyModule"), ModulePriority.MEDIUM);
 
-
 		registerModule(new ChatModule("ChatModule"), ModulePriority.LOW);
 		registerModule(new TeleportModule("TeleportModule"), ModulePriority.LOW);
 		registerModule(new CombatModule("CombatModule"), ModulePriority.LOW);
 		registerModule(new VanishModule("VanishModule"), ModulePriority.LOW);
 		registerModule(new FilterModule("FilterModule"), ModulePriority.LOW);
 		registerModule(new FriendModule("FriendModule"), ModulePriority.LOW);
+		registerModule(new AuthenticationModule("AuthenticationModule"), ModulePriority.LOW);
 
 		registerModule(new LagModule("LagModule"), ModulePriority.LOWEST);
 		registerModule(new PlaytimeModule("PlaytimeModule"), ModulePriority.LOWEST);
@@ -240,8 +241,8 @@ public class ScorchCore extends JavaPlugin {
 
 	/**
 	 * Returns the {@link EconomyModule} object without having to use
-	 * {@link ScorchCore#getModule(String)} and casting it. This is purely to make it
-	 * easier to write code using the {@link EconomyModule}
+	 * {@link ScorchCore#getModule(String)} and casting it. This is purely to make
+	 * it easier to write code using the {@link EconomyModule}
 	 *
 	 * @see EconomyModule
 	 * @return the economy module

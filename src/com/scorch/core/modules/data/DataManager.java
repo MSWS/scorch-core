@@ -56,16 +56,12 @@ public class DataManager extends AbstractModule {
 	public void initialize() {
 		cache = new HashMap<>();
 
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				try {
-					createTable("players", ScorchPlayer.class);
-				} catch (NoDefaultConstructorException e) {
-					e.printStackTrace();
-				}
-			}
-		}.runTaskAsynchronously(ScorchCore.getInstance());
+		try {
+			createTable("players", ScorchPlayer.class);
+		} catch (NoDefaultConstructorException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		new BukkitRunnable() {
 			@Override
@@ -599,7 +595,8 @@ public class DataManager extends AbstractModule {
 
 			sql = sql + field.getName() + " = ?";
 
-			if (i == object.getClass().getDeclaredFields().length - 1) {
+			if (i == object.getClass().getDeclaredFields().length - 1
+					|| object.getClass().getDeclaredFields()[i + 1].isAnnotationPresent(DataIgnore.class)) {
 				// end of SET setup
 				sql = sql + " WHERE ";
 			} else {
@@ -697,6 +694,7 @@ public class DataManager extends AbstractModule {
 				parameterIndex++;
 			}
 			statement.execute();
+			Logger.log(statement.toString());
 		} catch (SQLException e) {
 			Logger.error("An error occurred while trying to update an object: " + e.getMessage());
 			e.printStackTrace();
@@ -774,10 +772,9 @@ public class DataManager extends AbstractModule {
 			e.printStackTrace();
 		}
 
-		if (player == null) { // TODO
-			Logger.warn("Player data is null, saving new instance");
+		if (player == null) {
 			player = new ScorchPlayer(uuid, Bukkit.getOfflinePlayer(uuid).getName(), new HashMap<>());
-			saveObjectAsync("players", player);
+			saveObject("players", player);
 		}
 
 		if (player.getName() == null) {
@@ -793,7 +790,8 @@ public class DataManager extends AbstractModule {
 			Iterator<Entry<UUID, ScorchPlayer>> it = cache.entrySet().iterator();
 			while (it.hasNext()) {
 				Entry<UUID, ScorchPlayer> entry = it.next();
-				updateObject("players", entry.getValue(), new SQLSelector("uuid", entry.getKey().toString()));
+				Logger.log("Saving player data of %s", entry.getKey());
+				updateObject("players", entry.getValue(), new SQLSelector("uuid", entry.getKey() + ""));
 				if (Bukkit.getPlayer(entry.getKey()) == null) // Remove player data if the player is no longer
 																// on the server
 					it.remove();

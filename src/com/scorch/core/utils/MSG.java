@@ -398,7 +398,7 @@ public class MSG {
 			return raw;
 
 		Pattern p = Pattern.compile(
-				"(.+(.|,|dot|)(c.m|net|.rg|edu|info|xyz)|[0-9]+(.|,|dot| )[0-9]+(.|,|dot| )[0-9]+(.|,|dot| )[0-9]+)");
+				"(.+(,|dot| )(c.m|net|.rg|edu|info|xyz)|[0-9]+(.|,|dot| )[0-9]+(.|,|dot| )[0-9]+(.|,|dot| )[0-9]+)");
 		Matcher m = p.matcher(raw);
 
 		/**
@@ -462,7 +462,7 @@ public class MSG {
 			return "&4";
 		}
 	}
-	
+
 	public static String genUUID(int length) {
 		String[] keys = new String[100];
 		int pos = 0;

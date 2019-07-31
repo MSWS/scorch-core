@@ -82,6 +82,12 @@ public class MessagesModule extends AbstractModule {
 		defaults.add(new CMessage("reportassigned", "&7You are now assigned to report &e%id%&7."));
 		defaults.add(new CMessage("resolvereport", "&7You marked report &e%id% &7as &a%status%&7. Reason: &6%reason%"));
 		defaults.add(new CMessage("notassigned", "&cYou are not assigned to a report"));
+		defaults.add(new CMessage("mustauthenticate", "&cPlease authenticate &7using &e/2fa [Code]"));
+		defaults.add(
+				new CMessage("welcomeauthenticate", "&7Welcome back &a%player%&7. Please sign in using your 2FA app."));
+		defaults.add(
+				new CMessage("authenticatetimeleft", "&7Welcome back &a%player%&7. You are signed in for &a%time%&7."));
+		defaults.add(new CMessage("authenticated", "&aSuccessfully authenticated. Welcome!"));
 //		defaults.add(new CMessage("", ""));
 	}
 

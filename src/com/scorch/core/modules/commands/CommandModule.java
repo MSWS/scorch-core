@@ -27,6 +27,7 @@ import com.scorch.core.commands.staff.GamemodeCommand;
 import com.scorch.core.commands.staff.MACommand;
 import com.scorch.core.commands.staff.PunishCommand;
 import com.scorch.core.commands.staff.RACommand;
+import com.scorch.core.commands.staff.TFACommand;
 import com.scorch.core.commands.staff.TPCommand;
 import com.scorch.core.commands.staff.TestCommand;
 import com.scorch.core.commands.staff.ToggleCommand;
@@ -97,6 +98,7 @@ public class CommandModule extends AbstractModule {
 		commands.put(new ReportInfoCommand("reportinfo"), true);
 		commands.put(new ConfirmReportCommand("confirmreport"), true);
 		commands.put(new PermissionsCommand("permissions"), true);
+		commands.put(new TFACommand("tfa"), true);
 
 		enableCommands(commands.keySet().stream().collect(Collectors.toList()));
 		Logger.log("&aSuccessfully enabled &e" + commands.size() + "&a command" + (commands.size() == 1 ? "" : "s"));
