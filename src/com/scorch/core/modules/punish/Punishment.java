@@ -84,6 +84,9 @@ public class Punishment implements Comparable<Punishment> {
 	 * members, kicking players, etc.) Ideally should only be run once.
 	 */
 	public void execute() {
+		
+		
+		
 		OfflinePlayer target = Bukkit.getOfflinePlayer(this.target);
 		ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(target.getUniqueId());
 		IPTracker it = (IPTracker) ScorchCore.getInstance().getModule("IPTrackerModule");
