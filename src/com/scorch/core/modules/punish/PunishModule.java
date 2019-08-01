@@ -56,15 +56,9 @@ public class PunishModule extends AbstractModule {
 	public void initialize() {
 		joinListener = new PunishLoginListener();
 		clickListener = new PunishInventoryListener();
+		new PunishmentListener();
 
 		refreshPunishments();
-
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				refreshPunishments();
-			}
-		}.runTaskTimer(ScorchCore.getInstance(), 6000, 6000);
 	}
 
 	@Override
@@ -220,5 +214,10 @@ public class PunishModule extends AbstractModule {
 
 	public Punishment getPunishment(UUID uuid) {
 		return punishments.stream().filter(id -> id.getId().equals(uuid)).findFirst().orElse(null);
+	}
+
+	public void updatePunishment(Punishment p) {
+		punishments.removeIf(pn -> pn.getId().equals(p.getId()));
+		punishments.add(p);
 	}
 }

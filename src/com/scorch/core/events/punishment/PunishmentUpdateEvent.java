@@ -6,20 +6,14 @@ import org.bukkit.event.HandlerList;
 import com.scorch.core.modules.data.annotations.DataIgnore;
 import com.scorch.core.modules.punish.Punishment;
 
-public class PunishmentRemoveEvent extends PunishmentEvent implements Cancellable {
+public class PunishmentUpdateEvent extends PunishmentEvent implements Cancellable {
 	@DataIgnore
 	private static final HandlerList handlers = new HandlerList();
 
-	private Punishment p;
-
 	private boolean cancel;
 
-	public PunishmentRemoveEvent(Punishment p) {
+	public PunishmentUpdateEvent(Punishment p) {
 		super(p);
-	}
-
-	public Punishment getPunishment() {
-		return p;
 	}
 
 	@Override

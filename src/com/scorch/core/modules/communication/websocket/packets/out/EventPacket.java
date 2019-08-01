@@ -1,7 +1,5 @@
 package com.scorch.core.modules.communication.websocket.packets.out;
 
-import com.google.common.graph.Network;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.scorch.core.modules.communication.ExcludeStrategy;
 import com.scorch.core.modules.communication.NetworkEvent;
@@ -10,22 +8,23 @@ import com.scorch.core.modules.communication.websocket.packets.BasePacket;
 
 public class EventPacket extends BasePacket {
 
-    private NetworkEvent event;
+	private NetworkEvent event;
 
-    public EventPacket(NetworkEvent event) {
-        this.event = event;
-    }
+	public EventPacket(NetworkEvent event) {
+		this.event = event;
+	}
 
-    public NetworkEvent getEvent() {
-        return event;
-    }
+	public NetworkEvent getEvent() {
+		return event;
+	}
 
-    public void setEvent(NetworkEvent event) {
-        this.event = event;
-    }
+	public void setEvent(NetworkEvent event) {
+		this.event = event;
+	}
 
-    @Override
-    public String toString () {
-        return new GsonBuilder().registerTypeAdapter(NetworkEvent.class, new NetworkEventSerializer()).addSerializationExclusionStrategy(new ExcludeStrategy()).create().toJson(this);
-    }
+	@Override
+	public String toString() {
+		return new GsonBuilder().registerTypeAdapter(NetworkEvent.class, new NetworkEventSerializer())
+				.addSerializationExclusionStrategy(new ExcludeStrategy()).create().toJson(this);
+	}
 }
