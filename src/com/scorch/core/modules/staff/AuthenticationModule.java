@@ -63,7 +63,7 @@ public class AuthenticationModule extends AbstractModule implements Listener {
 								MSG.getTime(expire - (System.currentTimeMillis()
 										- sp.getData("lastAuthentication", Number.class).longValue())))
 						.replace("%player%", player.getName());
-
+				sp.setData("authenticated", true);
 				MSG.tell(player, msg);
 				continue;
 			}
@@ -72,6 +72,7 @@ public class AuthenticationModule extends AbstractModule implements Listener {
 			msg = msg.replace("%player%", player.getName());
 
 			MSG.tell(player, msg);
+			sp.setData("authenticated", false);
 		}
 	}
 
@@ -116,6 +117,7 @@ public class AuthenticationModule extends AbstractModule implements Listener {
 		msg = msg.replace("%player%", player.getName());
 
 		MSG.tell(player, msg);
+		sp.setData("authenticated", false);
 	}
 
 	@EventHandler
