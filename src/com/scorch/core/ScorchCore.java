@@ -63,6 +63,7 @@ public class ScorchCore extends JavaPlugin {
 	private MessagesModule messages;
 	private PunishModule pMod;
 	private CommandModule commands;
+	private CommunicationModule communicationModule;
 
 	private EconomyModule economy;
 
@@ -81,11 +82,11 @@ public class ScorchCore extends JavaPlugin {
 		this.modules = new HashSet<>();
 
 		// Data modules
+		this.communicationModule = (CommunicationModule)  registerModule(new CommunicationModule("CommunicationModule"), ModulePriority.HIGHEST);
 		registerModule(new ConnectionManager("ConnectionManager"), ModulePriority.HIGHEST);
 		this.dataManager = (DataManager) registerModule(
 				new DataManager("DataManager", (ConnectionManager) getModule("ConnectionManager")),
 				ModulePriority.HIGHEST);
-		registerModule(new CommunicationModule("CommunicationModule"), ModulePriority.HIGHEST);
 
 		this.messages = (MessagesModule) registerModule(new MessagesModule("MessagesModule"), ModulePriority.HIGH);
 		this.permissionModule = (PermissionModule) registerModule(new PermissionModule("PermissionModule"),
@@ -249,6 +250,18 @@ public class ScorchCore extends JavaPlugin {
 	 */
 	public EconomyModule getEconomy() {
 		return economy;
+	}
+
+	/**
+	 * Returns the {@link CommunicationModule} object without having to use
+	 * {@link ScorchCore#getModule(String)} and casting it, This is purely to make it easier to write code
+	 * using the {@link CommunicationModule}
+	 *
+	 * @see CommunicationModule
+	 * @return the communication module
+	 */
+	public CommunicationModule getCommunicationModule() {
+		return communicationModule;
 	}
 
 	public MessagesModule getMessages() {
