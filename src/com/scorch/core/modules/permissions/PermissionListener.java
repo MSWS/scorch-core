@@ -1,6 +1,7 @@
 package com.scorch.core.modules.permissions;
 
 import com.scorch.core.ScorchCore;
+import com.scorch.core.utils.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -62,5 +63,10 @@ public class PermissionListener implements Listener {
      */
     private void onPlayerDisconnect (Player player) {
         module.removePlayer(player);
+    }
+
+    @EventHandler
+    public void onPermissionUpdateEvent (PermissionUpdateEvent e){
+        Logger.info(e.getGroupToUpdate());
     }
 }
