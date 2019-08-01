@@ -1,6 +1,4 @@
-package com.scorch.core.commands;
-
-import java.util.UUID;
+package com.scorch.core.commands.staff;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
@@ -9,25 +7,23 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.players.CPlayer;
 import com.scorch.core.utils.MSG;
 
 /**
- * Extension of /MA command, used to send a staff message to the most recent
- * player you sent a MA to
+ * Messaging system meant for staff only
  * 
  * <b>Permissions</b><br>
- * scorch.command.ra - Access to command<br>
+ * scorch.command.ma - Access to command<br>
  * scorch.command.ma.watch - Access to view staff PMs not sent to/from directly
  * 
  * @author imodm
  *
  */
-public class RACommand extends BukkitCommand {
+public class MACommand extends BukkitCommand {
 
-	public RACommand(String name) {
+	public MACommand(String name) {
 		super(name);
-		this.setPermission("scorch.command.ra");
+		this.setPermission("scorch.command.ma");
 		this.setPermissionMessage(ScorchCore.getInstance().getMessage("noperm"));
 	}
 
@@ -38,34 +34,23 @@ public class RACommand extends BukkitCommand {
 			return true;
 		}
 
-		if (!(sender instanceof Player)) {
-			MSG.tell(sender, "You must be a player");
+		if (args.length < 2) {
+			MSG.tell(sender, "/ma [player] [message]");
 			return true;
 		}
 
-		if (args.length < 1) {
-			MSG.tell(sender, "/ra [message]");
+		Player target = Bukkit.getPlayer(args[0]);
+		if (target == null) {
+			MSG.tell(sender, "Unknown Player");
 			return true;
 		}
 
-		CPlayer cp = ScorchCore.getInstance().getPlayer((Player) sender);
-
-		Player target = null;
-		if (sender instanceof Player) {
-			if (!cp.hasTempData("lastMA")) {
-				MSG.tell(sender, "You have not MA'd anyone");
-				return true;
-			}
-
-			target = Bukkit.getPlayer(
-					UUID.fromString(ScorchCore.getInstance().getPlayer((Player) sender).getTempString("lastMA")));
-		} else {
-			MSG.tell(sender, "You must be a player");
-			return true;
-		}
+		if (sender instanceof Player)
+			ScorchCore.getInstance().getPlayer(((Player) sender).getUniqueId()).setTempData("lastMA",
+					target.getUniqueId().toString());
 
 		StringBuilder builder = new StringBuilder();
-		for (int i = 0; i < args.length; i++)
+		for (int i = 1; i < args.length; i++)
 			builder.append(args[i] + " ");
 
 		for (Player p : Bukkit.getOnlinePlayers()) {

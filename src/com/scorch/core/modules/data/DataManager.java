@@ -17,7 +17,6 @@ import java.util.stream.IntStream;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.google.gson.Gson;
@@ -31,7 +30,6 @@ import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.modules.data.wrappers.JSONLocation;
-import com.scorch.core.modules.players.CPlayer;
 import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
@@ -47,8 +45,6 @@ public class DataManager extends AbstractModule {
 	private static Gson gson = new GsonBuilder().create();
 
 	private ConnectionManager connectionManager;
-
-	private Map<OfflinePlayer, CPlayer> players;
 	private Map<UUID, ScorchPlayer> cache;
 
 	public DataManager(String id, ConnectionManager connectionManager) {
@@ -58,19 +54,14 @@ public class DataManager extends AbstractModule {
 
 	@Override
 	public void initialize() {
-		players = new HashMap<>();
 		cache = new HashMap<>();
 
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				try {
-					createTable("players", ScorchPlayer.class);
-				} catch (NoDefaultConstructorException e) {
-					e.printStackTrace();
-				}
-			}
-		}.runTaskAsynchronously(ScorchCore.getInstance());
+		try {
+			createTable("players", ScorchPlayer.class);
+		} catch (NoDefaultConstructorException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		new BukkitRunnable() {
 			@Override
@@ -89,31 +80,6 @@ public class DataManager extends AbstractModule {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	public CPlayer getPlayer(OfflinePlayer player) {
-		if (!players.containsKey(player))
-			players.put(player, new CPlayer(player));
-		return players.get(player);
-	}
-
-	public ArrayList<OfflinePlayer> getLoadedPlayers() {
-		return new ArrayList<OfflinePlayer>(players.keySet());
-	}
-
-	public void removePlayer(OfflinePlayer player) {
-		players.remove(player);
-	}
-
-	public void clearPlayers() {
-		for (OfflinePlayer player : players.keySet())
-			removePlayer(player);
-	}
-
-	public void loadData(OfflinePlayer player) {
-		if (players.containsKey(player))
-			throw new IllegalArgumentException("Player data already loaded");
-		players.put(player, new CPlayer(player));
 	}
 
 	/**
@@ -210,31 +176,36 @@ public class DataManager extends AbstractModule {
 	public void saveObject(String table, Object object) {
 		// Create prepared statement based on the object
 		String query = "INSERT INTO " + table + " (object_type, ";
+
 		for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
 			Field field = object.getClass().getDeclaredFields()[i];
 
 			// Makes sure that the field doesn't have to be ignored for serialisation
-			if (field.isAnnotationPresent(DataIgnore.class))
+			if (field.isAnnotationPresent(DataIgnore.class)) {
 				continue;
+			}
 
-			if (field.getAnnotation(DataIgnore.class) == null) {
-				query += field.getName();
+			query += field.getName();
 
-				if (i == object.getClass().getDeclaredFields().length - 1) {
-					query += ") VALUES (?,";
-					for (int j = 0; j < object.getClass().getDeclaredFields().length; j++) {
-						if (object.getClass().getDeclaredFields()[j].isAnnotationPresent(DataIgnore.class))
-							continue;
-						query += "?";
-						if (j == object.getClass().getDeclaredFields().length - 1) {
-							query += ");";
-						} else {
-							query += ", ";
-						}
+			// if the next field had a DataIgnore class then this code would result in an
+			// unfinished statement "(?,?,?" for example
+
+			if (i == object.getClass().getDeclaredFields().length - 1
+					|| object.getClass().getDeclaredFields()[i + 1].isAnnotationPresent(DataIgnore.class)) {
+				query += ") VALUES (?,";
+				for (int j = 0; j < object.getClass().getDeclaredFields().length; j++) {
+					if (object.getClass().getDeclaredFields()[j].isAnnotationPresent(DataIgnore.class))
+						continue;
+					query += "?";
+					if (j == object.getClass().getDeclaredFields().length - 1
+							|| object.getClass().getDeclaredFields()[j + 1].isAnnotationPresent(DataIgnore.class)) {
+						query += ");";
+					} else {
+						query += ", ";
 					}
-				} else {
-					query += ", ";
 				}
+			} else {
+				query += ", ";
 			}
 		}
 
@@ -267,7 +238,7 @@ public class DataManager extends AbstractModule {
 					} else if (field.getType() == UUID.class) {
 						statement.setString(parameterIndex, ((UUID) field.get(object)).toString());
 					} else if (field.getType().isEnum()) {
-						statement.setString(parameterIndex, field.get(object).toString());
+						statement.setString(parameterIndex, field.get(object) + "");
 					} else if (Collection.class.isAssignableFrom(field.getType())) {
 						statement.setString(parameterIndex, DataManager.getGson().toJson(field.get(object)));
 					} else if (Map.class.isAssignableFrom(field.getType())) {
@@ -477,8 +448,12 @@ public class DataManager extends AbstractModule {
 					} else if (field.getType() == UUID.class) {
 						field.set(dataObject, UUID.fromString(res.getString(columnIndex)));
 					} else if (field.getType().isEnum()) {
-						field.set(dataObject, field.getType().getMethod("valueOf", String.class).invoke(null,
-								res.getString(columnIndex)));
+						try {
+							field.set(dataObject, field.getType().getMethod("valueOf", String.class).invoke(null,
+									res.getString(columnIndex)));
+						} catch (InvocationTargetException e) {
+							field.set(dataObject, null);
+						}
 					} else if (Collection.class.isAssignableFrom(field.getType())) {
 						field.set(dataObject, getGson().fromJson(res.getString(columnIndex), Collection.class));
 					} else if (Map.class.isAssignableFrom(field.getType())) {
@@ -501,7 +476,7 @@ public class DataManager extends AbstractModule {
 			}
 			return collection;
 		} catch (SQLException | IllegalAccessException | NoSuchMethodException | InstantiationException
-				| ClassNotFoundException | InvocationTargetException e) {
+				| ClassNotFoundException e) {
 			Logger.error("An error occurred while trying to get objects from table: " + e.getMessage());
 			e.printStackTrace();
 			return null;
@@ -620,7 +595,8 @@ public class DataManager extends AbstractModule {
 
 			sql = sql + field.getName() + " = ?";
 
-			if (i == object.getClass().getDeclaredFields().length - 1) {
+			if (i == object.getClass().getDeclaredFields().length - 1
+					|| object.getClass().getDeclaredFields()[i + 1].isAnnotationPresent(DataIgnore.class)) {
 				// end of SET setup
 				sql = sql + " WHERE ";
 			} else {
@@ -718,6 +694,7 @@ public class DataManager extends AbstractModule {
 				parameterIndex++;
 			}
 			statement.execute();
+			Logger.log(statement.toString());
 		} catch (SQLException e) {
 			Logger.error("An error occurred while trying to update an object: " + e.getMessage());
 			e.printStackTrace();
@@ -813,10 +790,11 @@ public class DataManager extends AbstractModule {
 			Iterator<Entry<UUID, ScorchPlayer>> it = cache.entrySet().iterator();
 			while (it.hasNext()) {
 				Entry<UUID, ScorchPlayer> entry = it.next();
-				updateObject("players", entry.getValue(), new SQLSelector("uuid", entry.getKey().toString()));
+				Logger.log("Saving player data of %s", entry.getKey());
+				updateObject("players", entry.getValue(), new SQLSelector("uuid", entry.getKey() + ""));
 				if (Bukkit.getPlayer(entry.getKey()) == null) // Remove player data if the player is no longer
 																// on the server
-					cache.remove(entry.getKey());
+					it.remove();
 			}
 		} catch (DataUpdateException e) {
 			e.printStackTrace();

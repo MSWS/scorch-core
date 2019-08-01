@@ -11,7 +11,6 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.chat.FilterEntry;
 import com.scorch.core.modules.chat.FilterEntry.FilterType;
 import com.scorch.core.modules.chat.FilterModule;
-import com.scorch.core.modules.players.CPlayer;
 import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.MSG;
 
@@ -48,6 +47,7 @@ public class FilterCommand extends BukkitCommand {
 		String word;
 
 		Player player;
+		ScorchPlayer sp;
 
 		switch (args[0].toLowerCase()) {
 		case "preference":
@@ -60,7 +60,7 @@ public class FilterCommand extends BukkitCommand {
 				return true;
 			}
 			player = (Player) sender;
-			ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(player.getUniqueId());
+			sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(player.getUniqueId());
 			if (args.length == 1) {
 				MSG.tell(sender, "/filter preference NONE/REGULAR");
 				return true;
@@ -174,11 +174,11 @@ public class FilterCommand extends BukkitCommand {
 			}
 
 			player = (Player) sender;
-			CPlayer cp = ScorchCore.getInstance().getPlayer(player);
+			sp = ScorchCore.getInstance().getPlayer(player.getUniqueId());
 
 			player.openInventory(fm.getFilterGUI(0));
-			cp.setTempData("openInventory", "FilterGUI");
-			cp.setTempData("page", 0);
+			sp.setTempData("openInventory", "FilterGUI");
+			sp.setTempData("page", 0);
 			break;
 		}
 

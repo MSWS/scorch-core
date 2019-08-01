@@ -18,6 +18,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.scorch.core.ScorchCore;
+import com.scorch.core.events.punishment.PunishmentCreateEvent;
+import com.scorch.core.events.punishment.PunishmentEvent;
+import com.scorch.core.events.punishment.PunishmentUpdateEvent;
+import com.scorch.core.modules.communication.CommunicationModule;
+import com.scorch.core.modules.communication.exceptions.WebSocketException;
 import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.annotations.DataIgnore;
 import com.scorch.core.modules.data.exceptions.DataUpdateException;
@@ -84,6 +89,17 @@ public class Punishment implements Comparable<Punishment> {
 	 * members, kicking players, etc.) Ideally should only be run once.
 	 */
 	public void execute() {
+
+		CommunicationModule cm = ScorchCore.getInstance().getCommunicationModule();
+		PunishmentCreateEvent ape = new PunishmentCreateEvent(this);
+		try {
+			cm.dispatchEvent(ape);
+		} catch (WebSocketException e) {
+			e.printStackTrace();
+		}
+		if (ape.isCancelled())
+			return;
+
 		OfflinePlayer target = Bukkit.getOfflinePlayer(this.target);
 		ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(target.getUniqueId());
 		IPTracker it = (IPTracker) ScorchCore.getInstance().getModule("IPTrackerModule");
@@ -160,6 +176,14 @@ public class Punishment implements Comparable<Punishment> {
 		} catch (DataUpdateException e) {
 			e.printStackTrace();
 		}
+
+		PunishmentEvent pe = new PunishmentUpdateEvent(this);
+		try {
+			ScorchCore.getInstance().getCommunicationModule().dispatchEvent(pe);
+		} catch (WebSocketException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public UUID getId() {
@@ -229,7 +253,7 @@ public class Punishment implements Comparable<Punishment> {
 			lore.add(MSG.color("&6IP: &e" + ip));
 		lore.add("");
 		lore.add(MSG.color("&2Date: &a" + sdf.format(date)));
-		if (punishType != PunishType.WARNING && punishType != PunishType.KICK) {
+		if (punishType != PunishType.WARNING) {
 			lore.add(MSG.color("&2Duration: &a" + (duration == -1 ? "&cPermanent" : MSG.getTime(duration))));
 			if (duration != -1 && isActive())
 				lore.add(MSG.color("&2Time Left: &a" + MSG.getTime((date + duration - System.currentTimeMillis()))));
@@ -297,8 +321,6 @@ public class Punishment implements Comparable<Punishment> {
 		switch (punishType) {
 		case IP_BAN:
 			return "ip banned";
-		case KICK:
-			return "kicked";
 		case OTHER:
 			return "punished";
 		case PERM_BAN:
@@ -313,6 +335,8 @@ public class Punishment implements Comparable<Punishment> {
 			return "warned";
 		case BLACKLIST:
 			return "blacklisted";
+		case REPORT_BAN:
+			return "report banned";
 		default:
 			Logger.warn("Unknown punish type: " + punishType);
 			return "punished";

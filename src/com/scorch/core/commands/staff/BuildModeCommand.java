@@ -1,4 +1,4 @@
-package com.scorch.core.commands;
+package com.scorch.core.commands.staff;
 
 import java.util.ArrayList;
 
@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
@@ -61,7 +62,7 @@ public class BuildModeCommand extends BukkitCommand {
 				MSG.tell(sender, "Specify Player");
 				return true;
 			}
-		} else if (args.length == 2 && sender.hasPermission("scorch.command.buildmode.others")) {
+		} else if (args.length >= 2 && sender.hasPermission("scorch.command.buildmode.others")) {
 			target = Bukkit.getPlayer(args[1]);
 		} else {
 			if (sender instanceof Player) {
@@ -95,7 +96,52 @@ public class BuildModeCommand extends BukkitCommand {
 				}
 
 				if (target == null) {
-					MSG.tell(sender, "Unknown Player");
+					// bm rollback <Player>
+					// bm rollback [Player] [number]
+					// bm rollback [number]
+
+					if (!NumberUtils.isNumber(args[1])) {
+						MSG.tell(sender, "Unknown Player");
+						return true;
+					}
+
+					if (!(sender instanceof Player)) {
+						MSG.tell(sender, "Specify Player");
+						return true;
+					}
+
+					target = (Player) sender;
+
+					int num = Integer.parseInt(args[1]);
+					if (!bm.rollback(target.getUniqueId(), num)) {
+						msg = ScorchCore.getInstance().getMessage("buildmoderollbackfail")
+								.replace("%player%", target.getName()).replace("%block%", num + "")
+								.replace("%s%", num == 1 ? "" : "s");
+						MSG.tell(sender, msg);
+						return true;
+					}
+					msg = ScorchCore.getInstance().getMessage("buildmoderollbacknumber")
+							.replace("%player%", target.getName())
+							.replace("%s%", target.getName().toLowerCase().endsWith("s") ? "" : "s")
+							.replace("%block%", num + "").replace("%bs%", num == 1 ? "" : "s");
+					MSG.tell(sender, msg);
+					return true;
+				}
+
+				if (args.length > 2 && args.length == 3 && NumberUtils.isNumber(args[2])) {
+					int num = Integer.parseInt(args[2]);
+					if (!bm.rollback(target.getUniqueId(), num)) {
+						msg = ScorchCore.getInstance().getMessage("buildmoderollbackfail")
+								.replace("%player%", target.getName()).replace("%block%", num + "")
+								.replace("%s%", num == 1 ? "" : "s");
+						MSG.tell(sender, msg);
+						return true;
+					}
+					msg = ScorchCore.getInstance().getMessage("buildmoderollbacknumber")
+							.replace("%player%", target.getName())
+							.replace("%s%", target.getName().toLowerCase().endsWith("s") ? "" : "s")
+							.replace("%block%", num + "").replace("%bs%", num == 1 ? "" : "s");
+					MSG.tell(sender, msg);
 					return true;
 				}
 

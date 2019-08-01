@@ -1,10 +1,11 @@
-package com.scorch.core.commands;
+package com.scorch.core.commands.staff;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -16,7 +17,8 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.ConnectionManager;
 import com.scorch.core.modules.messages.OfflineMessage;
 import com.scorch.core.modules.messages.OfflineMessagesModule;
-import com.scorch.core.modules.permissions.PermissionPlayer;
+import com.scorch.core.modules.staff.TrustModule;
+import com.scorch.core.modules.staff.TrustModule.PublicTrust;
 import com.scorch.core.utils.MSG;
 
 /**
@@ -51,13 +53,13 @@ public class TestCommand extends BukkitCommand {
 
 		Command cmd;
 		switch (args[0].toLowerCase()) {
-		case "saveplayerdata":
-			ScorchCore.getInstance().getDataManager().savePlayerData();
-			MSG.tell(sender, "Saving player data");
-			break;
 		case "reloadpunishments":
 			ScorchCore.getInstance().getPunishModule().refreshPunishments();
 			MSG.tell(sender, "Reloaded punishments");
+			break;
+		case "savedata":
+			ScorchCore.getInstance().getDataManager().savePlayerData();
+			MSG.tell(sender, "Saved player data");
 			break;
 		case "sql":
 			if (!sender.hasPermission("core.sql"))
@@ -113,11 +115,6 @@ public class TestCommand extends BukkitCommand {
 			MSG.tell(sender, ScorchCore.getInstance().getMessages().getMessage(args[1]));
 			break;
 		case "perm":
-			PermissionPlayer pp = ScorchCore.getInstance().getPermissionModule().getPermissionPlayer((Player) sender);
-			MSG.tell(sender, "Current Groups");
-			for (String name : pp.getGroupNames()) {
-				MSG.tell(sender, name);
-			}
 			MSG.tell(sender, "&7Have perm &e" + args[1] + "&7: " + MSG.TorF(sender.hasPermission(args[1])));
 			break;
 		case "offline":
@@ -168,6 +165,28 @@ public class TestCommand extends BukkitCommand {
 			ScorchCore.getInstance().getCommands().disableCommand(cmd);
 			MSG.tell(sender, cmd.getName() + " disabled");
 			break;
+		case "trust":
+			UUID target;
+			if (args.length == 1) {
+				if (sender instanceof Player) {
+					target = ((Player) sender).getUniqueId();
+				} else {
+					MSG.tell(sender, "Specify Player.");
+					return true;
+				}
+			} else {
+				target = Bukkit.getOfflinePlayer(args[1]).getUniqueId();
+			}
+			TrustModule tm = ScorchCore.getInstance().getModule("TrustModule", TrustModule.class);
+			double trust = tm.getTrust(target);
+
+			String name = Bukkit.getOfflinePlayer(target).getName();
+			if (name == null)
+				name = target.toString();
+
+			MSG.tell(sender, name + "'" + (name.toLowerCase().endsWith("s") ? "" : "s") + ": "
+					+ PublicTrust.get(trust).getColored() + " &7(&8" + trust + "&7)");
+			break;
 		default:
 			MSG.tell(sender, "Unknown function");
 			break;
@@ -180,7 +199,7 @@ public class TestCommand extends BukkitCommand {
 		List<String> result = new ArrayList<String>();
 		if (args.length <= 1) {
 			for (String res : new String[] { "sql", "message", "perm", "offline", "enablecmd", "disablecmd",
-					"reloadmessages", "reloadpunishments", "saveplayerdata" }) {
+					"reloadmessages", "reloadpunishments", "trust", "savedata" }) {
 				if (res.toLowerCase().startsWith(args[0].toLowerCase()))
 					result.add(res);
 			}

@@ -2,6 +2,7 @@ package com.scorch.core.modules.players;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -9,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
@@ -26,6 +28,20 @@ public class PlaytimeModule extends AbstractModule implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, ScorchCore.getInstance());
 
 		loginTimes = new HashMap<UUID, Long>();
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				for (Entry<UUID, Long> entry : loginTimes.entrySet()) {
+					ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(entry.getKey());
+
+					sp.setData("playtime", sp.getData("playtime", Number.class, 0).longValue()
+							+ (System.currentTimeMillis() - entry.getValue()));
+
+					loginTimes.put(entry.getKey(), System.currentTimeMillis());
+				}
+			}
+		}.runTaskTimerAsynchronously(ScorchCore.getInstance(), 6000, 6000); // 5 Minutes
 	}
 
 	@Override

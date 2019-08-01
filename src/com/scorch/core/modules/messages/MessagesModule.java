@@ -39,6 +39,8 @@ public class MessagesModule extends AbstractModule {
 				"&cYou are muted for &e%timeleft% &7by &a%staff%&c for &e%reason%.&c &7(Time Left: &8%timeleft%&7)"));
 		defaults.add(
 				new CMessage("permmutemessage", "&cYou are &4Permanentely &cmuted by &a%staff% &cfor &e%reason%&7."));
+		defaults.add(new CMessage("reportbanmessage",
+				"&7&e%staff% &7has restricted your ability to create reports. Reason: &e%reason%"));
 		defaults.add(new CMessage("offlinemessageheader", "&7You have &e%amo% &7unread message%s%."));
 		defaults.add(new CMessage("offlinemessageformat", "&1%sender%&9: &b%message% &7[&8%time%&7]"));
 		defaults.add(new CMessage("aformat", "%prefix%%player%&d %message%"));
@@ -67,10 +69,25 @@ public class MessagesModule extends AbstractModule {
 		defaults.add(new CMessage("buildmodeinspectblock-player", "&7This block was placed by &e%player%&7."));
 		defaults.add(new CMessage("buildmoderollbackall", "&7Rolled back everyone's builds."));
 		defaults.add(new CMessage("buildmoderollback", "&7Rolled back &e%player%&7'%s% builds."));
+		defaults.add(new CMessage("buildmoderollbacknumber",
+				"&7Rolled back &a%block% &7block%bs% &7of &e%player%&7'%s% blocks."));
+		defaults.add(new CMessage("buildmoderollbackfail",
+				"&e%player% &7does not have &c%block% &7block%s% in build mode."));
 		defaults.add(new CMessage("buildmodetoggle", "&e%player%&7'%s% &6%mode% &7mode has been %status%&7."));
 		defaults.add(new CMessage("healmessage", "&aSuccessfully &2healed &e%target%&a."));
 		defaults.add(new CMessage("feedmessage", "&aSuccessfully &2fed &e%target%&a."));
-
+		defaults.add(new CMessage("reportcreated", "&9Report &b#%id% &asuccessfully &9created."));
+		defaults.add(new CMessage("nomessages", "&cYou do not have any recent messages."));
+		defaults.add(new CMessage("noreports", "&cAll reports in this category have been handled. &aYay!"));
+		defaults.add(new CMessage("reportassigned", "&7You are now assigned to report &e%id%&7."));
+		defaults.add(new CMessage("resolvereport", "&7You marked report &e%id% &7as &a%status%&7. Reason: &6%reason%"));
+		defaults.add(new CMessage("notassigned", "&cYou are not assigned to a report"));
+		defaults.add(new CMessage("mustauthenticate", "&cPlease authenticate &7using &e/2fa [Code]"));
+		defaults.add(
+				new CMessage("welcomeauthenticate", "&7Welcome back &a%player%&7. Please sign in using your 2FA app."));
+		defaults.add(
+				new CMessage("authenticatetimeleft", "&7Welcome back &a%player%&7. You are signed in for &a%time%&7."));
+		defaults.add(new CMessage("authenticated", "&aSuccessfully authenticated. Welcome!"));
 //		defaults.add(new CMessage("", ""));
 	}
 

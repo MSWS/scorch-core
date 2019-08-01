@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import com.scorch.core.modules.communication.CommunicationModule;
+import com.scorch.core.modules.economy.EconomyModule;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -25,16 +27,21 @@ import com.scorch.core.modules.messages.MessagesModule;
 import com.scorch.core.modules.messages.OfflineMessagesModule;
 import com.scorch.core.modules.permissions.PermissionModule;
 import com.scorch.core.modules.permissions.PermissionPlayer;
-import com.scorch.core.modules.players.CPlayer;
 import com.scorch.core.modules.players.FriendModule;
 import com.scorch.core.modules.players.IPTracker;
 import com.scorch.core.modules.players.PlaytimeModule;
+import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.modules.punish.BanwaveModule;
 import com.scorch.core.modules.punish.PunishModule;
+import com.scorch.core.modules.report.ReportModule;
+import com.scorch.core.modules.staff.AuthenticationModule;
 import com.scorch.core.modules.staff.BuildModeModule;
+import com.scorch.core.modules.staff.PlayerCombatModule;
 import com.scorch.core.modules.staff.TeleportModule;
+import com.scorch.core.modules.staff.TrustModule;
 import com.scorch.core.modules.staff.VanishModule;
 import com.scorch.core.modules.staff.WorldProtectionModule;
+import com.scorch.core.pastebin.Paste;
 import com.scorch.core.utils.Logger;
 
 /**
@@ -56,6 +63,9 @@ public class ScorchCore extends JavaPlugin {
 	private MessagesModule messages;
 	private PunishModule pMod;
 	private CommandModule commands;
+	private CommunicationModule communicationModule;
+
+	private EconomyModule economy;
 
 	private File guiYml = new File(getDataFolder(), "guis.yml");
 	private YamlConfiguration gui;
@@ -66,10 +76,13 @@ public class ScorchCore extends JavaPlugin {
 
 		loadFiles();
 
+		Paste.setDeveloperKey(getConfig().getString("PastebinKey"));
+
 		this.registeredModules = new HashMap<>();
 		this.modules = new HashSet<>();
 
 		// Data modules
+		this.communicationModule = (CommunicationModule)  registerModule(new CommunicationModule("CommunicationModule"), ModulePriority.HIGHEST);
 		registerModule(new ConnectionManager("ConnectionManager"), ModulePriority.HIGHEST);
 		this.dataManager = (DataManager) registerModule(
 				new DataManager("DataManager", (ConnectionManager) getModule("ConnectionManager")),
@@ -80,12 +93,15 @@ public class ScorchCore extends JavaPlugin {
 				ModulePriority.HIGH);
 		registerModule(new BuildModeModule("BuildModeModule"), ModulePriority.HIGH);
 		registerModule(new WorldProtectionModule("WorldProtectionModule"), ModulePriority.HIGH);
+		registerModule(new PlayerCombatModule("PlayerCombatModule"), ModulePriority.HIGH);
 
 		registerModule(new IPTracker("IPTrackerModule"), ModulePriority.MEDIUM);
 		registerModule(new BanwaveModule("BanwaveModule"), ModulePriority.MEDIUM);
 		registerModule(new OfflineMessagesModule("OfflineMessagesModule"), ModulePriority.MEDIUM);
+		registerModule(new ReportModule("ReportModule"), ModulePriority.MEDIUM);
 		this.pMod = (PunishModule) registerModule(new PunishModule("PunishModule"), ModulePriority.MEDIUM);
 		this.commands = (CommandModule) registerModule(new CommandModule("CommandModule"), ModulePriority.MEDIUM);
+		this.economy = (EconomyModule) registerModule(new EconomyModule("EconomyModule"), ModulePriority.MEDIUM);
 
 		registerModule(new ChatModule("ChatModule"), ModulePriority.LOW);
 		registerModule(new TeleportModule("TeleportModule"), ModulePriority.LOW);
@@ -93,9 +109,11 @@ public class ScorchCore extends JavaPlugin {
 		registerModule(new VanishModule("VanishModule"), ModulePriority.LOW);
 		registerModule(new FilterModule("FilterModule"), ModulePriority.LOW);
 		registerModule(new FriendModule("FriendModule"), ModulePriority.LOW);
+		registerModule(new AuthenticationModule("AuthenticationModule"), ModulePriority.LOW);
 
 		registerModule(new LagModule("LagModule"), ModulePriority.LOWEST);
 		registerModule(new PlaytimeModule("PlaytimeModule"), ModulePriority.LOWEST);
+		registerModule(new TrustModule("TrustModule"), ModulePriority.LOWEST);
 
 		try {
 			Arrays.stream(ModulePriority.values()).forEach(this::loadModules);
@@ -201,6 +219,8 @@ public class ScorchCore extends JavaPlugin {
 				return module;
 			}
 		}
+
+		Logger.warn("Unknown Module: %s", id);
 		return null;
 	}
 
@@ -210,11 +230,10 @@ public class ScorchCore extends JavaPlugin {
 
 	/**
 	 * Returns the {@link DataManager} object without having to use
-	 * {@link ScorchCore#getModule(String)} and cast it This is purely to make it
+	 * {@link ScorchCore#getModule(String)} and casting it This is purely to make it
 	 * easier to write code using the {@link DataManager}
 	 * 
 	 * @see DataManager
-	 *
 	 * @return the datamanager
 	 */
 	public DataManager getDataManager() {
@@ -222,9 +241,29 @@ public class ScorchCore extends JavaPlugin {
 	}
 
 	/**
-	 * @see ScorchCore#getDataManager
-	 * @return
+	 * Returns the {@link EconomyModule} object without having to use
+	 * {@link ScorchCore#getModule(String)} and casting it. This is purely to make
+	 * it easier to write code using the {@link EconomyModule}
+	 *
+	 * @see EconomyModule
+	 * @return the economy module
 	 */
+	public EconomyModule getEconomy() {
+		return economy;
+	}
+
+	/**
+	 * Returns the {@link CommunicationModule} object without having to use
+	 * {@link ScorchCore#getModule(String)} and casting it, This is purely to make it easier to write code
+	 * using the {@link CommunicationModule}
+	 *
+	 * @see CommunicationModule
+	 * @return the communication module
+	 */
+	public CommunicationModule getCommunicationModule() {
+		return communicationModule;
+	}
+
 	public MessagesModule getMessages() {
 		return messages;
 	}
@@ -287,14 +326,8 @@ public class ScorchCore extends JavaPlugin {
 		return getPrefix(player.getUniqueId());
 	}
 
-	/**
-	 * Returns a CPlayer from an OfflinePlayer
-	 * 
-	 * @param player
-	 * @return
-	 */
-	public CPlayer getPlayer(OfflinePlayer player) {
-		return dataManager.getPlayer(player);
+	public ScorchPlayer getPlayer(UUID uuid) {
+		return dataManager.getScorchPlayer(uuid);
 	}
 
 	/**

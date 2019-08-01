@@ -1,16 +1,12 @@
 package com.scorch.core.modules.permissions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-
+import com.scorch.core.ScorchCore;
+import com.scorch.core.modules.data.SQLSelector;
+import com.scorch.core.modules.data.annotations.DataIgnore;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 
-import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.data.annotations.DataIgnore;
+import java.util.*;
 
 /**
  * PermissionPlayer is a data class that contains all the data needed for the
@@ -40,7 +36,7 @@ public class PermissionPlayer {
 	 * PermissionPlayer is a data class that contains all the data needed for the
 	 * {@link PermissionModule} to load extra permissions a player might have
 	 * besides their groups permissions
-	 * 
+	 *
 	 * @param uniqueId    the uuid of the player
 	 * @param groups      the groups of the player
 	 * @param permissions the permissions to add
@@ -58,7 +54,7 @@ public class PermissionPlayer {
 	 * PermissionPlayer is a data class that contains all the data needed for the
 	 * {@link PermissionModule} to load extra permissions a player might have
 	 * besides their groups permissions
-	 * 
+	 *
 	 * @param player      the player
 	 * @param groups      the groups of the player
 	 * @param permissions the permissions to add
@@ -74,7 +70,7 @@ public class PermissionPlayer {
 	 * PermissionPlayer is a data class that contains all the data needed for the
 	 * {@link PermissionModule} to load extra permissions a player might have
 	 * besides their groups permissions
-	 * 
+	 *
 	 * @param uniqueId the uuid of the player
 	 * @param groups   the groups of the player
 	 *
@@ -91,7 +87,7 @@ public class PermissionPlayer {
 	 * PermissionPlayer is a data class that contains all the data needed for the
 	 * {@link PermissionModule} to load extra permissions a player might have
 	 * besides their groups permissions
-	 * 
+	 *
 	 * @param player the player
 	 * @param groups the groups of the player
 	 *
@@ -158,12 +154,81 @@ public class PermissionPlayer {
 	 * Adds the permission node to the player's permissions
 	 * 
 	 * @param node the node to add
+	 * @return whether the operation was successful
 	 */
-	public void addPermission(String node) {
+	public boolean addPermission(String node) {
 		if (!getPermissions().contains(node)) {
 			getPermissions().add(node);
 			updatePermissions();
+			return true;
 		}
+		return false;
+	}
+
+	/**
+	 * Removes the permission node from the player's permissions
+	 * 
+	 * @param node the node to remove
+	 * @return whether the operation was successful
+	 */
+	public boolean removePermission(String node) {
+		if (getPermissions().contains("node")) {
+			getPermissions().remove(node);
+			updatePermissions();
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Adds the group and all of its permissions + inherited groups to the player
+	 * 
+	 * @param group the group to add
+	 * @return whether the operation was successful
+	 */
+	public boolean addGroup(PermissionGroup group) {
+		if (group == null)
+			return false;
+		if (!getGroupNames().contains(group.getGroupName())) {
+			getGroups().add(group);
+			updatePermissions();
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Removes the group and all of its permissions + inherited groups from the
+	 * player
+	 * 
+	 * @param group the group to remove
+	 * @return whether the operation was successful
+	 */
+	public boolean removeGroup(PermissionGroup group) {
+		if (group == null)
+			return false;
+		if (getGroupNames().contains(group.getGroupName())) {
+			getGroups().remove(group);
+			updatePermissions();
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Removes the player from all groups and only adds them back to the group
+	 * given.
+	 * 
+	 * @param group the group to set
+	 * @return whether the operation was successful
+	 */
+	public boolean setGroup(PermissionGroup group) {
+		if (group == null)
+			return false;
+		getGroups().clear();
+		getGroups().add(group);
+		updatePermissions();
+		return true;
 	}
 
 	/**
@@ -171,6 +236,8 @@ public class PermissionPlayer {
 	 * {@link PermissionAttachment} and adds it again using the updated permissions
 	 */
 	public void updatePermissions() {
+		ScorchCore.getInstance().getDataManager().updateObjectAsync("permissions", this,
+				new SQLSelector("uniqueId", getUniqueId()));
 		Player player = (Player) getAttachment().getPermissible();
 		player.removeAttachment(getAttachment());
 		this.createAttachment(player);
@@ -178,7 +245,7 @@ public class PermissionPlayer {
 
 	/**
 	 * Gets the player's UUID.
-	 * 
+	 *
 	 * @return the uuid
 	 */
 	public UUID getUniqueId() {
@@ -198,9 +265,10 @@ public class PermissionPlayer {
 	public PermissionGroup getPrimaryGroup() {
 		if (getGroups().size() > 0)
 			return null;
-		List<PermissionGroup> groups = getGroups();
-		Collections.sort(groups);
-		return groups.get(0);
+		PermissionGroup[] permissionGroups = new PermissionGroup[getGroups().size()];
+		getGroups().toArray(permissionGroups);
+		Arrays.sort(permissionGroups);
+		return permissionGroups[0];
 	}
 
 	/**
@@ -233,8 +301,9 @@ public class PermissionPlayer {
 	 * @param group the group to check
 	 * @return whether the player is in the group
 	 */
+	@SuppressWarnings("unlikely-arg-type")
 	public boolean hasGroup(String group) {
-		return groups.contains(group);
+		return getGroups().contains(group);
 	}
 
 	/**
