@@ -195,10 +195,12 @@ public class PermissionModule extends AbstractModule {
 	 * @see PermissionPlayer
 	 */
 	public PermissionPlayer getPermissionPlayer(Player player) {
-		if (getPlayerPermissions().containsKey(player.getUniqueId())) {
-			return getPlayerPermissions().get(player.getUniqueId());
+		if (!getPlayerPermissions().containsKey(player.getUniqueId())) {
+			PermissionPlayer permissionPlayer = new PermissionPlayer(player.getUniqueId(), new ArrayList<>());
+			addPlayer(player.getUniqueId(), permissionPlayer);
+			permissionPlayer.updatePermissions();
 		}
-		return null;
+		return getPlayerPermissions().get(player.getUniqueId());
 	}
 
 	/**
@@ -227,6 +229,7 @@ public class PermissionModule extends AbstractModule {
 	public boolean addPlayer(UUID uuid, PermissionPlayer permissionPlayer) {
 		if (!getPlayerPermissions().containsKey(uuid)) {
 			getPlayerPermissions().put(uuid, permissionPlayer);
+			permissionPlayer.addGroup(getDefaultGroup());
 			return true;
 		}
 		return false;
@@ -284,6 +287,19 @@ public class PermissionModule extends AbstractModule {
 	public PermissionGroup getGroup(String groupName) {
 		for (PermissionGroup group : groupList) {
 			if (group.getGroupName().equals(groupName)) {
+				return group;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Get the default permission group that all players should be a part of
+	 * @return the default group
+	 */
+	public PermissionGroup getDefaultGroup () {
+		for(PermissionGroup group : groupList){
+			if(group.isDefault()) {
 				return group;
 			}
 		}
