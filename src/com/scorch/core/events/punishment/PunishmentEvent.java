@@ -11,7 +11,7 @@ public abstract class PunishmentEvent extends NetworkEvent {
 		this.punishment = p;
 	}
 
-	public Punishment getPunishment() {
+	public final Punishment getPunishment() {
 		return punishment;
 	}
 }
