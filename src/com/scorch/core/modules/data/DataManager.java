@@ -684,9 +684,6 @@ public class DataManager extends AbstractModule {
 					} else {
 						statement.setString(parameterIndex, DataManager.getGson().toJson(selectorValue));
 					}
-
-//					parameterIndex++;
-
 				} catch (IllegalArgumentException e) {
 					Logger.error("An error occurred while trying to serialize a class for a prepared statement");
 				}
@@ -694,7 +691,6 @@ public class DataManager extends AbstractModule {
 				parameterIndex++;
 			}
 			statement.execute();
-			Logger.log(statement.toString());
 		} catch (SQLException e) {
 			Logger.error("An error occurred while trying to update an object: " + e.getMessage());
 			e.printStackTrace();
@@ -786,19 +782,24 @@ public class DataManager extends AbstractModule {
 	}
 
 	public void savePlayerData() {
-		try {
-			Iterator<Entry<UUID, ScorchPlayer>> it = cache.entrySet().iterator();
-			while (it.hasNext()) {
-				Entry<UUID, ScorchPlayer> entry = it.next();
-				Logger.log("Saving player data of %s", entry.getKey());
-				updateObject("players", entry.getValue(), new SQLSelector("uuid", entry.getKey() + ""));
-				if (Bukkit.getPlayer(entry.getKey()) == null) // Remove player data if the player is no longer
-																// on the server
-					it.remove();
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				try {
+					Iterator<Entry<UUID, ScorchPlayer>> it = cache.entrySet().iterator();
+					while (it.hasNext()) {
+						Entry<UUID, ScorchPlayer> entry = it.next();
+						updateObject("players", entry.getValue(), new SQLSelector("uuid", entry.getKey() + ""));
+						if (Bukkit.getPlayer(entry.getKey()) == null) // Remove player data if the player is no longer
+																		// on the server
+							it.remove();
+					}
+				} catch (DataUpdateException e) {
+					e.printStackTrace();
+				}
 			}
-		} catch (DataUpdateException e) {
-			e.printStackTrace();
-		}
+		}.runTaskAsynchronously(ScorchCore.getInstance());
+
 	}
 
 }

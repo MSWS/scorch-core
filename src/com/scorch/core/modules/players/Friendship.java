@@ -3,6 +3,10 @@ package com.scorch.core.modules.players;
 import java.io.Serializable;
 import java.util.UUID;
 
+import com.scorch.core.ScorchCore;
+import com.scorch.core.events.friends.FriendRequestEvent;
+import com.scorch.core.modules.communication.exceptions.WebSocketException;
+
 public class Friendship implements Serializable {
 
 	private UUID player, target;
@@ -14,6 +18,13 @@ public class Friendship implements Serializable {
 		this.target = target;
 
 		status = FriendStatus.REQUESTED;
+
+		FriendRequestEvent fre = new FriendRequestEvent(this);
+		try {
+			ScorchCore.getInstance().getCommunicationModule().dispatchEvent(fre);
+		} catch (WebSocketException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public Friendship() {
