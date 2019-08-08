@@ -191,7 +191,7 @@ public class AuthenticationModule extends AbstractModule implements Listener {
 			mv.getRenderers().clear();
 			mv.addRenderer(new QRMap(image));
 			meta.setMapView(mv);
-			meta.setDisplayName(MSG.color("&72FA Key " + "&e" + key));
+			meta.setDisplayName(MSG.color("&72FA Key"));
 			i.setItemMeta(meta);
 			player.getInventory().setItemInMainHand(i);
 		} catch (Exception e) {
