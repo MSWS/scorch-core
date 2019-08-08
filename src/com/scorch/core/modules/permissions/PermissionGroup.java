@@ -1,12 +1,11 @@
 package com.scorch.core.modules.permissions;
 
-import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.data.SQLSelector;
-import com.scorch.core.modules.data.annotations.DataPrimaryKey;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import com.scorch.core.ScorchCore;
+import com.scorch.core.modules.data.annotations.DataPrimaryKey;
 
 public class PermissionGroup implements Comparable<PermissionGroup> {
 

@@ -7,15 +7,14 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
-import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
+import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;
 

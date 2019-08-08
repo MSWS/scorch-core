@@ -3,10 +3,10 @@ package com.scorch.core.modules.messages;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.scorch.core.modules.data.annotations.DataPrimaryKey;
 import org.bukkit.command.CommandSender;
 
 import com.scorch.core.modules.data.annotations.DataNotNull;
+import com.scorch.core.modules.data.annotations.DataPrimaryKey;
 import com.scorch.core.utils.MSG;
 
 /**

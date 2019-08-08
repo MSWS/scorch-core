@@ -1,7 +1,5 @@
 package com.scorch.core.modules.communication.websocket.packets.out;
 
-import com.google.common.graph.Network;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.scorch.core.modules.communication.ExcludeStrategy;
 import com.scorch.core.modules.communication.NetworkEvent;

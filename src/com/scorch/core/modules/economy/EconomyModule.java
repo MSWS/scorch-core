@@ -1,17 +1,17 @@
 package com.scorch.core.modules.economy;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.UUID;
+
+import org.bukkit.entity.Player;
+
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
-import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;
-import org.bukkit.entity.Player;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.UUID;
 
 /**
  * An economy implementation for ScorchGamez this class will handle all the in-game currency related transactions

@@ -1,6 +1,12 @@
 package com.scorch.core.modules.communication.websocket;
 
-import com.google.common.graph.Network;
+import java.net.URI;
+
+import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.scorch.core.ScorchCore;
@@ -10,12 +16,6 @@ import com.scorch.core.modules.communication.websocket.packets.PacketUtils;
 import com.scorch.core.modules.communication.websocket.packets.out.ConnectionPacket;
 import com.scorch.core.modules.permissions.PermissionUpdateEvent;
 import com.scorch.core.utils.Logger;
-import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
-
-import java.net.URI;
 
 /**
  * A Websocket client that connects to the bungee server and handles incoming {@link NetworkEvent}s

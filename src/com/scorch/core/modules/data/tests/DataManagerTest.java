@@ -2,13 +2,10 @@ package com.scorch.core.modules.data.tests;
 
 import com.scorch.core.modules.data.ConnectionManager;
 import com.scorch.core.modules.data.DataManager;
-import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;
-
-import java.sql.Connection;
 
 /**
  * Old test used to test datamanager
@@ -43,7 +40,7 @@ public class DataManagerTest {
     }
 
 
-    private boolean createTableTest(String name, Class storageType){
+    private boolean createTableTest(String name, Class<DataTestObject> storageType){
         try {
             this.dataManager.createTable(name, storageType);
             return true;

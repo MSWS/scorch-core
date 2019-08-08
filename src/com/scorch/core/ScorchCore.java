@@ -8,11 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import com.scorch.core.modules.communication.CommunicationModule;
-import com.scorch.core.modules.data.tests.DataManagerTest;
-import com.scorch.core.modules.economy.EconomyModule;
-import com.scorch.core.modules.scoreboard.ScoreboardModule;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,9 +18,11 @@ import com.scorch.core.modules.chat.ChatModule;
 import com.scorch.core.modules.chat.FilterModule;
 import com.scorch.core.modules.combat.CombatModule;
 import com.scorch.core.modules.commands.CommandModule;
+import com.scorch.core.modules.communication.CommunicationModule;
 import com.scorch.core.modules.data.ConnectionManager;
 import com.scorch.core.modules.data.DataManager;
 import com.scorch.core.modules.data.LagModule;
+import com.scorch.core.modules.economy.EconomyModule;
 import com.scorch.core.modules.messages.MessagesModule;
 import com.scorch.core.modules.messages.OfflineMessagesModule;
 import com.scorch.core.modules.permissions.PermissionModule;
@@ -37,6 +34,7 @@ import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.modules.punish.BanwaveModule;
 import com.scorch.core.modules.punish.PunishModule;
 import com.scorch.core.modules.report.ReportModule;
+import com.scorch.core.modules.scoreboard.ScoreboardModule;
 import com.scorch.core.modules.staff.AuthenticationModule;
 import com.scorch.core.modules.staff.BuildModeModule;
 import com.scorch.core.modules.staff.PlayerCombatModule;
@@ -46,7 +44,6 @@ import com.scorch.core.modules.staff.VanishModule;
 import com.scorch.core.modules.staff.WorldProtectionModule;
 import com.scorch.core.pastebin.Paste;
 import com.scorch.core.utils.Logger;
-import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * The Core class of the plugin All initialisation is done here and it's used a

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.Listener;
@@ -22,6 +21,7 @@ import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.chat.FilterEntry.FilterType;
 import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
+import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;

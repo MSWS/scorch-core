@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.scorch.core.modules.data.annotations.DataPrimaryKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -14,6 +13,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.annotations.DataNotNull;
+import com.scorch.core.modules.data.annotations.DataPrimaryKey;
 import com.scorch.core.modules.staff.TrustModule;
 import com.scorch.core.utils.MSG;
 

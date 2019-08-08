@@ -11,7 +11,6 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -21,8 +20,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
-import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
+import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;

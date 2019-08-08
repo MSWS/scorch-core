@@ -1,13 +1,13 @@
 package com.scorch.core.modules.communication;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.communication.exceptions.WebSocketException;
 import com.scorch.core.modules.communication.websocket.SocketClient;
 import com.scorch.core.modules.communication.websocket.packets.out.EventPacket;
 import com.scorch.core.utils.Logger;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 public class CommunicationModule extends AbstractModule {
 

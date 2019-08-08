@@ -1,5 +1,7 @@
 package com.scorch.core.modules.data.annotations;
 
+import java.util.Set;
+
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
@@ -9,7 +11,6 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.ElementFilter;
 import javax.tools.Diagnostic;
-import java.util.Set;
 
 /**
  * @deprecated Tried to implement this into the project, didn't get it to work without making it into a jar and use it as extra dependency

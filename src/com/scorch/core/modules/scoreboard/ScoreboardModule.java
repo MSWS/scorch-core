@@ -1,17 +1,22 @@
 package com.scorch.core.modules.scoreboard;
 
-import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.AbstractModule;
-import com.scorch.core.utils.Logger;
-import com.scorch.core.utils.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.*;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
+
+import com.scorch.core.ScorchCore;
+import com.scorch.core.modules.AbstractModule;
+import com.scorch.core.utils.MSG;
 
 /**
- * This is the main scoreboard utility that handles scoreboards across the servers
+ * This is the main scoreboard utility that handles scoreboards across the
+ * servers
+ * 
  * @author Gijs "kitsune" de Jong
  *
  */
@@ -30,11 +35,11 @@ public class ScoreboardModule extends AbstractModule {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				for(Player p : Bukkit.getOnlinePlayers()){
+				for (Player p : Bukkit.getOnlinePlayers()) {
 					setScoreboard(p);
 				}
 			}
-		}.runTaskTimer(ScorchCore.getInstance(), 0 ,5);
+		}.runTaskTimer(ScorchCore.getInstance(), 0, 1);
 	}
 
 	@Override
@@ -42,19 +47,17 @@ public class ScoreboardModule extends AbstractModule {
 
 	}
 
-	public void setScoreboard (Player player){
+	public void setScoreboard(Player player) {
 		Scoreboard board = scoreboardManager.getNewScoreboard();
-		Objective obj = board.registerNewObjective("ServerName", "dummy");
-		obj.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&cScorch&6Gamez"));
+		Objective obj = board.registerNewObjective("ServerName", "dummy", MSG.color("&cScorch&6Gamez"));
 		obj.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-		for(int i = 0; i < 15; i++){
-			String val = StringUtils.getUniqueString(10);
-			Logger.info("val: %s", val);
+		for (int i = 1; i <= 15; i++) {
+			String val = MSG.genUUID(8);
 			Team team = board.registerNewTeam("team" + i);
 			team.setPrefix(val);
-			team.addEntry("team" + i);
-			obj.getScore("team" + i).setScore(i);
+			team.addEntry(""+i);
+			obj.getScore(""+i).setScore(i);
 		}
 		player.setScoreboard(board);
 	}

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -25,6 +24,8 @@ import com.scorch.core.modules.data.DataManager;
 import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.exceptions.DataDeleteException;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
+import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
+import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.modules.staff.TrustModule;
@@ -81,7 +82,11 @@ public class PunishModule extends AbstractModule {
 
 		linked.put(punishment.getTargetUUID(), current);
 
-		ScorchCore.getInstance().getDataManager().saveObject("punishments", punishment);
+		try {
+			ScorchCore.getInstance().getDataManager().updateObject("punishments", punishment);
+		} catch (DataUpdateException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void openPunishGUI(Player punisher, OfflinePlayer player, String reason) {

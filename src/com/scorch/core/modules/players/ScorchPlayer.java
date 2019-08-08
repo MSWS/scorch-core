@@ -5,10 +5,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.annotations.DataIgnore;
 import com.scorch.core.modules.data.annotations.DataPrimaryKey;
-import com.scorch.core.modules.data.exceptions.DataUpdateException;
 
 public class ScorchPlayer {
 	@DataPrimaryKey

@@ -1,9 +1,9 @@
 package com.scorch.core.modules.players;
 
-import com.scorch.core.modules.data.annotations.DataPrimaryKey;
-
 import java.util.List;
 import java.util.UUID;
+
+import com.scorch.core.modules.data.annotations.DataPrimaryKey;
 
 public class IPEntry {
 

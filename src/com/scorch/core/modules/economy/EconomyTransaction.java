@@ -1,11 +1,12 @@
 package com.scorch.core.modules.economy;
 
+import java.util.UUID;
+
+import org.bukkit.entity.Player;
+
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.annotations.DataPrimaryKey;
 import com.scorch.core.utils.StringUtils;
-import org.bukkit.entity.Player;
-
-import java.util.UUID;
 
 public class EconomyTransaction {
 

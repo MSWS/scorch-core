@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import com.scorch.core.modules.data.exceptions.*;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -17,11 +16,17 @@ import org.bukkit.permissions.PermissionAttachment;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.SQLSelector;
+import com.scorch.core.modules.data.exceptions.DataDeleteException;
+import com.scorch.core.modules.data.exceptions.DataObtainException;
+import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
+import com.scorch.core.modules.data.exceptions.DataUpdateException;
+import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;
 
 /**
- * A permission handler for ScorchGamez this this will handle adding permissions to players using groups and custom perms
- * TODO: Sync permission updates across network using events
+ * A permission handler for ScorchGamez this this will handle adding permissions
+ * to players using groups and custom perms TODO: Sync permission updates across
+ * network using events
  */
 public class PermissionModule extends AbstractModule {
 
@@ -96,7 +101,11 @@ public class PermissionModule extends AbstractModule {
 			Logger.log("&3Database empty, &asaving current groups to database...");
 			groupList = new ArrayList<>(ymlGroups);
 			groupList.forEach(group -> {
-				ScorchCore.getInstance().getDataManager().saveObject("groups", group);
+				try {
+					ScorchCore.getInstance().getDataManager().updateObject("groups", group);
+				} catch (DataUpdateException e) {
+					e.printStackTrace();
+				}
 			});
 			Logger.log("&aSuccessfully saved all groups to database.");
 		} else {
@@ -135,7 +144,12 @@ public class PermissionModule extends AbstractModule {
 				}
 				if (!exists) {
 					groupList.add(ymlGroup);
-					ScorchCore.getInstance().getDataManager().saveObject("groups", ymlGroup);
+					try {
+						ScorchCore.getInstance().getDataManager().updateObject("groups", ymlGroup);
+					} catch (DataUpdateException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					Logger.log("   - &6New group: &e%s", ymlGroup.getGroupName());
 				}
 			}
@@ -160,7 +174,7 @@ public class PermissionModule extends AbstractModule {
 
 		this.permissionListener = new PermissionListener(this);
 
-		for(Player p : Bukkit.getOnlinePlayers()){
+		for (Player p : Bukkit.getOnlinePlayers()) {
 			PermissionPlayer player = new PermissionPlayer(p.getUniqueId(), new ArrayList<>());
 			this.addPlayer(p.getUniqueId(), player);
 		}
@@ -230,11 +244,11 @@ public class PermissionModule extends AbstractModule {
 	 */
 	public boolean addPlayer(UUID uuid, PermissionPlayer permissionPlayer) {
 		if (!getPlayerPermissions().containsKey(uuid)) {
-			if(!permissionPlayer.hasGroup(getDefaultGroup().getGroupName())){
+			if (!permissionPlayer.hasGroup(getDefaultGroup().getGroupName())) {
 				permissionPlayer.addGroup(getDefaultGroup());
 			}
 
-			if(Bukkit.getPlayer(uuid) != null){
+			if (Bukkit.getPlayer(uuid) != null) {
 				permissionPlayer.createAttachment(Bukkit.getPlayer(uuid));
 			}
 
@@ -247,12 +261,14 @@ public class PermissionModule extends AbstractModule {
 
 	/**
 	 * Adds a group to the grouplist and database
+	 * 
 	 * @param group the group to add
-	 * @return      whether the group was added
+	 * @return whether the group was added
 	 */
-	public boolean addGroup(PermissionGroup group){
-		if(group == null) return false;
-		if(!this.groupList.contains(group)){
+	public boolean addGroup(PermissionGroup group) {
+		if (group == null)
+			return false;
+		if (!this.groupList.contains(group)) {
 			groupList.add(group);
 			ScorchCore.getInstance().getDataManager().saveObjectAsync("groups", group);
 			return true;
@@ -261,24 +277,29 @@ public class PermissionModule extends AbstractModule {
 	}
 
 	/**
-	 * Deletes the group from the grouplist and database, this is a permanent action!
+	 * Deletes the group from the grouplist and database, this is a permanent
+	 * action!
+	 * 
 	 * @param groupName the group to delete
-	 * @return          whether the group was deleted
+	 * @return whether the group was deleted
 	 */
-	public boolean removeGroup(String groupName){
+	public boolean removeGroup(String groupName) {
 		PermissionGroup group = getGroup(groupName);
-		if(group == null) return false;
-		if(this.groupList.contains(group)){
+		if (group == null)
+			return false;
+		if (this.groupList.contains(group)) {
 			groupList.remove(group);
-			ScorchCore.getInstance().getDataManager().deleteObjectAsync("groups", new SQLSelector("groupName", group.getGroupName()));
+			ScorchCore.getInstance().getDataManager().deleteObjectAsync("groups",
+					new SQLSelector("groupName", group.getGroupName()));
 			return true;
 		}
 		return false;
 	}
 
 	/**
-	 * Removes the player from the list
-	 * <br><strong>In theory this should never be used!</strong></br>
+	 * Removes the player from the list <br>
+	 * <strong>In theory this should never be used!</strong></br>
+	 * 
 	 * @param player the uuid of the player
 	 */
 	public void removePlayer(Player player) {
@@ -305,11 +326,12 @@ public class PermissionModule extends AbstractModule {
 
 	/**
 	 * Get the default permission group that all players should be a part of
+	 * 
 	 * @return the default group
 	 */
-	public PermissionGroup getDefaultGroup () {
-		for(PermissionGroup group : groupList){
-			if(group.isDefault()) {
+	public PermissionGroup getDefaultGroup() {
+		for (PermissionGroup group : groupList) {
+			if (group.isDefault()) {
 				return group;
 			}
 		}

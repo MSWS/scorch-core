@@ -5,11 +5,12 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.scorch.core.utils.CItem;
-import com.scorch.core.utils.MSG;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
@@ -19,9 +20,8 @@ import com.scorch.core.modules.players.IPTracker;
 import com.scorch.core.modules.players.PlaytimeModule;
 import com.scorch.core.modules.punish.Punishment;
 import com.scorch.core.modules.report.ReportModule;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import com.scorch.core.utils.CItem;
+import com.scorch.core.utils.MSG;
 
 public class TrustModule extends AbstractModule {
 

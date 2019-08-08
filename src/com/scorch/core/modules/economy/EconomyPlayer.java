@@ -1,8 +1,8 @@
 package com.scorch.core.modules.economy;
 
-import com.scorch.core.modules.data.annotations.DataPrimaryKey;
-
 import java.util.UUID;
+
+import com.scorch.core.modules.data.annotations.DataPrimaryKey;
 
 /**
  * A class to make it easier to handle economy.

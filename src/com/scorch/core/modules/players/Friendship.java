@@ -1,11 +1,11 @@
 package com.scorch.core.modules.players;
 
+import java.io.Serializable;
+import java.util.UUID;
+
 import com.scorch.core.ScorchCore;
 import com.scorch.core.events.friends.FriendRequestEvent;
 import com.scorch.core.modules.communication.exceptions.WebSocketException;
-
-import java.io.Serializable;
-import java.util.UUID;
 
 public class Friendship implements Serializable {
 

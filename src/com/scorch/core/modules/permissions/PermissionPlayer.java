@@ -1,14 +1,19 @@
 package com.scorch.core.modules.permissions;
 
-import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.data.annotations.DataIgnore;
-import com.scorch.core.modules.data.annotations.DataPrimaryKey;
-import com.scorch.core.utils.Logger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 
-import java.util.*;
+import com.scorch.core.ScorchCore;
+import com.scorch.core.modules.data.annotations.DataIgnore;
+import com.scorch.core.modules.data.annotations.DataPrimaryKey;
+import com.scorch.core.utils.Logger;
 
 /**
  * PermissionPlayer is a data class that contains all the data needed for the
@@ -50,7 +55,8 @@ public class PermissionPlayer {
 	public PermissionPlayer(UUID uniqueId, List<String> groups, String... permissions) {
 		this.uniqueId = uniqueId;
 		this.groups = groups;
-		this.permissions = new ArrayList<>(Arrays.asList(permissions));
+		this.permissions = new ArrayList<>(
+				Arrays.asList(permissions).stream().map(s -> s.toLowerCase()).collect(Collectors.toList()));
 	}
 
 	/**
@@ -161,7 +167,7 @@ public class PermissionPlayer {
 	 */
 	public boolean addPermission(String node) {
 		if (!getPermissions().contains(node)) {
-			getPermissions().add(node);
+			getPermissions().add(node.toLowerCase());
 			updatePermissions();
 			return true;
 		}
@@ -175,7 +181,7 @@ public class PermissionPlayer {
 	 * @return whether the operation was successful
 	 */
 	public boolean removePermission(String node) {
-		if (getPermissions().contains("node")) {
+		if (getPermissions().contains(node)) {
 			getPermissions().remove(node);
 			updatePermissions();
 			return true;
@@ -243,7 +249,7 @@ public class PermissionPlayer {
 		ScorchCore.getInstance().getDataManager().updateObjectAsync("permissions", this);
 		if (Bukkit.getPlayer(getUniqueId()) != null) {
 			Player player = Bukkit.getPlayer(getUniqueId());
-			if(getAttachment() != null){
+			if (getAttachment() != null) {
 				player.removeAttachment(getAttachment());
 			}
 			this.createAttachment(player);
@@ -270,7 +276,7 @@ public class PermissionPlayer {
 	}
 
 	public PermissionGroup getPrimaryGroup() {
-		if (getGroups().size() == 0){
+		if (getGroups().size() == 0) {
 			Logger.warn("groups nulL!");
 			return null;
 		}
@@ -321,6 +327,16 @@ public class PermissionPlayer {
 	 */
 	public List<String> getPermissions() {
 		return permissions;
+	}
+
+	/**
+	 * Gets if the player has the permission
+	 * 
+	 * @param perm - Automatically lowercased
+	 * @return
+	 */
+	public boolean hasPermission(String perm) {
+		return permissions.contains(perm.toLowerCase());
 	}
 
 	/**
