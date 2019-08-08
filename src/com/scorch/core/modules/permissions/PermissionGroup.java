@@ -1,14 +1,15 @@
 package com.scorch.core.modules.permissions;
 
-import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.data.SQLSelector;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.scorch.core.ScorchCore;
+import com.scorch.core.modules.data.annotations.DataPrimaryKey;
+
 public class PermissionGroup implements Comparable<PermissionGroup> {
 
+	@DataPrimaryKey
 	private String groupName;
 	private boolean isDefault;
 	private String prefix;
@@ -141,7 +142,7 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 	 */
 	public void setPrefix(String prefix) {
 		this.prefix = prefix.replace("_", " ");
-		ScorchCore.getInstance().getDataManager().updateObjectAsync("groups", this, new SQLSelector(("groupName"), getGroupName()));
+		ScorchCore.getInstance().getDataManager().updateObjectAsync("groups", this);
 	}
 
 	/**
@@ -252,7 +253,7 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 		if(node == "" || node == null) return false;
 		if(!getPermissions().contains(node)){
 			getPermissions().add(node);
-			ScorchCore.getInstance().getDataManager().updateObjectAsync("groups", this, new SQLSelector(("groupName"), getGroupName()));
+			ScorchCore.getInstance().getDataManager().updateObjectAsync("groups", this);
 			return true;
 		}
 		return false;
@@ -267,7 +268,7 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 		if(node == "" || node == null) return false;
 		if(getPermissions().contains(node)){
 			getPermissions().remove(node);
-			ScorchCore.getInstance().getDataManager().updateObjectAsync("groups", this, new SQLSelector(("groupName"), getGroupName()));
+			ScorchCore.getInstance().getDataManager().updateObjectAsync("groups", this);
 			return true;
 		}
 		return false;
@@ -327,6 +328,6 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 
 	@Override
 	public int compareTo(PermissionGroup o) {
-		return this.getWeight() - o.getWeight();
+		return o.getWeight() - this.getWeight();
 	}
 }

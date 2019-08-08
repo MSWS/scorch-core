@@ -16,6 +16,8 @@ import com.scorch.core.events.messages.MessageSendEvent;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.communication.exceptions.WebSocketException;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
+import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
+import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
@@ -122,16 +124,21 @@ public class MessagesModule extends AbstractModule implements Listener {
 			/**
 			 * Save any messages that aren't already saved
 			 */
-			for (CMessage msg : defaults.stream().filter(cm -> getMessage(cm.getId()) == null)
-					.collect(Collectors.toList())) {
-				ScorchCore.getInstance().getDataManager().saveObject("messages", msg);
-				messages.add(msg);
-				Logger.log("&e" + msg.getId() + " &cdoes not exist&b, saving default.");
-			}
+			try {
+				for (CMessage msg : defaults.stream().filter(cm -> getMessage(cm.getId()) == null)
+						.collect(Collectors.toList())) {
+					ScorchCore.getInstance().getDataManager().updateObject("messages", msg);
 
+					messages.add(msg);
+					Logger.log("&e" + msg.getId() + " &cdoes not exist&b, saving default.");
+				}
+			} catch (DataUpdateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			Logger.log("&aSuccessfully loaded &e" + messages.size() + "&a message" + (messages.size() == 1 ? "" : "s")
 					+ ".");
-		} catch (NoDefaultConstructorException | DataObtainException e) {
+		} catch (NoDefaultConstructorException | DataObtainException | DataPrimaryKeyException e) {
 			e.printStackTrace();
 		}
 

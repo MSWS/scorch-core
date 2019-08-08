@@ -13,6 +13,7 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
+import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.modules.messages.OfflineMessage;
 import com.scorch.core.modules.messages.OfflineMessagesModule;
@@ -58,7 +59,7 @@ public class FriendModule extends AbstractModule {
 
 					Logger.log("&aSuccessfully loaded &e" + friendships.size() + " &afriendship"
 							+ (friendships.size() == 1 ? "" : "s") + ".");
-				} catch (DataObtainException | NoDefaultConstructorException e) {
+				} catch (DataObtainException | NoDefaultConstructorException | DataPrimaryKeyException e) {
 					e.printStackTrace();
 				}
 			}
@@ -73,8 +74,7 @@ public class FriendModule extends AbstractModule {
 		Friendship newF = new Friendship(player, target);
 		newF.setStatus(status);
 
-		ScorchCore.getInstance().getDataManager().updateObjectAsync("friends", newF,
-				new SQLSelector("player", player.toString()), new SQLSelector("target", target.toString()));
+		ScorchCore.getInstance().getDataManager().updateObjectAsync("friends", newF);
 	}
 
 	public void addFriendship(Friendship friend) {

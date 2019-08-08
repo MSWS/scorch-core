@@ -6,12 +6,13 @@ public class StringUtils {
 
     public static String getUniqueString (int length){
         if(length <= 0) return "";
+        Random rand = new Random();
         String dict = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        String res = "";
+        StringBuilder builder = new StringBuilder();
         for(int i = 0; i < length; i++){
-            res = res + dict.indexOf(new Random().nextInt(dict.length()));
+            builder.append(dict.charAt(rand.nextInt(dict.length())));
         }
-        return res;
+        return builder.toString();
     }
 
 }

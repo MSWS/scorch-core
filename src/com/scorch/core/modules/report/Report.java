@@ -13,11 +13,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.annotations.DataNotNull;
+import com.scorch.core.modules.data.annotations.DataPrimaryKey;
 import com.scorch.core.modules.staff.TrustModule;
 import com.scorch.core.utils.MSG;
 
 public class Report implements Comparable<Report> {
-	@DataNotNull
+	@DataNotNull @DataPrimaryKey
 	private String id;
 
 	@DataNotNull

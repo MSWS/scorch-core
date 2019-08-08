@@ -9,17 +9,17 @@ import com.scorch.core.events.punishment.PunishmentUpdateEvent;
 import com.scorch.core.utils.Logger;
 
 public class PunishmentListener implements Listener {
-	private PunishModule pm = ScorchCore.getInstance().getPunishModule();
+    private PunishModule pm = ScorchCore.getInstance().getPunishModule();
 
-	@EventHandler
-	public void onPunishmentCreate(PunishmentCreateEvent event) {
-		Logger.log("Received new punishment: " + event.getPunishment().getReason());
-		pm.addPunishment(event.getPunishment());
-	}
-	
-	@EventHandler
-	public void onPunishmentUpdate(PunishmentUpdateEvent event) {
-		Logger.log("Received updated punishment: "+event.getPunishment().getReason());
-		
-	}
+    @EventHandler
+    public void onPunishmentCreate(PunishmentCreateEvent event) {
+        Logger.log("Received new punishment: " + event.getPunishment().getReason());
+        pm.addPunishment(event.getPunishment());
+    }
+
+    @EventHandler
+    public void onPunishmentUpdate(PunishmentUpdateEvent event) {
+        Logger.log("Received updated punishment: "+event.getPunishment().getReason());
+
+    }
 }

@@ -91,7 +91,7 @@ public class ChatListener implements Listener {
 					event.setMessage(fm.filter(event.getMessage(), FilterType.values()));
 			}
 
-			MSG.tell(p, player.getName() + ": " + event.getMessage());
+			MSG.tell(p, ScorchCore.getInstance().getPrefix(event.getPlayer()) + " &r" + event.getPlayer().getName() + ": " + event.getMessage());
 		}
 
 	}

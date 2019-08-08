@@ -9,7 +9,6 @@ import com.scorch.core.modules.punish.Punishment;
 public class PunishmentUpdateEvent extends PunishmentEvent implements Cancellable {
 	@DataIgnore
 	private static final HandlerList handlers = new HandlerList();
-
 	private boolean cancel;
 
 	public PunishmentUpdateEvent(Punishment p) {

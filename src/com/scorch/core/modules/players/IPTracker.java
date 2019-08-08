@@ -20,8 +20,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
-import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
+import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;
@@ -54,7 +54,7 @@ public class IPTracker extends AbstractModule implements Listener {
 					}
 					Logger.log("&aSuccessfully loaded &e" + ips + "&a IP" + (ips == 1 ? "" : "s") + " of &b" + accounts
 							+ " &aaccount" + (accounts == 1 ? "" : "s") + ".");
-				} catch (NoDefaultConstructorException | DataObtainException e) {
+				} catch (NoDefaultConstructorException | DataObtainException | DataPrimaryKeyException e) {
 					e.printStackTrace();
 				}
 			}
@@ -66,6 +66,13 @@ public class IPTracker extends AbstractModule implements Listener {
 				saveIps();
 			}
 		}.runTaskTimerAsynchronously(ScorchCore.getInstance(), 6000, 6000); // 5 Minutes
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				saveIps();
+			}
+		}.runTaskLater(ScorchCore.getInstance(), 20);
 
 		Bukkit.getPluginManager().registerEvents(this, ScorchCore.getInstance());
 	}
@@ -191,8 +198,7 @@ public class IPTracker extends AbstractModule implements Listener {
 	public void saveIps() {
 		try {
 			for (IPEntry ent : links.values()) {
-				ScorchCore.getInstance().getDataManager().updateObject("playerips", ent,
-						new SQLSelector("uuid", ent.getUUID()));
+				ScorchCore.getInstance().getDataManager().updateObject("playerips", ent);
 			}
 		} catch (DataUpdateException e) {
 			e.printStackTrace();

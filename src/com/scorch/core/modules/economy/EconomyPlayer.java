@@ -2,6 +2,8 @@ package com.scorch.core.modules.economy;
 
 import java.util.UUID;
 
+import com.scorch.core.modules.data.annotations.DataPrimaryKey;
+
 /**
  * A class to make it easier to handle economy.
  * @apiNote This class should not be used outside of EconomyModule, since there's an api for handling transactions
@@ -12,6 +14,7 @@ import java.util.UUID;
  */
 public class EconomyPlayer {
 
+    @DataPrimaryKey
     private UUID uniqueId;
     private long funds;
 

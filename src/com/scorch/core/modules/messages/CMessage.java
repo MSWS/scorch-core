@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import org.bukkit.command.CommandSender;
 
 import com.scorch.core.modules.data.annotations.DataNotNull;
+import com.scorch.core.modules.data.annotations.DataPrimaryKey;
 import com.scorch.core.utils.MSG;
 
 /**
@@ -17,7 +18,7 @@ import com.scorch.core.utils.MSG;
 public class CMessage {
 	@DataNotNull
 	private String msg;
-	@DataNotNull
+	@DataNotNull @DataPrimaryKey
 	private String id;
 
 	public CMessage() {

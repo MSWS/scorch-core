@@ -24,6 +24,8 @@ import com.scorch.core.modules.data.DataManager;
 import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.exceptions.DataDeleteException;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
+import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
+import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.modules.staff.TrustModule;
@@ -59,6 +61,7 @@ public class PunishModule extends AbstractModule {
 		new PunishmentListener();
 
 		refreshPunishments();
+
 	}
 
 	@Override
@@ -79,7 +82,11 @@ public class PunishModule extends AbstractModule {
 
 		linked.put(punishment.getTargetUUID(), current);
 
-		ScorchCore.getInstance().getDataManager().saveObject("punishments", punishment);
+		try {
+			ScorchCore.getInstance().getDataManager().updateObject("punishments", punishment);
+		} catch (DataUpdateException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void openPunishGUI(Player punisher, OfflinePlayer player, String reason) {
@@ -201,7 +208,7 @@ public class PunishModule extends AbstractModule {
 
 						linked.put(p.getTargetUUID(), current);
 					});
-				} catch (NoDefaultConstructorException | DataObtainException e) {
+				} catch (NoDefaultConstructorException | DataObtainException | DataPrimaryKeyException e) {
 					e.printStackTrace();
 				}
 			}
@@ -214,10 +221,5 @@ public class PunishModule extends AbstractModule {
 
 	public Punishment getPunishment(UUID uuid) {
 		return punishments.stream().filter(id -> id.getId().equals(uuid)).findFirst().orElse(null);
-	}
-
-	public void updatePunishment(Punishment p) {
-		punishments.removeIf(pn -> pn.getId().equals(p.getId()));
-		punishments.add(p);
 	}
 }

@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import com.scorch.core.modules.communication.CommunicationModule;
-import com.scorch.core.modules.economy.EconomyModule;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,9 +18,11 @@ import com.scorch.core.modules.chat.ChatModule;
 import com.scorch.core.modules.chat.FilterModule;
 import com.scorch.core.modules.combat.CombatModule;
 import com.scorch.core.modules.commands.CommandModule;
+import com.scorch.core.modules.communication.CommunicationModule;
 import com.scorch.core.modules.data.ConnectionManager;
 import com.scorch.core.modules.data.DataManager;
 import com.scorch.core.modules.data.LagModule;
+import com.scorch.core.modules.economy.EconomyModule;
 import com.scorch.core.modules.messages.MessagesModule;
 import com.scorch.core.modules.messages.OfflineMessagesModule;
 import com.scorch.core.modules.permissions.PermissionModule;
@@ -34,6 +34,7 @@ import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.modules.punish.BanwaveModule;
 import com.scorch.core.modules.punish.PunishModule;
 import com.scorch.core.modules.report.ReportModule;
+import com.scorch.core.modules.scoreboard.ScoreboardModule;
 import com.scorch.core.modules.staff.AuthenticationModule;
 import com.scorch.core.modules.staff.BuildModeModule;
 import com.scorch.core.modules.staff.PlayerCombatModule;
@@ -94,6 +95,7 @@ public class ScorchCore extends JavaPlugin {
 		registerModule(new BuildModeModule("BuildModeModule"), ModulePriority.HIGH);
 		registerModule(new WorldProtectionModule("WorldProtectionModule"), ModulePriority.HIGH);
 		registerModule(new PlayerCombatModule("PlayerCombatModule"), ModulePriority.HIGH);
+		registerModule(new ScoreboardModule("ScoreboardModule"), ModulePriority.HIGH);
 
 		registerModule(new IPTracker("IPTrackerModule"), ModulePriority.MEDIUM);
 		registerModule(new BanwaveModule("BanwaveModule"), ModulePriority.MEDIUM);
@@ -310,8 +312,10 @@ public class ScorchCore extends JavaPlugin {
 	 */
 	public String getPrefix(UUID player) {
 		PermissionPlayer pp = permissionModule.getPermissionPlayer(player);
-		if (pp == null)
+		if (pp == null){
+			Logger.warn("perm player null for %s", player);
 			return "";
+		}
 		return permissionModule.getPermissionPlayer(player).getPrimaryGroup() == null ? ""
 				: permissionModule.getPermissionPlayer(player).getPrimaryGroup().getPrefix();
 	}

@@ -22,8 +22,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
-import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
+import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.modules.report.Report.ReportType;
@@ -58,7 +58,7 @@ public class ReportModule extends AbstractModule {
 
 			ScorchCore.getInstance().getDataManager().getAllObjects("reports")
 					.forEach(report -> reports.add((Report) report));
-		} catch (NoDefaultConstructorException | DataObtainException e) {
+		} catch (NoDefaultConstructorException | DataObtainException | DataPrimaryKeyException e) {
 			e.printStackTrace();
 		}
 
@@ -104,8 +104,7 @@ public class ReportModule extends AbstractModule {
 	}
 
 	public void updateReport(Report report) {
-		ScorchCore.getInstance().getDataManager().updateObjectAsync("reports", report,
-				new SQLSelector("id", report.getId()));
+		ScorchCore.getInstance().getDataManager().updateObjectAsync("reports", report);
 	}
 
 	public Inventory getReportGUI(String title, boolean showCount) {

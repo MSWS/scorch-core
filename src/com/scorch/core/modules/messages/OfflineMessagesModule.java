@@ -13,8 +13,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
-import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
+import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;
 
@@ -50,7 +50,7 @@ public class OfflineMessagesModule extends AbstractModule {
 						temp.add(om);
 						linked.put(om.getReceiver(), temp);
 					});
-				} catch (DataObtainException | NoDefaultConstructorException e) {
+				} catch (DataObtainException | NoDefaultConstructorException | DataPrimaryKeyException e) {
 					e.printStackTrace();
 				}
 
@@ -94,8 +94,6 @@ public class OfflineMessagesModule extends AbstractModule {
 		offline.remove(old);
 		offline.add(newM);
 
-		ScorchCore.getInstance().getDataManager().updateObjectAsync("offlinemessages", newM,
-				new SQLSelector("sender", newM.getSender()), new SQLSelector("receiver", newM.getReceiver()),
-				new SQLSelector("message", newM.getMessage()), new SQLSelector("sent", newM.getSentTime()));
+		ScorchCore.getInstance().getDataManager().updateObjectAsync("offlinemessages", newM);
 	}
 }

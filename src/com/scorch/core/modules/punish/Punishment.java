@@ -23,8 +23,8 @@ import com.scorch.core.events.punishment.PunishmentEvent;
 import com.scorch.core.events.punishment.PunishmentUpdateEvent;
 import com.scorch.core.modules.communication.CommunicationModule;
 import com.scorch.core.modules.communication.exceptions.WebSocketException;
-import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.annotations.DataIgnore;
+import com.scorch.core.modules.data.annotations.DataPrimaryKey;
 import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.messages.CMessage;
 import com.scorch.core.modules.messages.MessagesModule;
@@ -48,7 +48,9 @@ public class Punishment implements Comparable<Punishment> {
 	@DataIgnore
 	private final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a");
 
-	private UUID id, target;
+	@DataPrimaryKey
+	private UUID id;
+	private UUID target;
 	private String staff, reason, remover, removeReason, ip, info;
 
 	private long date, duration, removeDate;
@@ -99,6 +101,7 @@ public class Punishment implements Comparable<Punishment> {
 		}
 		if (ape.isCancelled())
 			return;
+
 
 		OfflinePlayer target = Bukkit.getOfflinePlayer(this.target);
 		ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(target.getUniqueId());
@@ -172,7 +175,7 @@ public class Punishment implements Comparable<Punishment> {
 
 	public void update() {
 		try {
-			ScorchCore.getInstance().getDataManager().updateObject("punishments", this, new SQLSelector("id", id));
+			ScorchCore.getInstance().getDataManager().updateObject("punishments", this);
 		} catch (DataUpdateException e) {
 			e.printStackTrace();
 		}
@@ -183,7 +186,6 @@ public class Punishment implements Comparable<Punishment> {
 		} catch (WebSocketException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public UUID getId() {

@@ -3,7 +3,11 @@ package com.scorch.core.modules.players;
 import java.util.List;
 import java.util.UUID;
 
+import com.scorch.core.modules.data.annotations.DataPrimaryKey;
+
 public class IPEntry {
+
+	@DataPrimaryKey
 	private UUID uuid;
 	private List<String> ips;
 

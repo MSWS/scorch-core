@@ -9,12 +9,22 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import com.scorch.core.commands.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.SimpleCommandMap;
 
 import com.scorch.core.ScorchCore;
+import com.scorch.core.commands.FeedCommand;
+import com.scorch.core.commands.FilterCommand;
+import com.scorch.core.commands.FriendCommand;
+import com.scorch.core.commands.HealCommand;
+import com.scorch.core.commands.HelpCommand;
+import com.scorch.core.commands.HistoryCommand;
+import com.scorch.core.commands.LagCommand;
+import com.scorch.core.commands.MessageCommand;
+import com.scorch.core.commands.PingCommand;
+import com.scorch.core.commands.PlaytimeCommand;
+import com.scorch.core.commands.SeenCommand;
 import com.scorch.core.commands.report.ConfirmReportCommand;
 import com.scorch.core.commands.report.ReportCloseCommand;
 import com.scorch.core.commands.report.ReportCommand;
@@ -33,6 +43,7 @@ import com.scorch.core.commands.staff.TestCommand;
 import com.scorch.core.commands.staff.ToggleCommand;
 import com.scorch.core.commands.staff.UnpunishCommand;
 import com.scorch.core.commands.staff.VanishCommand;
+import com.scorch.core.commands.staff.PermissionsCommand;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.utils.Logger;
 
@@ -97,9 +108,10 @@ public class CommandModule extends AbstractModule {
 		commands.put(new ReportCloseCommand("reportclose"), true);
 		commands.put(new ReportInfoCommand("reportinfo"), true);
 		commands.put(new ConfirmReportCommand("confirmreport"), true);
-		commands.put(new PermissionsCommand("permissions"), true);
+//		commands.put(new PermissionsCommand("permissions"), true);
 		commands.put(new TFACommand("tfa"), true);
 		commands.put(new MessageCommand("message"), true);
+		commands.put(new PermissionsCommand("permissions"), true);
 
 		enableCommands(commands.keySet().stream().collect(Collectors.toList()));
 		Logger.log("&aSuccessfully enabled &e" + commands.size() + "&a command" + (commands.size() == 1 ? "" : "s"));
