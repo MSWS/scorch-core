@@ -64,6 +64,7 @@ public class AuthenticationModule extends AbstractModule implements Listener {
 										- sp.getData("lastAuthentication", Number.class).longValue())))
 						.replace("%player%", player.getName());
 
+				sp.setData("authenticated", true);
 				MSG.tell(player, msg);
 				continue;
 			}
@@ -71,6 +72,7 @@ public class AuthenticationModule extends AbstractModule implements Listener {
 			String msg = ScorchCore.getInstance().getMessage("welcomeauthenticate");
 			msg = msg.replace("%player%", player.getName());
 
+			sp.setData("authenticated", false);
 			MSG.tell(player, msg);
 		}
 	}
@@ -116,6 +118,7 @@ public class AuthenticationModule extends AbstractModule implements Listener {
 		msg = msg.replace("%player%", player.getName());
 
 		MSG.tell(player, msg);
+		sp.setData("authenticated", false);
 	}
 
 	@EventHandler

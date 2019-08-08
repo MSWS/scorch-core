@@ -2,14 +2,23 @@ package com.scorch.core.modules.messages;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.scorch.core.ScorchCore;
+import com.scorch.core.events.messages.MessageReceiveEvent;
+import com.scorch.core.events.messages.MessageSendEvent;
 import com.scorch.core.modules.AbstractModule;
+import com.scorch.core.modules.communication.exceptions.WebSocketException;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;
+import com.scorch.core.utils.MSG;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 /**
  * Module that loads and keeps track of all messages stored in the database
@@ -17,12 +26,14 @@ import com.scorch.core.utils.Logger;
  * @author imodm
  *
  */
-public class MessagesModule extends AbstractModule {
+public class MessagesModule extends AbstractModule implements Listener {
 
 	private List<CMessage> messages, defaults;
 
 	public MessagesModule(String id) {
 		super(id);
+
+		Bukkit.getPluginManager().registerEvents(this, ScorchCore.getInstance());
 
 		defaults = new ArrayList<CMessage>();
 
@@ -95,7 +106,6 @@ public class MessagesModule extends AbstractModule {
 	@Override
 	public void initialize() {
 		reloadMessages();
-
 	}
 
 	public void reloadMessages() {
@@ -134,6 +144,57 @@ public class MessagesModule extends AbstractModule {
 	@Override
 	public void disable() {
 
+	}
+
+	public void sendMessage(UUID sender, UUID receiver, String message) {
+		MessageSendEvent mse = new MessageSendEvent(sender, receiver, message);
+		try {
+			ScorchCore.getInstance().getCommunicationModule().dispatchEvent(mse);
+		} catch (WebSocketException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@EventHandler
+	public void messageSend(MessageSendEvent event) {
+		UUID receiver = event.getReceiver(), sender = event.getSender();
+		String message = event.getMessage();
+
+		OfflinePlayer receivePlayer = Bukkit.getOfflinePlayer(receiver);
+
+		if (!receivePlayer.isOnline())
+			return;
+
+		MSG.tell(receivePlayer.getPlayer(), message);
+
+		MessageReceiveEvent mre = new MessageReceiveEvent(receiver, sender, message);
+		try {
+			ScorchCore.getInstance().getCommunicationModule().dispatchEvent(mre);
+		} catch (WebSocketException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@EventHandler
+	public void messageReceived(MessageReceiveEvent event) {
+		UUID receiver = event.getReceiver(), sender = event.getSender();
+		String message = event.getMessage();
+
+		OfflinePlayer senderPlayer = Bukkit.getOfflinePlayer(sender);
+
+		if (!senderPlayer.isOnline())
+			return;
+
+		MSG.tell(senderPlayer.getPlayer(), message);
+
+		MessageReceiveEvent mre = new MessageReceiveEvent(receiver, sender, message);
+		try {
+			ScorchCore.getInstance().getCommunicationModule().dispatchEvent(mre);
+		} catch (WebSocketException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -8,6 +8,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.scorch.core.events.punishment.PunishmentCreateEvent;
+import com.scorch.core.events.punishment.PunishmentEvent;
+import com.scorch.core.events.punishment.PunishmentUpdateEvent;
+import com.scorch.core.modules.communication.CommunicationModule;
+import com.scorch.core.modules.communication.exceptions.WebSocketException;
 import com.scorch.core.modules.data.annotations.DataPrimaryKey;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -87,6 +92,18 @@ public class Punishment implements Comparable<Punishment> {
 	 * members, kicking players, etc.) Ideally should only be run once.
 	 */
 	public void execute() {
+
+		CommunicationModule cm = ScorchCore.getInstance().getCommunicationModule();
+		PunishmentCreateEvent ape = new PunishmentCreateEvent(this);
+		try {
+			cm.dispatchEvent(ape);
+		} catch (WebSocketException e) {
+			e.printStackTrace();
+		}
+		if (ape.isCancelled())
+			return;
+
+
 		OfflinePlayer target = Bukkit.getOfflinePlayer(this.target);
 		ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(target.getUniqueId());
 		IPTracker it = (IPTracker) ScorchCore.getInstance().getModule("IPTrackerModule");
@@ -161,6 +178,13 @@ public class Punishment implements Comparable<Punishment> {
 		try {
 			ScorchCore.getInstance().getDataManager().updateObject("punishments", this);
 		} catch (DataUpdateException e) {
+			e.printStackTrace();
+		}
+
+		PunishmentEvent pe = new PunishmentUpdateEvent(this);
+		try {
+			ScorchCore.getInstance().getCommunicationModule().dispatchEvent(pe);
+		} catch (WebSocketException e) {
 			e.printStackTrace();
 		}
 	}

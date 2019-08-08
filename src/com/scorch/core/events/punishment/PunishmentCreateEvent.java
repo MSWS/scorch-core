@@ -5,11 +5,11 @@ import org.bukkit.event.HandlerList;
 
 import com.scorch.core.modules.punish.Punishment;
 
-public class PunishmentApplyEvent extends PunishmentEvent implements Cancellable {
+public class PunishmentCreateEvent extends PunishmentEvent implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();
 	private boolean cancel;
 
-	public PunishmentApplyEvent(Punishment p) {
+	public PunishmentCreateEvent(Punishment p) {
 		super(p);
 	}
 

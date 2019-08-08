@@ -57,15 +57,10 @@ public class PunishModule extends AbstractModule {
 	public void initialize() {
 		joinListener = new PunishLoginListener();
 		clickListener = new PunishInventoryListener();
+		new PunishmentListener();
 
 		refreshPunishments();
 
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				refreshPunishments();
-			}
-		}.runTaskTimer(ScorchCore.getInstance(), 6000, 6000);
 	}
 
 	@Override

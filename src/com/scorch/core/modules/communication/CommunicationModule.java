@@ -41,7 +41,7 @@ public class CommunicationModule extends AbstractModule {
         }
         else {
             Logger.error("Tried to dispatch a network event even though the websocket isn't connected!");
-            throw new WebSocketException("Websocket state isn't open!");
+            throw new WebSocketException("Websocket state isn't OPEN!");
         }
     }
 
