@@ -11,6 +11,7 @@ import java.util.UUID;
 import com.scorch.core.modules.communication.CommunicationModule;
 import com.scorch.core.modules.data.tests.DataManagerTest;
 import com.scorch.core.modules.economy.EconomyModule;
+import com.scorch.core.modules.scoreboard.ScoreboardModule;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -97,6 +98,7 @@ public class ScorchCore extends JavaPlugin {
 		registerModule(new BuildModeModule("BuildModeModule"), ModulePriority.HIGH);
 		registerModule(new WorldProtectionModule("WorldProtectionModule"), ModulePriority.HIGH);
 		registerModule(new PlayerCombatModule("PlayerCombatModule"), ModulePriority.HIGH);
+		registerModule(new ScoreboardModule("ScoreboardModule"), ModulePriority.HIGH);
 
 		registerModule(new IPTracker("IPTrackerModule"), ModulePriority.MEDIUM);
 		registerModule(new BanwaveModule("BanwaveModule"), ModulePriority.MEDIUM);
