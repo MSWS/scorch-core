@@ -1,6 +1,7 @@
 package com.scorch.core.modules.economy;
 
 import com.scorch.core.ScorchCore;
+import com.scorch.core.modules.data.annotations.DataPrimaryKey;
 import com.scorch.core.utils.StringUtils;
 import org.bukkit.entity.Player;
 
@@ -8,7 +9,7 @@ import java.util.UUID;
 
 public class EconomyTransaction {
 
-    @SuppressWarnings("unused")
+    @DataPrimaryKey
 	private String id;
     private long amount;
     private boolean executed;
@@ -83,7 +84,7 @@ public class EconomyTransaction {
             ScorchCore.getInstance().getDataManager().saveObjectAsync("transactions", this);
         }
         else {
-            // not enough funds save tr
+            // not enough funds save transaction
             this.success = false;
             ScorchCore.getInstance().getDataManager().saveObjectAsync("transactions", this);
             return false;
@@ -118,5 +119,9 @@ public class EconomyTransaction {
 
     public long getFundsAfter() {
         return fundsAfter;
+    }
+
+    public String getId() {
+        return id;
     }
 }

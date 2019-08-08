@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.scorch.core.modules.data.annotations.DataPrimaryKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -17,7 +18,7 @@ import com.scorch.core.modules.staff.TrustModule;
 import com.scorch.core.utils.MSG;
 
 public class Report implements Comparable<Report> {
-	@DataNotNull
+	@DataNotNull @DataPrimaryKey
 	private String id;
 
 	@DataNotNull

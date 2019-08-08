@@ -7,9 +7,11 @@ import java.util.UUID;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.annotations.DataIgnore;
+import com.scorch.core.modules.data.annotations.DataPrimaryKey;
 import com.scorch.core.modules.data.exceptions.DataUpdateException;
 
 public class ScorchPlayer {
+	@DataPrimaryKey
 	private UUID uuid;
 	private String username;
 	private Map<String, Object> data;
@@ -64,12 +66,7 @@ public class ScorchPlayer {
 	 * Updates the database with the current {@link ScorchPlayer} info
 	 */
 	public void saveData() {
-		try {
-			ScorchCore.getInstance().getDataManager().updateObject("players", this,
-					new SQLSelector("uuid", uuid.toString()));
-		} catch (DataUpdateException e) {
-			e.printStackTrace();
-		}
+		ScorchCore.getInstance().getDataManager().updateObjectAsync("players", this);
 	}
 
 	/**

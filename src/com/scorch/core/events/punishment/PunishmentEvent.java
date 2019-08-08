@@ -1,9 +1,10 @@
 package com.scorch.core.events.punishment;
 
-import com.scorch.core.modules.communication.NetworkEvent;
+import org.bukkit.event.Event;
+
 import com.scorch.core.modules.punish.Punishment;
 
-public abstract class PunishmentEvent extends NetworkEvent {
+public abstract class PunishmentEvent extends Event {
 
 	protected Punishment punishment;
 
@@ -11,7 +12,7 @@ public abstract class PunishmentEvent extends NetworkEvent {
 		this.punishment = p;
 	}
 
-	public final Punishment getPunishment() {
+	public Punishment getPunishment() {
 		return punishment;
 	}
 }

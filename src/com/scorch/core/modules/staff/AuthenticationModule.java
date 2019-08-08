@@ -63,7 +63,7 @@ public class AuthenticationModule extends AbstractModule implements Listener {
 								MSG.getTime(expire - (System.currentTimeMillis()
 										- sp.getData("lastAuthentication", Number.class).longValue())))
 						.replace("%player%", player.getName());
-				sp.setData("authenticated", true);
+
 				MSG.tell(player, msg);
 				continue;
 			}
@@ -72,7 +72,6 @@ public class AuthenticationModule extends AbstractModule implements Listener {
 			msg = msg.replace("%player%", player.getName());
 
 			MSG.tell(player, msg);
-			sp.setData("authenticated", false);
 		}
 	}
 
@@ -117,7 +116,6 @@ public class AuthenticationModule extends AbstractModule implements Listener {
 		msg = msg.replace("%player%", player.getName());
 
 		MSG.tell(player, msg);
-		sp.setData("authenticated", false);
 	}
 
 	@EventHandler
@@ -218,10 +216,6 @@ public class AuthenticationModule extends AbstractModule implements Listener {
 				MSG.cTell(player, "authenticated");
 				sp.setData("lastAuthentication", System.currentTimeMillis());
 				sp.setData("authenticated", true);
-				if (player.getInventory().getItemInMainHand() != null
-						&& player.getInventory().getItemInMainHand().getType() == Material.FILLED_MAP) {
-					player.getInventory().setItemInMainHand(new ItemStack((Material.AIR)));
-				}
 				return true;
 			} else {
 				MSG.tell(player, "Unable to authenticate.");

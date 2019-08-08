@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -58,7 +59,7 @@ public class ReportModule extends AbstractModule {
 
 			ScorchCore.getInstance().getDataManager().getAllObjects("reports")
 					.forEach(report -> reports.add((Report) report));
-		} catch (NoDefaultConstructorException | DataObtainException e) {
+		} catch (NoDefaultConstructorException | DataObtainException | DataPrimaryKeyException e) {
 			e.printStackTrace();
 		}
 
@@ -104,8 +105,7 @@ public class ReportModule extends AbstractModule {
 	}
 
 	public void updateReport(Report report) {
-		ScorchCore.getInstance().getDataManager().updateObjectAsync("reports", report,
-				new SQLSelector("id", report.getId()));
+		ScorchCore.getInstance().getDataManager().updateObjectAsync("reports", report);
 	}
 
 	public Inventory getReportGUI(String title, boolean showCount) {

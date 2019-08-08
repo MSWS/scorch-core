@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.scorch.core.modules.data.exceptions.*;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
@@ -15,14 +17,10 @@ import org.bukkit.permissions.PermissionAttachment;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.SQLSelector;
-import com.scorch.core.modules.data.exceptions.DataDeleteException;
-import com.scorch.core.modules.data.exceptions.DataObtainException;
-import com.scorch.core.modules.data.exceptions.DataUpdateException;
-import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;
 
 /**
- * A permission handler for ScorchGamez this module will handle adding permissions to players using groups and custom perms
+ * A permission handler for ScorchGamez this this will handle adding permissions to players using groups and custom perms
  * TODO: Sync permission updates across network using events
  */
 public class PermissionModule extends AbstractModule {
@@ -61,7 +59,7 @@ public class PermissionModule extends AbstractModule {
 			});
 
 			this.groupList = new ArrayList<>(ScorchCore.getInstance().getDataManager().getAllObjects("groups"));
-		} catch (NoDefaultConstructorException | DataObtainException e) {
+		} catch (NoDefaultConstructorException | DataObtainException | DataPrimaryKeyException e) {
 			e.printStackTrace();
 		}
 
@@ -112,8 +110,7 @@ public class PermissionModule extends AbstractModule {
 						if (!group.equals(ymlGroup)) {
 							Logger.log("&6* &cCHANGED");
 							try {
-								ScorchCore.getInstance().getDataManager().updateObject("groups", ymlGroup,
-										new SQLSelector("groupName", ymlGroup.getGroupName()));
+								ScorchCore.getInstance().getDataManager().updateObject("groups", ymlGroup);
 							} catch (DataUpdateException e) {
 								e.printStackTrace();
 							}
@@ -162,6 +159,11 @@ public class PermissionModule extends AbstractModule {
 		Logger.log("&aSuccessfully finished permission configuration.");
 
 		this.permissionListener = new PermissionListener(this);
+
+		for(Player p : Bukkit.getOnlinePlayers()){
+			PermissionPlayer player = new PermissionPlayer(p.getUniqueId(), new ArrayList<>());
+			this.addPlayer(p.getUniqueId(), player);
+		}
 	}
 
 	@Override
@@ -182,6 +184,7 @@ public class PermissionModule extends AbstractModule {
 		if (getPlayerPermissions().containsKey(uuid)) {
 			return getPlayerPermissions().get(uuid);
 		}
+		Logger.error("returning null permission player!");
 		return null;
 	}
 
@@ -198,7 +201,6 @@ public class PermissionModule extends AbstractModule {
 		if (!getPlayerPermissions().containsKey(player.getUniqueId())) {
 			PermissionPlayer permissionPlayer = new PermissionPlayer(player.getUniqueId(), new ArrayList<>());
 			addPlayer(player.getUniqueId(), permissionPlayer);
-			permissionPlayer.updatePermissions();
 		}
 		return getPlayerPermissions().get(player.getUniqueId());
 	}
@@ -228,8 +230,16 @@ public class PermissionModule extends AbstractModule {
 	 */
 	public boolean addPlayer(UUID uuid, PermissionPlayer permissionPlayer) {
 		if (!getPlayerPermissions().containsKey(uuid)) {
+			if(!permissionPlayer.hasGroup(getDefaultGroup().getGroupName())){
+				permissionPlayer.addGroup(getDefaultGroup());
+			}
+
+			if(Bukkit.getPlayer(uuid) != null){
+				permissionPlayer.createAttachment(Bukkit.getPlayer(uuid));
+			}
+
 			getPlayerPermissions().put(uuid, permissionPlayer);
-			permissionPlayer.addGroup(getDefaultGroup());
+			permissionPlayer.updatePermissions();
 			return true;
 		}
 		return false;
@@ -255,7 +265,7 @@ public class PermissionModule extends AbstractModule {
 	 * @param groupName the group to delete
 	 * @return          whether the group was deleted
 	 */
-	public boolean deleteGroup (String groupName){
+	public boolean removeGroup(String groupName){
 		PermissionGroup group = getGroup(groupName);
 		if(group == null) return false;
 		if(this.groupList.contains(group)){
@@ -268,7 +278,7 @@ public class PermissionModule extends AbstractModule {
 
 	/**
 	 * Removes the player from the list
-	 * 
+	 * <br><strong>In theory this should never be used!</strong></br>
 	 * @param player the uuid of the player
 	 */
 	public void removePlayer(Player player) {

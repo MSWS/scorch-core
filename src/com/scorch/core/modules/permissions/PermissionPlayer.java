@@ -1,8 +1,10 @@
 package com.scorch.core.modules.permissions;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.annotations.DataIgnore;
+import com.scorch.core.modules.data.annotations.DataPrimaryKey;
+import com.scorch.core.utils.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 
@@ -18,6 +20,7 @@ import java.util.*;
  */
 public class PermissionPlayer {
 
+	@DataPrimaryKey
 	private UUID uniqueId;
 	private List<String> groups;
 	private List<String> permissions;
@@ -190,7 +193,8 @@ public class PermissionPlayer {
 		if (group == null)
 			return false;
 		if (!getGroupNames().contains(group.getGroupName())) {
-			getGroups().add(group);
+			Logger.info("doesnt have group, adding %s", group.getGroupName());
+			this.groups.add(group.getGroupName());
 			updatePermissions();
 			return true;
 		}
@@ -236,11 +240,14 @@ public class PermissionPlayer {
 	 * {@link PermissionAttachment} and adds it again using the updated permissions
 	 */
 	public void updatePermissions() {
-		ScorchCore.getInstance().getDataManager().updateObjectAsync("permissions", this,
-				new SQLSelector("uniqueId", getUniqueId()));
-		Player player = (Player) getAttachment().getPermissible();
-		player.removeAttachment(getAttachment());
-		this.createAttachment(player);
+		ScorchCore.getInstance().getDataManager().updateObjectAsync("permissions", this);
+		if (Bukkit.getPlayer(getUniqueId()) != null) {
+			Player player = Bukkit.getPlayer(getUniqueId());
+			if(getAttachment() != null){
+				player.removeAttachment(getAttachment());
+			}
+			this.createAttachment(player);
+		}
 	}
 
 	/**
@@ -263,8 +270,10 @@ public class PermissionPlayer {
 	}
 
 	public PermissionGroup getPrimaryGroup() {
-		if (getGroups().size() > 0)
+		if (getGroups().size() == 0){
+			Logger.warn("groups nulL!");
 			return null;
+		}
 		PermissionGroup[] permissionGroups = new PermissionGroup[getGroups().size()];
 		getGroups().toArray(permissionGroups);
 		Arrays.sort(permissionGroups);
@@ -301,9 +310,8 @@ public class PermissionPlayer {
 	 * @param group the group to check
 	 * @return whether the player is in the group
 	 */
-	@SuppressWarnings("unlikely-arg-type")
 	public boolean hasGroup(String group) {
-		return getGroups().contains(group);
+		return this.getGroupNames().contains(group);
 	}
 
 	/**

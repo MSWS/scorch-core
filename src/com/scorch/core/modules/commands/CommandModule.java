@@ -99,7 +99,6 @@ public class CommandModule extends AbstractModule {
 		commands.put(new ConfirmReportCommand("confirmreport"), true);
 		commands.put(new PermissionsCommand("permissions"), true);
 		commands.put(new TFACommand("tfa"), true);
-		commands.put(new MessageCommand("message"), true);
 
 		enableCommands(commands.keySet().stream().collect(Collectors.toList()));
 		Logger.log("&aSuccessfully enabled &e" + commands.size() + "&a command" + (commands.size() == 1 ? "" : "s"));

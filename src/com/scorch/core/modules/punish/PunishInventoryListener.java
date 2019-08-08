@@ -19,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.players.ScorchPlayer;
-import com.scorch.core.modules.staff.TrustModule;
 import com.scorch.core.utils.MSG;
 import com.scorch.core.utils.Sounds;
 import com.scorch.core.utils.Utils;
@@ -46,11 +45,6 @@ public class PunishInventoryListener implements Listener {
 
 		if (item == null || item.getType() == Material.AIR)
 			return;
-
-		if ("trust".equals(sp.getTempData("openInventory"))) {
-			event.setCancelled(true);
-			return;
-		}
 
 		if (!sp.hasTempData("punishing"))
 			return;
@@ -138,19 +132,9 @@ public class PunishInventoryListener implements Listener {
 		String id = "";
 		for (String res : ScorchCore.getInstance().getGui().getConfigurationSection("punish").getKeys(false)) {
 			if (ScorchCore.getInstance().getGui().getInt("punish." + res + ".Slot") == event.getRawSlot()) {
-				if (item.getType().toString()
-						.equals(ScorchCore.getInstance().getGui().getString("punish." + res + ".Icon"))) {
-					id = res;
-					break;
-				}
+				id = res;
+				break;
 			}
-		}
-
-		if (id.equals("trust") && player.hasPermission("scorch.punish.viewtrust")) {
-			player.openInventory(ScorchCore.getInstance().getModule("TrustModule", TrustModule.class)
-					.getInventory(target.getUniqueId()));
-			sp.setTempData("openInventory", "trust");
-			return;
 		}
 
 		if (event.getRawSlot() == event.getInventory().getSize() - 1) {

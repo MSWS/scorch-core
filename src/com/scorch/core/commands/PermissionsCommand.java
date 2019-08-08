@@ -54,7 +54,7 @@ public class PermissionsCommand extends BukkitCommand {
                             if(sender instanceof Player && !sender.isOp()){
                                 if(ScorchCore.getInstance().getPermissionModule().getPermissionPlayer(((Player)sender)
                                         .getUniqueId()).getPrimaryGroup().getWeight() > ScorchCore.getInstance().getPermissionModule().getGroup(args[2]).getWeight()){
-                                    ScorchCore.getInstance().getPermissionModule().deleteGroup(args[2]);
+                                    ScorchCore.getInstance().getPermissionModule().removeGroup(args[2]);
                                     MSG.tell(sender, "&aSuccessfully deleted the group!");
                                 }
                                 else {
@@ -62,12 +62,18 @@ public class PermissionsCommand extends BukkitCommand {
                                 }
                             }
                             else if(sender instanceof ConsoleCommandSender || sender.isOp()){
-                                ScorchCore.getInstance().getPermissionModule().deleteGroup(args[2]);
+                                ScorchCore.getInstance().getPermissionModule().removeGroup(args[2]);
                                 MSG.tell(sender, "&aSuccessfully deleted the group!");
                             }
                         }
                         else {
                             MSG.tell(sender, "&cThat group doesn't exist!");
+                        }
+                    }
+                    else if(args[1].equalsIgnoreCase("list")){
+                        MSG.tell(sender, "&aGroups:");
+                        for(PermissionGroup group : ScorchCore.getInstance().getPermissionModule().getGroupList()){
+                            MSG.tell(sender, String.format("&e   - %s", group.getGroupName()));
                         }
                     }
                 }
@@ -278,7 +284,6 @@ public class PermissionsCommand extends BukkitCommand {
                                     if(ScorchCore.getInstance().getPermissionModule().getGroup(args[4]).getWeight() <
                                             ScorchCore.getInstance().getPermissionModule().getPermissionPlayer(((Player)sender)).getPrimaryGroup().getWeight()){
                                         if(permissionPlayer.addGroup(ScorchCore.getInstance().getPermissionModule().getGroup(args[4]))){
-
                                             MSG.tell(sender, String.format("&aSuccessfully added the group &e%s &ato &e%s&a!", args[4], args[1]));
                                         }
                                         else {

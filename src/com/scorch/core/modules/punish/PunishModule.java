@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -56,9 +57,15 @@ public class PunishModule extends AbstractModule {
 	public void initialize() {
 		joinListener = new PunishLoginListener();
 		clickListener = new PunishInventoryListener();
-		new PunishmentListener();
 
 		refreshPunishments();
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				refreshPunishments();
+			}
+		}.runTaskTimer(ScorchCore.getInstance(), 6000, 6000);
 	}
 
 	@Override
@@ -201,7 +208,7 @@ public class PunishModule extends AbstractModule {
 
 						linked.put(p.getTargetUUID(), current);
 					});
-				} catch (NoDefaultConstructorException | DataObtainException e) {
+				} catch (NoDefaultConstructorException | DataObtainException | DataPrimaryKeyException e) {
 					e.printStackTrace();
 				}
 			}
@@ -214,10 +221,5 @@ public class PunishModule extends AbstractModule {
 
 	public Punishment getPunishment(UUID uuid) {
 		return punishments.stream().filter(id -> id.getId().equals(uuid)).findFirst().orElse(null);
-	}
-
-	public void updatePunishment(Punishment p) {
-		punishments.removeIf(pn -> pn.getId().equals(p.getId()));
-		punishments.add(p);
 	}
 }

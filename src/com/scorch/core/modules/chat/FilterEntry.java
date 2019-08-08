@@ -1,6 +1,9 @@
 package com.scorch.core.modules.chat;
 
+import com.scorch.core.modules.data.annotations.DataPrimaryKey;
+
 public class FilterEntry implements Comparable<FilterEntry> {
+	@DataPrimaryKey
 	private String word;
 	private FilterType type;
 

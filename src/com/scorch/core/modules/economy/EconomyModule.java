@@ -4,6 +4,7 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
+import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;
 import org.bukkit.entity.Player;
@@ -46,7 +47,7 @@ public class EconomyModule extends AbstractModule {
 
             Logger.info("&aLoaded &e%s &aplayer funds!", playerFunds.size());
 
-        } catch (NoDefaultConstructorException | DataObtainException e) {
+        } catch (NoDefaultConstructorException | DataObtainException | DataPrimaryKeyException e) {
             e.printStackTrace();
         }
     }
@@ -191,6 +192,6 @@ public class EconomyModule extends AbstractModule {
         if(!playerFunds.containsKey(player)){
             playerFunds.put(player, new EconomyPlayer(player, 0));
         }
-        ScorchCore.getInstance().getDataManager().updateObjectAsync("economy", playerFunds.get(player), new SQLSelector("uniqueId", player));
+        ScorchCore.getInstance().getDataManager().updateObjectAsync("economy", playerFunds.get(player));
     }
 }

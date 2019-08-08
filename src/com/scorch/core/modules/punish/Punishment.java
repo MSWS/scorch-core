@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.scorch.core.modules.data.annotations.DataPrimaryKey;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -18,11 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.scorch.core.ScorchCore;
-import com.scorch.core.events.punishment.PunishmentCreateEvent;
-import com.scorch.core.events.punishment.PunishmentEvent;
-import com.scorch.core.events.punishment.PunishmentUpdateEvent;
-import com.scorch.core.modules.communication.CommunicationModule;
-import com.scorch.core.modules.communication.exceptions.WebSocketException;
 import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.annotations.DataIgnore;
 import com.scorch.core.modules.data.exceptions.DataUpdateException;
@@ -48,7 +44,9 @@ public class Punishment implements Comparable<Punishment> {
 	@DataIgnore
 	private final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy h:mm a");
 
-	private UUID id, target;
+	@DataPrimaryKey
+	private UUID id;
+	private UUID target;
 	private String staff, reason, remover, removeReason, ip, info;
 
 	private long date, duration, removeDate;
@@ -89,17 +87,6 @@ public class Punishment implements Comparable<Punishment> {
 	 * members, kicking players, etc.) Ideally should only be run once.
 	 */
 	public void execute() {
-
-		CommunicationModule cm = ScorchCore.getInstance().getCommunicationModule();
-		PunishmentCreateEvent ape = new PunishmentCreateEvent(this);
-		try {
-			cm.dispatchEvent(ape);
-		} catch (WebSocketException e) {
-			e.printStackTrace();
-		}
-		if (ape.isCancelled())
-			return;
-
 		OfflinePlayer target = Bukkit.getOfflinePlayer(this.target);
 		ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(target.getUniqueId());
 		IPTracker it = (IPTracker) ScorchCore.getInstance().getModule("IPTrackerModule");
@@ -172,18 +159,10 @@ public class Punishment implements Comparable<Punishment> {
 
 	public void update() {
 		try {
-			ScorchCore.getInstance().getDataManager().updateObject("punishments", this, new SQLSelector("id", id));
+			ScorchCore.getInstance().getDataManager().updateObject("punishments", this);
 		} catch (DataUpdateException e) {
 			e.printStackTrace();
 		}
-
-		PunishmentEvent pe = new PunishmentUpdateEvent(this);
-		try {
-			ScorchCore.getInstance().getCommunicationModule().dispatchEvent(pe);
-		} catch (WebSocketException e) {
-			e.printStackTrace();
-		}
-
 	}
 
 	public UUID getId() {

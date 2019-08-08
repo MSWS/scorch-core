@@ -9,7 +9,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.scorch.core.modules.communication.CommunicationModule;
+import com.scorch.core.modules.data.tests.DataManagerTest;
 import com.scorch.core.modules.economy.EconomyModule;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -43,6 +45,7 @@ import com.scorch.core.modules.staff.VanishModule;
 import com.scorch.core.modules.staff.WorldProtectionModule;
 import com.scorch.core.pastebin.Paste;
 import com.scorch.core.utils.Logger;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * The Core class of the plugin All initialisation is done here and it's used a
@@ -310,8 +313,10 @@ public class ScorchCore extends JavaPlugin {
 	 */
 	public String getPrefix(UUID player) {
 		PermissionPlayer pp = permissionModule.getPermissionPlayer(player);
-		if (pp == null)
+		if (pp == null){
+			Logger.warn("perm player null for %s", player);
 			return "";
+		}
 		return permissionModule.getPermissionPlayer(player).getPrimaryGroup() == null ? ""
 				: permissionModule.getPermissionPlayer(player).getPrimaryGroup().getPrefix();
 	}

@@ -47,17 +47,8 @@ public class PermissionListener implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerLeave (PlayerQuitEvent e){
-        onPlayerDisconnect(e.getPlayer());
-    }
-
-    @EventHandler
-    public void onPlayerKick (PlayerKickEvent e){
-        onPlayerDisconnect(e.getPlayer());
-    }
-
     /**
+     * @deprecated literally screws with the permission setup, 5 am code at its finest (writing this at 4:07 am btw)
      * Called when when the player disconnects, handled in it's own method because there's
      * {@link PlayerQuitEvent} and {@link PlayerKickEvent}
      * @param player the player that's disconnecting
@@ -65,7 +56,6 @@ public class PermissionListener implements Listener {
     private void onPlayerDisconnect (Player player) {
         module.removePlayer(player);
     }
-
     @EventHandler
     public void onPermissionUpdateEvent (PermissionUpdateEvent e){
         Logger.info(e.getGroupToUpdate());

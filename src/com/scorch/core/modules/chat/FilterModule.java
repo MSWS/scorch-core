@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.Listener;
@@ -93,6 +94,8 @@ public class FilterModule extends AbstractModule implements Listener {
 					Logger.log("&aSuccessfully loaded &e" + entries.size() + "&a swear word"
 							+ (entries.size() == 1 ? "" : "s") + ".");
 				} catch (NoDefaultConstructorException | DataObtainException e) {
+					e.printStackTrace();
+				} catch (DataPrimaryKeyException e) {
 					e.printStackTrace();
 				}
 			}

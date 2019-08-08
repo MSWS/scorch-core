@@ -597,7 +597,7 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	public void blockPhysicsEvent(BlockPhysicsEvent event) {
 		if (event.getSourceBlock().getType() != Material.AIR && event.getChangedType().toString().contains("RAIL"))
 			return;
-		if (!isProtected(event.getBlock()) || !isProtected(event.getSourceBlock()))
+		if (!isProtected(event.getBlock()))
 			return;
 		event.setCancelled(true);
 	}

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -58,7 +59,7 @@ public class FriendModule extends AbstractModule {
 
 					Logger.log("&aSuccessfully loaded &e" + friendships.size() + " &afriendship"
 							+ (friendships.size() == 1 ? "" : "s") + ".");
-				} catch (DataObtainException | NoDefaultConstructorException e) {
+				} catch (DataObtainException | NoDefaultConstructorException | DataPrimaryKeyException e) {
 					e.printStackTrace();
 				}
 			}
@@ -73,8 +74,7 @@ public class FriendModule extends AbstractModule {
 		Friendship newF = new Friendship(player, target);
 		newF.setStatus(status);
 
-		ScorchCore.getInstance().getDataManager().updateObjectAsync("friends", newF,
-				new SQLSelector("player", player.toString()), new SQLSelector("target", target.toString()));
+		ScorchCore.getInstance().getDataManager().updateObjectAsync("friends", newF);
 	}
 
 	public void addFriendship(Friendship friend) {
