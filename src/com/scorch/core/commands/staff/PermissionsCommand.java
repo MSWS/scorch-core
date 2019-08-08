@@ -2,12 +2,14 @@ package com.scorch.core.commands.staff;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.BukkitCommand;
+import org.bukkit.entity.Player;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.permissions.PermissionGroup;
@@ -296,6 +298,87 @@ public class PermissionsCommand extends BukkitCommand {
 		MSG.tell(sender, "/" + label + " user [Name] group [set/add/remove] [Group]");
 		MSG.tell(sender, "/" + label + " user [Name]");
 		MSG.tell(sender, "/" + label + " user [Name] [add/remove] [perm]");
+	}
+
+	@Override
+	public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+		List<String> result = new ArrayList<>();
+		if (args.length <= 1) {
+			for (String res : new String[] { "user", "group" }) {
+				if (res.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
+					result.add(res);
+			}
+
+			return result;
+		}
+
+		if (args[0].equalsIgnoreCase("user")) {
+			switch (args.length) {
+			case 2:
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					if (p.getName().toLowerCase().startsWith(args[args.length - 1].toLowerCase())) {
+						result.add(p.getName());
+					}
+				}
+				break;
+			case 3:
+				for (String res : new String[] { "group", "add", "remove" }) {
+					if (res.toLowerCase().startsWith(args[args.length - 1].toLowerCase())) {
+						result.add(res);
+					}
+				}
+				break;
+			case 4:
+				if (!args[2].equalsIgnoreCase("group"))
+					break;
+				for (String res : new String[] { "set", "add", "remove" }) {
+					if (res.toLowerCase().startsWith(args[args.length - 1].toLowerCase())) {
+						result.add(res);
+					}
+				}
+				break;
+			case 5:
+				if (!args[2].equalsIgnoreCase("group"))
+					break;
+				for (PermissionGroup group : ScorchCore.getInstance().getPermissionModule().getGroupList()) {
+					if (group.getGroupName().toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
+						result.add(group.getGroupName());
+				}
+				break;
+			}
+		} else if (args[0].equalsIgnoreCase("group")) {
+			switch (args.length) {
+			case 2:
+				if ("list".toLowerCase().startsWith(args[args.length - 1].toLowerCase())) {
+					result.add("list");
+				}
+			case 4:
+				if (args.length >= 3 && args[2].equalsIgnoreCase("parents")) {
+					for (String res : new String[] { "set", "add", "remove" }) {
+						if (res.toLowerCase().startsWith(args[args.length - 1]))
+							result.add(res);
+					}
+					break;
+				}
+				if (args[2].equalsIgnoreCase("delete"))
+					break;
+			case 5:
+				for (PermissionGroup group : ScorchCore.getInstance().getPermissionModule().getGroupList()) {
+					if (group.getGroupName().toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
+						result.add(group.getGroupName());
+				}
+				break;
+			case 3:
+				for (String res : new String[] { "create", "delete", "parents" }) {
+					if (res.toLowerCase().startsWith(args[2].toLowerCase())) {
+						result.add(res);
+					}
+				}
+				break;
+			}
+		}
+
+		return result;
 	}
 
 }
