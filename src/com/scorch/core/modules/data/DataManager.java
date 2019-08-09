@@ -36,6 +36,9 @@ import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
 
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+
 /*
  * Utility to easily save different types of objects to a database and load them
  *
@@ -96,18 +99,19 @@ public class DataManager extends AbstractModule {
 	 * @param name        the name of the database
 	 * @param storageType the column template
 	 */
-	public void createTable(String name, Class<?> storageType) throws NoDefaultConstructorException, DataPrimaryKeyException {
+	public void createTable(String name, Class<?> storageType)
+			throws NoDefaultConstructorException, DataPrimaryKeyException {
 
 		if (!hasDefaultConstructor(storageType)) {
 			throw new NoDefaultConstructorException();
 		}
 
 		if (!hasValidPrimaryKey(storageType)) {
-			throw new DataPrimaryKeyException(storageType.getName() + " Doesn't have a valid primary key value! (none at all or multiple!)");
+			throw new DataPrimaryKeyException(
+					storageType.getName() + " Doesn't have a valid primary key value! (none at all or multiple!)");
 		}
 
-		String query = "CREATE TABLE IF NOT EXISTS " + name
-				+ " (object_type TEXT NOT NULL, ";
+		String query = "CREATE TABLE IF NOT EXISTS " + name + " (object_type TEXT NOT NULL, ";
 
 		for (int i = 0; i < storageType.getDeclaredFields().length; i++) {
 			Field field = storageType.getDeclaredFields()[i];
@@ -129,10 +133,9 @@ public class DataManager extends AbstractModule {
 			if (field.getType() == int.class) {
 				query += " INT";
 			} else if (field.getType() == String.class) {
-				if(field.isAnnotationPresent(DataPrimaryKey.class)){
+				if (field.isAnnotationPresent(DataPrimaryKey.class)) {
 					query += " VARCHAR(255)";
-				}
-				else {
+				} else {
 					query += " TEXT";
 				}
 			} else if (field.getType() == boolean.class) {
@@ -142,38 +145,33 @@ public class DataManager extends AbstractModule {
 			} else if (field.getType() == UUID.class) {
 				query += " VARCHAR(36)";
 			} else if (field.getType().isEnum()) {
-				if(field.isAnnotationPresent(DataPrimaryKey.class)){
+				if (field.isAnnotationPresent(DataPrimaryKey.class)) {
 					query += " VARCHAR(255)";
-				}
-				else {
+				} else {
 					query += " TEXT";
 				}
 			} else if (Collection.class.isAssignableFrom(field.getType())) {
-				if(field.isAnnotationPresent(DataPrimaryKey.class)){
+				if (field.isAnnotationPresent(DataPrimaryKey.class)) {
 					query += " VARCHAR(255)";
-				}
-				else {
+				} else {
 					query += " TEXT";
 				}
 			} else if (Map.class.isAssignableFrom(field.getType())) {
-				if(field.isAnnotationPresent(DataPrimaryKey.class)){
+				if (field.isAnnotationPresent(DataPrimaryKey.class)) {
 					query += " VARCHAR(255)";
-				}
-				else {
+				} else {
 					query += " TEXT";
 				}
 			} else if (field.getType() == Location.class) {
-				if(field.isAnnotationPresent(DataPrimaryKey.class)){
+				if (field.isAnnotationPresent(DataPrimaryKey.class)) {
 					query += " VARCHAR(255)";
-				}
-				else {
+				} else {
 					query += " TEXT";
 				}
 			} else {
-				if(field.isAnnotationPresent(DataPrimaryKey.class)){
+				if (field.isAnnotationPresent(DataPrimaryKey.class)) {
 					query += " VARCHAR(255)";
-				}
-				else {
+				} else {
 					query += " TEXT";
 				}
 			}
@@ -182,7 +180,7 @@ public class DataManager extends AbstractModule {
 				query += " NOT NULL ";
 			}
 
-			if(field.isAnnotationPresent(DataPrimaryKey.class)){
+			if (field.isAnnotationPresent(DataPrimaryKey.class)) {
 				query += " PRIMARY KEY";
 			}
 
@@ -196,26 +194,29 @@ public class DataManager extends AbstractModule {
 	}
 
 	/**
-	 * @deprecated You should always use {@link DataManager#updateObject(String, Object)} in the future this method
-	 * will be removed and {@link DataManager#updateObject(String, Object)} will be renamed to "saveObject"
+	 * @deprecated You should always use
+	 *             {@link DataManager#updateObject(String, Object)} in the future
+	 *             this method will be removed and
+	 *             {@link DataManager#updateObject(String, Object)} will be renamed
+	 *             to "saveObject"
 	 *
-	 * Saves the object to table, automatically parses all fields of the object to
-	 * their sql equivalent. <br>
-	 * Supported field types include:</b> <br>
-	 * <ul>
-	 * <li>{@link Integer}</li>
-	 * <li>{@link String}</li>
-	 * <li>{@link Boolean}</li>
-	 * <li>{@link Long}</li>
-	 * <li>{@link UUID}</li>
-	 * <li>{@link Location}</li>
-	 * <li>{@link Collection}</li>
-	 * <li>{@link Map}</li>
-	 * </ul>
-	 * </br>
-	 * <br>
-	 * If the type isn't listed above, it will try to convert the object to json
-	 * using Google's {@link Gson}</br>
+	 *             Saves the object to table, automatically parses all fields of the
+	 *             object to their sql equivalent. <br>
+	 *             Supported field types include:</b> <br>
+	 *             <ul>
+	 *             <li>{@link Integer}</li>
+	 *             <li>{@link String}</li>
+	 *             <li>{@link Boolean}</li>
+	 *             <li>{@link Long}</li>
+	 *             <li>{@link UUID}</li>
+	 *             <li>{@link Location}</li>
+	 *             <li>{@link Collection}</li>
+	 *             <li>{@link Map}</li>
+	 *             </ul>
+	 *             </br>
+	 *             <br>
+	 *             If the type isn't listed above, it will try to convert the object
+	 *             to json using Google's {@link Gson}</br>
 	 * 
 	 * @param table  the table to save <code>object</code> to
 	 * @param object the object to save
@@ -387,7 +388,8 @@ public class DataManager extends AbstractModule {
 				Class<?> clazz = Class.forName(className);
 				Object dataObject = clazz.newInstance();
 
-				// Start at 2 since columns start counting at 1 and we need to skip the first (object_type)
+				// Start at 2 since columns start counting at 1 and we need to skip the first
+				// (object_type)
 				int columnIndex = 2;
 
 				// Start at one since we've already gotten the class name ^
@@ -469,7 +471,8 @@ public class DataManager extends AbstractModule {
 				Class<?> clazz = Class.forName(className);
 				Object dataObject = clazz.newInstance();
 
-				// Start at 2 since columns start counting at 1 and we need to skip the first (object_type)
+				// Start at 2 since columns start counting at 1 and we need to skip the first
+				// (object_type)
 				int columnIndex = 2;
 
 				// Start at one since we've already gotten the class name ^
@@ -617,8 +620,8 @@ public class DataManager extends AbstractModule {
 	 * Updates the object in the database using {@link SQLSelector}s to select the
 	 * object
 	 * 
-	 * @param table        the table to update data in
-	 * @param object       the object to update
+	 * @param table  the table to update data in
+	 * @param object the object to update
 	 */
 	public void updateObject(String table, Object object) throws DataUpdateException {
 		if (table == null || table.equals(""))
@@ -626,66 +629,61 @@ public class DataManager extends AbstractModule {
 
 		String sql = String.format("INSERT INTO %s (object_type", table);
 
-		for(int i = 0; i < object.getClass().getDeclaredFields().length; i++){
+		for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
 			Field field = object.getClass().getDeclaredFields()[i];
 			// Ignore field if the annotation is present
-			if(field.isAnnotationPresent(DataIgnore.class)) {
-				if(i == object.getClass().getDeclaredFields().length-1){
+			if (field.isAnnotationPresent(DataIgnore.class)) {
+				if (i == object.getClass().getDeclaredFields().length - 1) {
 					sql += ") VALUES (";
 				}
 				continue;
 			}
 
-			if(i == object.getClass().getDeclaredFields().length-1){
-				sql += ", " + field.getName() +  ") VALUES (?, ";
-			}
-			else {
+			if (i == object.getClass().getDeclaredFields().length - 1) {
+				sql += ", " + field.getName() + ") VALUES (?, ";
+			} else {
 				sql += ", " + field.getName();
 			}
 		}
 
-		for(int i = 0; i < object.getClass().getDeclaredFields().length; i++){
+		for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
 
 			// Ignore field if the annotation is present
-			if(object.getClass().getDeclaredFields()[i].isAnnotationPresent(DataIgnore.class)) {
-				if(i == object.getClass().getDeclaredFields().length-1){
+			if (object.getClass().getDeclaredFields()[i].isAnnotationPresent(DataIgnore.class)) {
+				if (i == object.getClass().getDeclaredFields().length - 1) {
 					sql += "?) ON DUPLICATE KEY UPDATE ";
 				}
 				continue;
 			}
 
-			if(i == object.getClass().getDeclaredFields().length-1){
+			if (i == object.getClass().getDeclaredFields().length - 1) {
 				sql += "?) ON DUPLICATE KEY UPDATE ";
-			}
-			else {
+			} else {
 				sql += "?, ";
 			}
 		}
 
-		for(int i = 0; i < object.getClass().getDeclaredFields().length; i++){
+		for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
 			// Ignore field if annotation is present
-			if(object.getClass().getDeclaredFields()[i].isAnnotationPresent(DataIgnore.class)) {
-				if(i == object.getClass().getDeclaredFields().length-1){
+			if (object.getClass().getDeclaredFields()[i].isAnnotationPresent(DataIgnore.class)) {
+				if (i == object.getClass().getDeclaredFields().length - 1) {
 					sql += ";";
-				}
-				else if(i == 0){
-					sql += object.getClass().getDeclaredFields()[i].getName() + "=VALUES(" +
-							object.getClass().getDeclaredFields()[i].getName() + ")";
+				} else if (i == 0) {
+					sql += object.getClass().getDeclaredFields()[i].getName() + "=VALUES("
+							+ object.getClass().getDeclaredFields()[i].getName() + ")";
 				}
 				continue;
 			}
 
-			if(i == object.getClass().getDeclaredFields().length-1){
-				sql += ", " + object.getClass().getDeclaredFields()[i].getName() + "=VALUES(" +
-						object.getClass().getDeclaredFields()[i].getName() + ");";
-			}
-			else if(i == 0){
-				sql += object.getClass().getDeclaredFields()[i].getName() + "=VALUES(" +
-						object.getClass().getDeclaredFields()[i].getName() + ")";
-			}
-			else {
-				sql += ", " + object.getClass().getDeclaredFields()[i].getName() + "=VALUES(" +
-						object.getClass().getDeclaredFields()[i].getName() + ")";
+			if (i == object.getClass().getDeclaredFields().length - 1) {
+				sql += ", " + object.getClass().getDeclaredFields()[i].getName() + "=VALUES("
+						+ object.getClass().getDeclaredFields()[i].getName() + ");";
+			} else if (i == 0) {
+				sql += object.getClass().getDeclaredFields()[i].getName() + "=VALUES("
+						+ object.getClass().getDeclaredFields()[i].getName() + ")";
+			} else {
+				sql += ", " + object.getClass().getDeclaredFields()[i].getName() + "=VALUES("
+						+ object.getClass().getDeclaredFields()[i].getName() + ")";
 			}
 		}
 
@@ -697,9 +695,10 @@ public class DataManager extends AbstractModule {
 
 			statement.setString(1, object.getClass().getName());
 
-			for(int i = 0; i < object.getClass().getDeclaredFields().length; i++){
+			for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
 				// Ignore field if annotation is present
-				if(object.getClass().getDeclaredFields()[i].isAnnotationPresent(DataIgnore.class)) continue;
+				if (object.getClass().getDeclaredFields()[i].isAnnotationPresent(DataIgnore.class))
+					continue;
 				Field field = object.getClass().getDeclaredFields()[i];
 
 				field.setAccessible(true);
@@ -730,9 +729,9 @@ public class DataManager extends AbstractModule {
 			}
 
 			statement.executeUpdate();
-		}
-		catch (SQLException | IllegalAccessException e){
-			e.printStackTrace();;
+		} catch (SQLException | IllegalAccessException e) {
+			e.printStackTrace();
+			;
 		}
 	}
 
@@ -740,8 +739,8 @@ public class DataManager extends AbstractModule {
 	 * Updates the object in the database using {@link SQLSelector}s to select the
 	 * object
 	 * 
-	 * @param table        the table to update data in
-	 * @param object       the object to update
+	 * @param table  the table to update data in
+	 * @param object the object to update
 	 */
 	public void updateObjectAsync(String table, Object object) {
 		new BukkitRunnable() {
@@ -774,10 +773,10 @@ public class DataManager extends AbstractModule {
 		return false;
 	}
 
-	private boolean hasValidPrimaryKey(Class<?> type){
+	private boolean hasValidPrimaryKey(Class<?> type) {
 		int valid = 0;
-		for(Field field : type.getDeclaredFields()){
-			if(field.isAnnotationPresent(DataPrimaryKey.class)){
+		for (Field field : type.getDeclaredFields()) {
+			if (field.isAnnotationPresent(DataPrimaryKey.class)) {
 				valid += 1;
 			}
 		}
@@ -836,7 +835,7 @@ public class DataManager extends AbstractModule {
 				Logger.log("Saving player data of %s", entry.getKey());
 				updateObject("players", entry.getValue());
 				if (Bukkit.getPlayer(entry.getKey()) == null) // Remove player data if the player is no longer
-					it.remove();                              // on the server
+					it.remove(); // on the server
 			}
 		} catch (DataUpdateException e) {
 			e.printStackTrace();
