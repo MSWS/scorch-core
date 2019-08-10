@@ -22,6 +22,7 @@ import com.scorch.core.modules.chat.FilterEntry.FilterType;
 import com.scorch.core.modules.data.SQLSelector;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
+import com.scorch.core.modules.data.exceptions.DataUpdateException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
@@ -84,7 +85,7 @@ public class FilterModule extends AbstractModule implements Listener {
 					if (entries.isEmpty())
 						for (FilterEntry msg : def.stream().filter(cm -> !containsWord(cm.getWord()))
 								.collect(Collectors.toList())) {
-							ScorchCore.getInstance().getDataManager().saveObject("swears", msg);
+							ScorchCore.getInstance().getDataManager().updateObject("swears", msg);
 							entries.add(msg);
 
 							List<String> words = links.getOrDefault(msg.getType(), new ArrayList<>());
@@ -96,6 +97,8 @@ public class FilterModule extends AbstractModule implements Listener {
 				} catch (NoDefaultConstructorException | DataObtainException e) {
 					e.printStackTrace();
 				} catch (DataPrimaryKeyException e) {
+					e.printStackTrace();
+				} catch (DataUpdateException e) {
 					e.printStackTrace();
 				}
 			}
@@ -123,7 +126,11 @@ public class FilterModule extends AbstractModule implements Listener {
 		tmp.add(entry.getWord());
 		links.put(entry.getType(), tmp);
 
-		ScorchCore.getInstance().getDataManager().saveObject("swears", entry);
+		try {
+			ScorchCore.getInstance().getDataManager().updateObject("swears", entry);
+		} catch (DataUpdateException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void removeWord(FilterEntry entry) {

@@ -55,18 +55,25 @@ public class MACommand extends BukkitCommand {
 
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			if (p.equals(sender)) {
-				MSG.tell(p, ScorchCore.getInstance().getMessage("maformat-sender").replace("%group%", "")
-						.replace("%player%", target.getName()).replace("%message%", builder.toString().trim()));
+				MSG.tell(p,
+						ScorchCore.getInstance().getMessage("maformat-sender")
+								.replace("%group%", ScorchCore.getInstance().getPrefix(p))
+								.replace("%player%", target.getName()).replace("%message%", builder.toString().trim()));
 				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 2, 1.5f);
 			}
 			if (p.equals(target)) {
-				MSG.tell(p, ScorchCore.getInstance().getMessage("maformat-receiver").replace("%group%", "")
+				MSG.tell(p, ScorchCore.getInstance().getMessage("maformat-receiver")
+						.replace("%group%",
+								(sender instanceof Player) ? ScorchCore.getInstance().getPrefix((Player) sender) : "&4")
 						.replace("%player%", sender.getName()).replace("%message%", builder.toString().trim()));
 				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 2, 2f);
 			} else if (!p.equals(sender) && p.hasPermission("scorch.command.ma.watch")) {
-				MSG.tell(p, ScorchCore.getInstance().getMessage("maformat-spec").replace("%senderprefix%", "")
+				MSG.tell(p, ScorchCore.getInstance().getMessage("maformat-spec")
+						.replace("%senderprefix%",
+								(sender instanceof Player) ? ScorchCore.getInstance().getPrefix((Player) sender) : "&4")
 						.replace("%sendername%", sender.getName()).replace("%message%", builder.toString().trim())
-						.replace("%receiverprefix%", "").replace("%receivername%", target.getName()));
+						.replace("%receiverprefix%", ScorchCore.getInstance().getPrefix(target))
+						.replace("%receivername%", target.getName()));
 			}
 		}
 

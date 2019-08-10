@@ -81,13 +81,7 @@ public class OfflineMessagesModule extends AbstractModule {
 		List<OfflineMessage> temp = linked.getOrDefault(msg.getReceiver(), new ArrayList<>());
 		temp.add(msg);
 		linked.put(msg.getReceiver(), temp);
-
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				ScorchCore.getInstance().getDataManager().saveObject("offlinemessages", msg);
-			}
-		}.runTaskAsynchronously(ScorchCore.getInstance());
+		ScorchCore.getInstance().getDataManager().updateObjectAsync("offlinemessages", msg);
 	}
 
 	public void update(OfflineMessage old, OfflineMessage newM) {

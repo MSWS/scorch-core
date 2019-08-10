@@ -1,7 +1,7 @@
 name: ScorchCore
 main: com.scorch.core.ScorchCore
 description: Core
-version: 0.0.1
+version: 1.0
 api-version: 1.13
 authors:
 - MSWS

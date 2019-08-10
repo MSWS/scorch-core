@@ -1,0 +1,31 @@
+groups:
+  default:
+    weight: 0
+    default: true
+    prefix: ''
+    permissions:
+    - scorch.command.a
+    - scorch.command.help
+    - -bukkit.command.plugins
+  tester:
+    inherits:
+    - default
+    weight: 1
+    default: false
+    prefix: '&7Tester'
+    permissions:
+    - scorch.command.test
+    - scorch.command.report
+    - scorch.command.report.2
+  trainee:
+    inherits:
+    - tester
+    weight: 2
+    default: false
+    prefix: '&7Trainee'
+    permissions:
+    - scorch.command.punish
+    - scorch.command.reporthandle
+    - scorch.command.reportclose
+    - scorch.command.confirmreport
+    - scorch.command.reportinfo
