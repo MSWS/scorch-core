@@ -21,6 +21,7 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.events.punishment.PunishmentCreateEvent;
 import com.scorch.core.events.punishment.PunishmentEvent;
 import com.scorch.core.events.punishment.PunishmentUpdateEvent;
+import com.scorch.core.events.punishment.TestEvent;
 import com.scorch.core.modules.communication.CommunicationModule;
 import com.scorch.core.modules.communication.exceptions.WebSocketException;
 import com.scorch.core.modules.data.annotations.DataIgnore;
@@ -91,17 +92,13 @@ public class Punishment implements Comparable<Punishment> {
 	 * members, kicking players, etc.) Ideally should only be run once.
 	 */
 	public void execute() {
-
 		CommunicationModule cm = ScorchCore.getInstance().getCommunicationModule();
-		PunishmentCreateEvent ape = new PunishmentCreateEvent(this);
 		try {
-			cm.dispatchEvent(ape);
+			cm.dispatchEvent(new PunishmentCreateEvent(this));
+			cm.dispatchEvent(new TestEvent(this));
 		} catch (WebSocketException e) {
 			e.printStackTrace();
 		}
-		if (ape.isCancelled())
-			return;
-
 
 		OfflinePlayer target = Bukkit.getOfflinePlayer(this.target);
 		ScorchPlayer sp = ScorchCore.getInstance().getDataManager().getScorchPlayer(target.getUniqueId());

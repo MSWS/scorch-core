@@ -44,7 +44,7 @@ public class CommunicationModule extends AbstractModule {
      */
     public void dispatchEvent (NetworkEvent event) throws WebSocketException {
         if(this.websocket.isOpen()){
-            this.websocket.send(new EventPacket(event).toString());
+			this.websocket.send(new EventPacket(event).toString());
         }
         else {
             Logger.error("Tried to dispatch a network event even though the websocket isn't connected!");
