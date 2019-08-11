@@ -36,9 +36,6 @@ import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.utils.Logger;
 import com.scorch.core.utils.MSG;
 
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-
 /*
  * Utility to easily save different types of objects to a database and load them
  *
@@ -664,26 +661,36 @@ public class DataManager extends AbstractModule {
 		}
 
 		for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
+			Field field = object.getClass().getDeclaredFields()[i];
 			// Ignore field if annotation is present
-			if (object.getClass().getDeclaredFields()[i].isAnnotationPresent(DataIgnore.class)) {
+			if (field.isAnnotationPresent(DataIgnore.class)) {
 				if (i == object.getClass().getDeclaredFields().length - 1) {
 					sql += ";";
 				} else if (i == 0) {
-					sql += object.getClass().getDeclaredFields()[i].getName() + "=VALUES("
-							+ object.getClass().getDeclaredFields()[i].getName() + ")";
+					Field tmp = field;
+					while (i < object.getClass().getDeclaredFields().length) {
+						tmp = object.getClass().getDeclaredFields()[i];
+						if (tmp.isAnnotationPresent(DataIgnore.class)) {
+							i++;
+							continue;
+						}
+
+						sql += tmp.getName() + "=VALUES(" + tmp.getName() + ")";
+
+						if (i == object.getClass().getDeclaredFields().length - 1)
+							sql += ";";
+						break;
+					}
 				}
 				continue;
 			}
 
 			if (i == object.getClass().getDeclaredFields().length - 1) {
-				sql += ", " + object.getClass().getDeclaredFields()[i].getName() + "=VALUES("
-						+ object.getClass().getDeclaredFields()[i].getName() + ");";
+				sql += ", " + field.getName() + "=VALUES(" + field.getName() + ");";
 			} else if (i == 0) {
-				sql += object.getClass().getDeclaredFields()[i].getName() + "=VALUES("
-						+ object.getClass().getDeclaredFields()[i].getName() + ")";
+				sql += field.getName() + "=VALUES(" + field.getName() + ")";
 			} else {
-				sql += ", " + object.getClass().getDeclaredFields()[i].getName() + "=VALUES("
-						+ object.getClass().getDeclaredFields()[i].getName() + ")";
+				sql += ", " + field.getName() + "=VALUES(" + field.getName() + ")";
 			}
 		}
 
@@ -714,7 +721,7 @@ public class DataManager extends AbstractModule {
 				} else if (field.getType() == UUID.class) {
 					statement.setString(columnIndex, ((UUID) field.get(object)).toString());
 				} else if (field.getType().isEnum()) {
-					statement.setString(columnIndex, field.toString());
+					statement.setString(columnIndex, field.get(object)+"");
 				} else if (Collection.class.isAssignableFrom(field.getType())) {
 					statement.setString(columnIndex, DataManager.getGson().toJson(field.get(object)));
 				} else if (Map.class.isAssignableFrom(field.getType())) {
@@ -731,7 +738,6 @@ public class DataManager extends AbstractModule {
 			statement.executeUpdate();
 		} catch (SQLException | IllegalAccessException e) {
 			e.printStackTrace();
-			;
 		}
 	}
 
