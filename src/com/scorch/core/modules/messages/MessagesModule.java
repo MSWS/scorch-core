@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -153,8 +155,8 @@ public class MessagesModule extends AbstractModule implements Listener {
 
 	}
 
-	public void sendMessage(UUID sender, UUID receiver, String message) {
-		MessageSendEvent mse = new MessageSendEvent(sender, receiver, message);
+	public void sendMessage(Player sender, UUID receiver, String message) {
+		MessageSendEvent mse = new MessageSendEvent(sender.getUniqueId(), sender.getName(), receiver, message);
 		try {
 			ScorchCore.getInstance().getCommunicationModule().dispatchEvent(mse);
 		} catch (WebSocketException e) {
@@ -188,12 +190,12 @@ public class MessagesModule extends AbstractModule implements Listener {
 		UUID receiver = event.getReceiver(), sender = event.getSender();
 		String message = event.getMessage();
 
-		OfflinePlayer senderPlayer = Bukkit.getOfflinePlayer(sender);
+		OfflinePlayer receiverPlayer = Bukkit.getOfflinePlayer(sender);
 
-		if (!senderPlayer.isOnline())
+		if (!receiverPlayer.isOnline())
 			return;
 
-		MSG.tell(senderPlayer.getPlayer(), message);
+		MSG.tell(receiverPlayer.getPlayer(), message);
 
 		MessageReceiveEvent mre = new MessageReceiveEvent(receiver, sender, message);
 		try {

@@ -2,6 +2,9 @@ package com.scorch.core.modules.communication.websocket;
 
 import java.net.URI;
 
+import com.scorch.core.modules.communication.websocket.packets.in.NetworkPlayerDisconnectPacket;
+import com.scorch.core.modules.communication.websocket.packets.in.NetworkPlayerJoinPacket;
+import com.scorch.core.modules.communication.websocket.packets.in.NetworkPlayerListPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.java_websocket.client.WebSocketClient;
@@ -69,7 +72,20 @@ public class SocketClient extends WebSocketClient {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-
+        }
+        else if(PacketUtils.getPacketType(message).equals("NetworkPlayerJoinPacket")){
+            NetworkPlayerJoinPacket packet = gson.fromJson(message, NetworkPlayerJoinPacket.class);
+            ScorchCore.getInstance().getCommunicationModule().addNetworkPlayer(packet.getPlayer());
+        }
+        else if(PacketUtils.getPacketType(message).equals("NetworkPlayerDisconnectPacket")){
+            NetworkPlayerDisconnectPacket packet = gson.fromJson(message, NetworkPlayerDisconnectPacket.class);
+            ScorchCore.getInstance().getCommunicationModule().removeNetworkPlayer(packet.getPlayer());
+        }
+        else if(PacketUtils.getPacketType(message).equals("NetworkPlayerListPacket")){
+            NetworkPlayerListPacket packet = gson.fromJson(message, NetworkPlayerListPacket.class);
+            packet.getOnlinePlayers().forEach(player -> {
+                ScorchCore.getInstance().getCommunicationModule().addNetworkPlayer(player);
+            });
         }
     }
 
