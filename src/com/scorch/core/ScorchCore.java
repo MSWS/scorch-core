@@ -1,6 +1,9 @@
 package com.scorch.core;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,10 +11,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import com.google.common.collect.Iterables;
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.ModulePriority;
 import com.scorch.core.modules.chat.ChatModule;
@@ -44,6 +55,7 @@ import com.scorch.core.modules.staff.VanishModule;
 import com.scorch.core.modules.staff.WorldProtectionModule;
 import com.scorch.core.pastebin.Paste;
 import com.scorch.core.utils.Logger;
+import com.scorch.core.utils.MSG;
 
 /**
  * The Core class of the plugin All initialisation is done here and it's used a
@@ -52,7 +64,7 @@ import com.scorch.core.utils.Logger;
  *
  * @version 0.0.1
  */
-public class ScorchCore extends JavaPlugin {
+public class ScorchCore extends JavaPlugin implements PluginMessageListener {
 
 	private static ScorchCore instance;
 
@@ -71,6 +83,8 @@ public class ScorchCore extends JavaPlugin {
 	private File guiYml = new File(getDataFolder(), "guis.yml");
 	private YamlConfiguration gui;
 
+	private String serverName;
+
 	@Override
 	public void onEnable() {
 		instance = this;
@@ -83,7 +97,8 @@ public class ScorchCore extends JavaPlugin {
 		this.modules = new HashSet<>();
 
 		// Data modules
-		this.communicationModule = (CommunicationModule)  registerModule(new CommunicationModule("CommunicationModule"), ModulePriority.HIGHEST);
+		this.communicationModule = (CommunicationModule) registerModule(new CommunicationModule("CommunicationModule"),
+				ModulePriority.HIGHEST);
 		registerModule(new ConnectionManager("ConnectionManager"), ModulePriority.HIGHEST);
 		this.dataManager = (DataManager) registerModule(
 				new DataManager("DataManager", (ConnectionManager) getModule("ConnectionManager")),
@@ -122,6 +137,26 @@ public class ScorchCore extends JavaPlugin {
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}
+
+		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+		getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if (serverName != null)
+					cancel();
+				Player p = Iterables.getFirst(Bukkit.getOnlinePlayers(), null);
+				if (p == null)
+					return;
+
+				ByteArrayDataOutput out = ByteStreams.newDataOutput();
+				out.writeUTF("GetServer");
+
+				p.sendPluginMessage(ScorchCore.getInstance(), "BungeeCord", out.toByteArray());
+			}
+		}.runTaskTimer(ScorchCore.getInstance(), 0, 20 * 10);
+
 	}
 
 	@Override
@@ -256,8 +291,8 @@ public class ScorchCore extends JavaPlugin {
 
 	/**
 	 * Returns the {@link CommunicationModule} object without having to use
-	 * {@link ScorchCore#getModule(String)} and casting it, This is purely to make it easier to write code
-	 * using the {@link CommunicationModule}
+	 * {@link ScorchCore#getModule(String)} and casting it, This is purely to make
+	 * it easier to write code using the {@link CommunicationModule}
 	 *
 	 * @see CommunicationModule
 	 * @return the communication module
@@ -312,7 +347,7 @@ public class ScorchCore extends JavaPlugin {
 	 */
 	public String getPrefix(UUID player) {
 		PermissionPlayer pp = permissionModule.getPermissionPlayer(player);
-		if (pp == null){
+		if (pp == null) {
 			Logger.warn("perm player null for %s", player);
 			return "";
 		}
@@ -357,5 +392,73 @@ public class ScorchCore extends JavaPlugin {
 
 	public double getTPS(int ticks) {
 		return ((LagModule) getModule("LagModule")).getTPS(ticks);
+	}
+
+	@Override
+	public void onPluginMessageReceived(String channel, Player player, byte[] message) {
+		if (!channel.equals("BungeeCord"))
+			return;
+		ByteArrayDataInput in = ByteStreams.newDataInput(message);
+		String subchannel = in.readUTF();
+		Logger.log("Received message: " + subchannel);
+
+		switch (subchannel) {
+		case "Scorch":
+			String method = in.readUTF();
+			Logger.log("method: " + method);
+			switch (method.split(" ")[0]) {
+			case "MESSAGE":
+				Player target = Bukkit.getPlayer(method.split(" ")[1]);
+				if (target == null)
+					return;
+				String msg = "";
+				for (int i = 2; i < method.split(" ").length; i++) {
+					msg += method.split(" ")[i] + " ";
+				}
+
+				msg = msg.trim();
+
+				MSG.tell(target, msg);
+				break;
+			case "FIND":
+				Player found = Bukkit.getPlayer(method.split(" ")[1]);
+				if (found == null)
+					return;
+
+				ByteArrayDataOutput out = ByteStreams.newDataOutput();
+				out.writeUTF("Forward");
+				out.writeUTF("ALL");
+				out.writeUTF("Scorch");
+				out.writeUTF("MESSAGE " + method.split(" ")[2] + " Found on server " + serverName + "!");
+
+				found.sendPluginMessage(this, "BungeeCord", out.toByteArray());
+				break;
+			default:
+				Logger.log("Unknown method: " + method);
+//				String subChannel = in.readUTF();
+				short len = in.readShort();
+				byte[] msgbytes = new byte[len];
+				in.readFully(msgbytes);
+
+				DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+				try {
+					String somedata = msgin.readUTF();
+					short somenumber = msgin.readShort();
+					Logger.log("data: " + somedata + " num: " + somenumber);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} // Read the data in the same way you wrote it
+				break;
+			}
+			break;
+		case "GetServer":
+			this.serverName = in.readUTF();
+			Logger.log("Received server name: " + serverName);
+			break;
+		default:
+			Logger.log("Unknown channel: " + subchannel);
+			break;
+		}
 	}
 }

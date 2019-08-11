@@ -129,8 +129,10 @@ public class PermissionPlayer {
 
 		// Add the player's own custom permissions
 		getPermissions().forEach(node -> {
-			if (!attachment.getPermissions().containsKey(node) || !attachment.getPermissions().get(node)) {
-				attachment.setPermission(node, true);
+			if (!attachment.getPermissions().containsKey(node)) {
+				if (node.startsWith("-")) {
+					attachment.setPermission(node, !node.startsWith("-"));
+				}
 			}
 		});
 
@@ -154,7 +156,7 @@ public class PermissionPlayer {
 		// Add own group's permissions
 		group.getPermissions().forEach(permission -> {
 			if (!attachment.getPermissions().containsKey(permission) || !attachment.getPermissions().get(permission)) {
-				attachment.setPermission(permission, true);
+				attachment.setPermission(permission, !permission.startsWith("-"));
 			}
 		});
 	}
@@ -235,8 +237,8 @@ public class PermissionPlayer {
 	public boolean setGroup(PermissionGroup group) {
 		if (group == null)
 			return false;
-		getGroups().clear();
-		getGroups().add(group);
+		groups.clear();
+		groups.add(group.getGroupName());
 		updatePermissions();
 		return true;
 	}

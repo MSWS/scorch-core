@@ -61,7 +61,6 @@ public class PunishModule extends AbstractModule {
 		new PunishmentListener();
 
 		refreshPunishments();
-
 	}
 
 	@Override

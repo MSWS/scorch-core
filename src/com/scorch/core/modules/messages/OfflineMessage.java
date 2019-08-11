@@ -2,8 +2,11 @@ package com.scorch.core.modules.messages;
 
 import java.util.UUID;
 
-public class OfflineMessage implements Comparable<OfflineMessage> {
+import com.scorch.core.modules.data.annotations.DataPrimaryKey;
 
+public class OfflineMessage implements Comparable<OfflineMessage> {
+	@DataPrimaryKey
+	private UUID uuid;
 	private String sender;
 	private UUID receiver;
 	private String message;
@@ -14,6 +17,7 @@ public class OfflineMessage implements Comparable<OfflineMessage> {
 	}
 
 	public OfflineMessage(String sender, UUID receiver, String message) {
+		this.uuid = UUID.randomUUID();
 		this.sender = sender;
 		this.receiver = receiver;
 		this.message = message;

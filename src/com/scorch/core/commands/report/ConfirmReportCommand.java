@@ -10,7 +10,7 @@ public class ConfirmReportCommand extends BukkitCommand {
 
 	public ConfirmReportCommand(String name) {
 		super(name);
-		setPermission("scorch.command.reportclose");
+		setPermission("scorch.command.confirmreport");
 		setPermissionMessage(ScorchCore.getInstance().getMessage("noperm"));
 	}
 

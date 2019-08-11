@@ -33,8 +33,10 @@ import com.scorch.core.commands.report.ReportInfoCommand;
 import com.scorch.core.commands.staff.ACommand;
 import com.scorch.core.commands.staff.BVersionCommand;
 import com.scorch.core.commands.staff.BuildModeCommand;
+import com.scorch.core.commands.staff.FindCommand;
 import com.scorch.core.commands.staff.GamemodeCommand;
 import com.scorch.core.commands.staff.MACommand;
+import com.scorch.core.commands.staff.PermissionsCommand;
 import com.scorch.core.commands.staff.PunishCommand;
 import com.scorch.core.commands.staff.RACommand;
 import com.scorch.core.commands.staff.TFACommand;
@@ -43,7 +45,6 @@ import com.scorch.core.commands.staff.TestCommand;
 import com.scorch.core.commands.staff.ToggleCommand;
 import com.scorch.core.commands.staff.UnpunishCommand;
 import com.scorch.core.commands.staff.VanishCommand;
-import com.scorch.core.commands.staff.PermissionsCommand;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.utils.Logger;
 
@@ -108,10 +109,10 @@ public class CommandModule extends AbstractModule {
 		commands.put(new ReportCloseCommand("reportclose"), true);
 		commands.put(new ReportInfoCommand("reportinfo"), true);
 		commands.put(new ConfirmReportCommand("confirmreport"), true);
-//		commands.put(new PermissionsCommand("permissions"), true);
 		commands.put(new TFACommand("tfa"), true);
 		commands.put(new MessageCommand("message"), true);
 		commands.put(new PermissionsCommand("permissions"), true);
+		commands.put(new FindCommand("find"), true);
 
 		enableCommands(commands.keySet().stream().collect(Collectors.toList()));
 		Logger.log("&aSuccessfully enabled &e" + commands.size() + "&a command" + (commands.size() == 1 ? "" : "s"));

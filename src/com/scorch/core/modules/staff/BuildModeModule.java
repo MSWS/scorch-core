@@ -185,7 +185,8 @@ public class BuildModeModule extends AbstractModule implements Listener {
 				tracker.getOrDefault(uuid, new ArrayList<>()).size() - blocks,
 				tracker.getOrDefault(uuid, new ArrayList<>()).size());
 
-		int rollbackBlocks = Math.max(b.size() / 100, 1);
+		int rollbackBlocks = Math.max(tracker.getOrDefault(uuid, new ArrayList<>()).size() / 500, 1);
+		long start = System.currentTimeMillis();
 
 		BukkitRunnable runnable = new BukkitRunnable() {
 			int pos = b.size() - 1;
@@ -197,7 +198,11 @@ public class BuildModeModule extends AbstractModule implements Listener {
 					cancel();
 					return;
 				}
-				for (int i = 0; i < rollbackBlocks && pos >= 0; i++) {
+				int off = rollbackBlocks;
+				if (System.currentTimeMillis() - start > 10000) {
+					off += ((System.currentTimeMillis() - start) / 10000);
+				}
+				for (int i = 0; i < off && pos >= 0; i++) {
 					Location l = b.get(pos);
 					if (l.getBlock().getType() == Material.AIR) {
 						pos--;
@@ -211,7 +216,6 @@ public class BuildModeModule extends AbstractModule implements Listener {
 		};
 
 		runnable.runTaskTimer(ScorchCore.getInstance(), 0, 1);
-
 		return true;
 	}
 
@@ -256,10 +260,6 @@ public class BuildModeModule extends AbstractModule implements Listener {
 
 		if (event.getBlockReplacedState().getType() != Material.AIR)
 			return;
-
-//		List<Material> gravity = Arrays.asList(Material.GRAVEL, Material.SAND, Material.RED_SAND, Material.ANVIL);
-//		if (gravity.contains(block.getType()))
-//			return;
 
 		List<Location> locs = tracker.get(player.getUniqueId());
 		locs.add(block.getLocation());
@@ -597,7 +597,7 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	public void blockPhysicsEvent(BlockPhysicsEvent event) {
 		if (event.getSourceBlock().getType() != Material.AIR && event.getChangedType().toString().contains("RAIL"))
 			return;
-		if (!isProtected(event.getBlock()))
+		if (!isProtected(event.getBlock()) || !isProtected(event.getSourceBlock()))
 			return;
 		event.setCancelled(true);
 	}

@@ -10,12 +10,13 @@ public class MessageSendEvent extends NetworkEvent {
     private static final HandlerList handlers = new HandlerList();
 
     private UUID sender, receiver;
-    private String message;
+    private String message, senderName;
 
-    public MessageSendEvent(UUID sender, UUID receiver, String message) {
+    public MessageSendEvent(UUID sender, String senderName, UUID receiver, String message) {
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
+        this.senderName = senderName;
     }
 
     public final UUID getSender() {
@@ -29,6 +30,11 @@ public class MessageSendEvent extends NetworkEvent {
     public final String getMessage() {
         return message;
     }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
 
     @Override
     public HandlerList getHandlers() {

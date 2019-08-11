@@ -63,7 +63,7 @@ public class MessageCommand extends BukkitCommand {
 
         Player player = (Player) sender;
 
-        mm.sendMessage(player.getUniqueId(), target.getUniqueId(), message);
+        mm.sendMessage(player, target.getUniqueId(), message);
         return true;
     }
 
