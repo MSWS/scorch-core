@@ -21,9 +21,4 @@ public class EventPacket extends BasePacket {
     public void setEvent(NetworkEvent event) {
         this.event = event;
     }
-
-    @Override
-    public String toString () {
-        return new GsonBuilder().registerTypeAdapter(NetworkEvent.class, new NetworkEventSerializer()).addSerializationExclusionStrategy(new ExcludeStrategy()).create().toJson(this);
-    }
 }

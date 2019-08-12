@@ -2,13 +2,20 @@
 <project version="4">
   <component name="BookmarkManager">
     <bookmark url="file://$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionModule.java" line="24" />
-    <bookmark url="file://$PROJECT_DIR$/src/com/scorch/core/modules/data/DataManager.java" line="200" />
+    <bookmark url="file://$PROJECT_DIR$/src/com/scorch/core/modules/data/DataManager.java" line="201" />
     <bookmark url="file://$PROJECT_DIR$/src/com/scorch/core/ScorchCore.java" line="358" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ab52d741-b23e-4716-9da1-7880a77f7cf8" name="Default Changelist" comment="Implemented JSONLocation&#10;Started work on message channel events&#10;Reworking permissions data structure to match the permissions.yml file workflow">
-      <change afterPath="$PROJECT_DIR$/src/com/scorch/core/modules/punish/tests/PunishEventTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/scorch/core/ScorchCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/scorch/core/ScorchCore.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/scorch/core/utils/ReflectionUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/CommunicationModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/CommunicationModule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/ExcludeStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/ExcludeStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/NetworkEventSerializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/NetworkEventSerializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/BasePacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/BasePacket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/in/NetworkPlayerListPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/in/NetworkPlayerListPacket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/out/EventPacket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/out/EventPacket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/scorch/core/modules/data/DataManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/scorch/core/modules/data/DataManager.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -21,22 +28,86 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/messages/MessagesModule.java">
+        <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/CommunicationModule.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2414">
-              <caret line="166" selection-start-line="166" selection-end-line="185" selection-end-column="5" />
+            <state relative-caret-position="291">
+              <caret line="50" column="16" selection-start-line="50" selection-start-column="16" selection-end-line="50" selection-end-column="16" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/CommunicationModule.java">
+        <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/out/EventPacket.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-281">
-              <caret line="17" column="35" selection-start-line="17" selection-start-column="35" selection-end-line="17" selection-end-column="35" />
+            <state relative-caret-position="136">
+              <caret line="12" column="11" selection-start-line="12" selection-start-column="11" selection-end-line="12" selection-end-column="11" />
+              <folding>
+                <element signature="e#495#496#0" expanded="true" />
+                <element signature="e#529#530#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/data/DataManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="567">
+              <caret line="661" column="9" lean-forward="true" selection-start-line="661" selection-start-column="9" selection-end-line="661" selection-end-column="9" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/data/LagModule.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="68">
+              <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/ExcludeStrategy.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="170">
+              <caret line="13" column="55" selection-start-line="13" selection-start-column="55" selection-end-line="13" selection-end-column="55" />
+              <folding>
+                <element signature="e#556#557#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/in/NetworkPlayerListPacket.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="119">
+              <caret line="10" column="55" selection-start-line="10" selection-start-column="55" selection-end-line="10" selection-end-column="55" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/BasePacket.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="578">
+              <caret line="49" column="98" selection-start-line="49" selection-start-column="98" selection-end-line="49" selection-end-column="98" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/punish/Punishment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2533">
+              <caret line="183" column="32" selection-start-line="183" selection-start-column="32" selection-end-line="183" selection-end-column="32" />
             </state>
           </provider>
         </entry>
@@ -44,8 +115,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/scorch/core/events/punishment/PunishmentEvent.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
+            <state relative-caret-position="68">
+              <caret line="5" column="22" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -53,75 +124,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/punish/tests/PunishEventTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="22" column="76" lean-forward="true" selection-start-line="22" selection-start-column="76" selection-end-line="22" selection-end-column="76" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/com/scorch/core/ScorchCore.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="524">
-              <caret line="165" column="94" selection-start-line="165" selection-start-column="94" selection-end-line="165" selection-end-column="94" />
-              <folding>
-                <element signature="e#6757#6851#0" expanded="true" />
-                <element signature="e#6850#6851#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/scorch/core/events/punishment/PunishmentUpdateEvent.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="11" column="5" selection-start-line="11" selection-start-column="5" selection-end-line="11" selection-end-column="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/scorch/core/events/punishment/PunishmentCreateEvent.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="11" column="5" selection-start-line="11" selection-start-column="5" selection-end-line="11" selection-end-column="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/SocketClient.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="66" selection-start-line="66" selection-end-line="66" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/in/NetworkPlayerDisconnectPacket.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="11" column="18" selection-start-line="11" selection-start-column="18" selection-end-line="11" selection-end-column="18" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/in/NetworkPlayerJoinPacket.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="20" column="5" selection-start-line="20" selection-start-column="5" selection-end-line="20" selection-end-column="5" />
+            <state relative-caret-position="408">
+              <caret line="24" column="70" selection-start-line="24" selection-start-column="70" selection-end-line="24" selection-end-column="70" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -142,7 +146,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>Logger.log</find>
       <find>set prefix</find>
       <find>add</find>
       <find>create</find>
@@ -172,6 +175,7 @@
       <find>checking</find>
       <find>execyte</find>
       <find>punish.&quot;</find>
+      <find>getDeclaredFields</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -185,11 +189,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/economy/EconomyModule.java" />
-        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/players/FriendModule.java" />
-        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/report/ReportModule.java" />
-        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/messages/OfflineMessagesModule.java" />
-        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/data/tests/DataManagerTest.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/economy/EconomyPlayer.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/report/Report.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/chat/FilterEntry.java" />
@@ -202,7 +201,6 @@
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionListener.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionGroup.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionPlayer.java" />
-        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/data/DataManager.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/events/friends/FriendEvent.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/events/friends/FriendRemoveEvent.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/events/friends/FriendRequestEvent.java" />
@@ -229,13 +227,19 @@
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/out/CheckPlayerPacket.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/in/NetworkPlayerDisconnectPacket.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/in/NetworkPlayerJoinPacket.java" />
-        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/communication/CommunicationModule.java" />
-        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/in/NetworkPlayerListPacket.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/SocketClient.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/events/punishment/PunishmentUpdateEvent.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/events/punishment/PunishmentCreateEvent.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/punish/tests/PunishEventTest.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/ScorchCore.java" />
+        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/out/EventPacket.java" />
+        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/in/NetworkPlayerListPacket.java" />
+        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/BasePacket.java" />
+        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/communication/CommunicationModule.java" />
+        <option value="$PROJECT_DIR$/src/com/scorch/core/utils/ReflectionUtils.java" />
+        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/communication/ExcludeStrategy.java" />
+        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/communication/NetworkEventSerializer.java" />
+        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/data/DataManager.java" />
       </list>
     </option>
   </component>
@@ -319,13 +323,43 @@
               <item name="core-development" type="b2602c69:ProjectViewProjectNode" />
               <item name="core-development" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="tests" type="462c0819:PsiDirectoryNode" />
+              <item name="packets" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="core-development" type="b2602c69:ProjectViewProjectNode" />
+              <item name="core-development" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="in" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="core-development" type="b2602c69:ProjectViewProjectNode" />
+              <item name="core-development" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="data" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="core-development" type="b2602c69:ProjectViewProjectNode" />
               <item name="core-development" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="tests" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="core-development" type="b2602c69:ProjectViewProjectNode" />
+              <item name="core-development" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="punish" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="core-development" type="b2602c69:ProjectViewProjectNode" />
+              <item name="core-development" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="tests" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="core-development" type="b2602c69:ProjectViewProjectNode" />
+              <item name="core-development" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="utils" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -438,84 +472,6 @@
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/report/Report.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="34" column="21" lean-forward="true" selection-start-line="34" selection-start-column="21" selection-end-line="34" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/economy/EconomyPlayer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="246">
-          <caret line="16" column="19" selection-start-line="16" selection-start-column="19" selection-end-line="16" selection-end-column="19" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/economy/EconomyTransaction.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="367">
-          <caret line="89" column="25" lean-forward="true" selection-start-line="89" selection-start-column="25" selection-end-line="89" selection-end-column="25" />
-          <folding>
-            <element signature="e#3371#3372#0" expanded="true" />
-            <element signature="e#3396#3397#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/players/CPlayer.java" />
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/players/IPEntry.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="14" lean-forward="true" selection-start-line="14" selection-end-line="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/players/IPTracker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="110">
-          <caret line="69" lean-forward="true" selection-start-line="69" selection-end-line="69" />
-          <folding>
-            <element signature="e#2218#2300#1" expanded="true" />
-            <element signature="e#2299#2300#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/data/ConnectionManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/commands/PermissionsCommand.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="277" column="35" selection-start-line="277" selection-start-column="35" selection-end-line="277" selection-end-column="35" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/chat/ChatModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/chat/ChatListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="688">
-          <caret line="93" column="84" selection-start-line="93" selection-start-column="84" selection-end-line="93" selection-end-column="84" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionModule.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="189">
@@ -549,31 +505,6 @@
           <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
           <folding>
             <element signature="e#10613#10614#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/data/DataManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="281">
-          <caret line="618" column="28" selection-start-line="618" selection-start-column="16" selection-end-line="618" selection-end-column="28" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1713#1947#0" expanded="true" />
-            <element signature="e#1946#1947#0" expanded="true" />
-            <element signature="e#2052#2141#0" expanded="true" />
-            <element signature="e#2140#2141#0" expanded="true" />
-            <element signature="e#10731#10829#0" expanded="true" />
-            <element signature="e#10828#10829#0" expanded="true" />
-            <element signature="e#15177#15207#0" expanded="true" />
-            <element signature="e#21127#21314#0" expanded="true" />
-            <element signature="e#21313#21314#0" expanded="true" />
-            <element signature="e#26088#26269#0" expanded="true" />
-            <element signature="e#26268#26269#0" expanded="true" />
-            <element signature="e#27157#27158#0" expanded="true" />
-            <element signature="e#27175#27176#0" expanded="true" />
-            <element signature="e#27310#27311#0" expanded="true" />
-            <element signature="e#27346#27347#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -663,23 +594,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="190">
           <caret line="108" column="38" selection-start-line="108" selection-start-column="38" selection-end-line="108" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/punish/Punishment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="183" column="35" selection-start-line="183" selection-start-column="35" selection-end-line="183" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/punish/PunishmentListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" column="2" lean-forward="true" selection-start-line="24" selection-start-column="2" selection-end-line="24" selection-end-column="2" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -777,13 +691,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/in/NetworkPlayerListPacket.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="10" column="18" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/scoreboard/ScoreboardModule.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="595">
@@ -876,50 +783,164 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/events/punishment/PunishmentEvent.java">
+    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/ScorchCore.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
+        <state relative-caret-position="490">
+          <caret line="163" column="38" selection-start-line="163" selection-start-column="38" selection-end-line="163" selection-end-column="38" />
+          <folding>
+            <element signature="e#6757#6851#0" expanded="true" />
+            <element signature="e#6850#6851#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/SocketClient.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="66" selection-start-line="66" selection-end-line="66" />
+        <state relative-caret-position="146">
+          <caret line="61" column="33" selection-start-line="61" selection-start-column="33" selection-end-line="61" selection-end-column="33" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/CommunicationModule.java">
+    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/PacketUtils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-281">
-          <caret line="17" column="35" selection-start-line="17" selection-start-column="35" selection-end-line="17" selection-end-column="35" />
+        <state relative-caret-position="289">
+          <caret line="18" column="26" selection-start-line="18" selection-start-column="26" selection-end-line="18" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/punish/PunishmentListener.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="24" selection-start-line="24" selection-end-line="24" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/events/punishment/PunishmentEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="5" column="22" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/punish/Punishment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2533">
+          <caret line="183" column="32" selection-start-line="183" selection-start-column="32" selection-end-line="183" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.8.0/gson-2.8.0-sources.jar!/com/google/gson/GsonBuilder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="299">
+          <caret line="331" column="21" selection-start-line="331" selection-start-column="21" selection-end-line="331" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/BasePacket.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="49" column="98" selection-start-line="49" selection-start-column="98" selection-end-line="49" selection-end-column="98" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.8.0/gson-2.8.0-sources.jar!/com/google/gson/Gson.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="299">
+          <caret line="578" column="16" selection-start-line="578" selection-start-column="16" selection-end-line="578" selection-end-column="16" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/punish/tests/PunishEventTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="22" column="76" lean-forward="true" selection-start-line="22" selection-start-column="76" selection-end-line="22" selection-end-column="76" />
+        <state relative-caret-position="408">
+          <caret line="24" column="70" selection-start-line="24" selection-start-column="70" selection-end-line="24" selection-end-column="70" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/ScorchCore.java">
+    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/utils/Utils.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="524">
-          <caret line="165" column="94" selection-start-line="165" selection-start-column="94" selection-end-line="165" selection-end-column="94" />
+        <state relative-caret-position="68">
+          <caret line="32" column="13" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/ExcludeStrategy.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="13" column="55" selection-start-line="13" selection-start-column="55" selection-end-line="13" selection-end-column="55" />
           <folding>
-            <element signature="e#6757#6851#0" expanded="true" />
-            <element signature="e#6850#6851#0" expanded="true" />
+            <element signature="e#556#557#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/in/NetworkPlayerListPacket.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="10" column="55" selection-start-line="10" selection-start-column="55" selection-end-line="10" selection-end-column="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/CommunicationModule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="291">
+          <caret line="50" column="16" selection-start-line="50" selection-start-column="16" selection-end-line="50" selection-end-column="16" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/utils/ReflectionUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="544">
+          <caret line="32" column="55" lean-forward="true" selection-start-line="32" selection-start-column="55" selection-end-line="32" selection-end-column="55" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/NetworkEventSerializer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="28" column="69" selection-start-line="28" selection-start-column="69" selection-end-line="28" selection-end-column="69" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/out/EventPacket.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="12" column="11" selection-start-line="12" selection-start-column="11" selection-end-line="12" selection-end-column="11" />
+          <folding>
+            <element signature="e#495#496#0" expanded="true" />
+            <element signature="e#529#530#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/data/LagModule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/data/DataManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="567">
+          <caret line="661" column="9" lean-forward="true" selection-start-line="661" selection-start-column="9" selection-end-line="661" selection-end-column="9" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>

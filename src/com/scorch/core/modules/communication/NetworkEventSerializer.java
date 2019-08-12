@@ -3,6 +3,8 @@ package com.scorch.core.modules.communication;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
+import com.scorch.core.utils.Logger;
+import com.scorch.core.utils.ReflectionUtils;
 import org.bukkit.entity.Player;
 
 import com.google.gson.Gson;
@@ -24,7 +26,7 @@ public class NetworkEventSerializer implements JsonSerializer<NetworkEvent> {
 
         obj.addProperty("eventClassType",  src.getClass().getName());
 
-        for(Field field : src.getClass().getDeclaredFields()){
+        for(Field field : ReflectionUtils.getFields(src.getClass())){
             if(!field.isAnnotationPresent(DataIgnore.class)){
                 try {
                     field.setAccessible(true);

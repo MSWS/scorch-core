@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.communication.exceptions.WebSocketException;
 import com.scorch.core.modules.communication.websocket.SocketClient;
@@ -19,9 +21,13 @@ public class CommunicationModule extends AbstractModule {
 
     private List<UUID> networkPlayers;
 
+    private Gson eventGson;
+
+
     public CommunicationModule(String id) {
         super(id);
         this.networkPlayers = new ArrayList<>();
+        this.eventGson = new GsonBuilder().registerTypeAdapter(NetworkEvent.class, new NetworkEventSerializer()).addSerializationExclusionStrategy(new ExcludeStrategy()).create();
     }
 
     @Override
@@ -44,7 +50,9 @@ public class CommunicationModule extends AbstractModule {
      */
     public void dispatchEvent (NetworkEvent event) throws WebSocketException {
         if(this.websocket.isOpen()){
-			this.websocket.send(new EventPacket(event).toString());
+            EventPacket packet = new EventPacket(event);
+            Logger.info("sending packet: " + eventGson.toJson(packet));
+			this.websocket.send(eventGson.toJson(packet));
         }
         else {
             Logger.error("Tried to dispatch a network event even though the websocket isn't connected!");

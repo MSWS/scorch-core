@@ -1,7 +1,9 @@
 package com.scorch.core.modules.communication.websocket.packets;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.scorch.core.ScorchCore;
+import com.scorch.core.modules.communication.ExcludeStrategy;
 
 /**
  * Represents a base packet that can be sent/received by the Websocket connection
@@ -45,7 +47,7 @@ public abstract class BasePacket {
 
     @Override
     public String toString () {
-        return new Gson().toJson(this);
+        return new GsonBuilder().addSerializationExclusionStrategy(new ExcludeStrategy()).create().toJson(this);
     }
 
 }

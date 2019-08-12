@@ -15,6 +15,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
+import com.scorch.core.utils.ReflectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -110,12 +111,12 @@ public class DataManager extends AbstractModule {
 
 		String query = "CREATE TABLE IF NOT EXISTS " + name + " (object_type TEXT NOT NULL, ";
 
-		for (int i = 0; i < storageType.getDeclaredFields().length; i++) {
-			Field field = storageType.getDeclaredFields()[i];
+		for (int i = 0; i < ReflectionUtils.getFields(storageType).length; i++) {
+			Field field = ReflectionUtils.getFields(storageType)[i];
 
 			// Makes sure that the field doesn't have to be ignored for serialization
 			if (field.isAnnotationPresent(DataIgnore.class)) {
-				if (i == storageType.getDeclaredFields().length - 1) {
+				if (i == ReflectionUtils.getFields(storageType).length - 1) {
 					if (query.endsWith(", ")) {
 						query = query.substring(0, query.length() - 2);
 					}
@@ -181,7 +182,7 @@ public class DataManager extends AbstractModule {
 				query += " PRIMARY KEY";
 			}
 
-			if (i != (storageType.getDeclaredFields().length - 1)) {
+			if (i != (ReflectionUtils.getFields(storageType).length - 1)) {
 				query += ", ";
 			} else {
 				query += ");";
@@ -222,8 +223,8 @@ public class DataManager extends AbstractModule {
 		// Create prepared statement based on the object
 		String query = "INSERT INTO " + table + " (object_type, ";
 
-		for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
-			Field field = object.getClass().getDeclaredFields()[i];
+		for (int i = 0; i < ReflectionUtils.getFields(object.getClass()).length; i++) {
+			Field field = ReflectionUtils.getFields(object.getClass())[i];
 
 			// Makes sure that the field doesn't have to be ignored for serialisation
 			if (field.isAnnotationPresent(DataIgnore.class)) {
@@ -235,15 +236,15 @@ public class DataManager extends AbstractModule {
 			// if the next field had a DataIgnore class then this code would result in an
 			// unfinished statement "(?,?,?" for example
 
-			if (i == object.getClass().getDeclaredFields().length - 1
-					|| object.getClass().getDeclaredFields()[i + 1].isAnnotationPresent(DataIgnore.class)) {
+			if (i == ReflectionUtils.getFields(object.getClass()).length - 1
+					|| ReflectionUtils.getFields(object.getClass())[i + 1].isAnnotationPresent(DataIgnore.class)) {
 				query += ") VALUES (?,";
-				for (int j = 0; j < object.getClass().getDeclaredFields().length; j++) {
-					if (object.getClass().getDeclaredFields()[j].isAnnotationPresent(DataIgnore.class))
+				for (int j = 0; j < ReflectionUtils.getFields(object.getClass()).length; j++) {
+					if (ReflectionUtils.getFields(object.getClass())[j].isAnnotationPresent(DataIgnore.class))
 						continue;
 					query += "?";
-					if (j == object.getClass().getDeclaredFields().length - 1
-							|| object.getClass().getDeclaredFields()[j + 1].isAnnotationPresent(DataIgnore.class)) {
+					if (j == ReflectionUtils.getFields(object.getClass()).length - 1
+							|| ReflectionUtils.getFields(object.getClass())[j + 1].isAnnotationPresent(DataIgnore.class)) {
 						query += ");";
 					} else {
 						query += ", ";
@@ -261,8 +262,8 @@ public class DataManager extends AbstractModule {
 
 			int parameterIndex = 2;
 
-			for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
-				Field field = object.getClass().getDeclaredFields()[i];
+			for (int i = 0; i < ReflectionUtils.getFields(object.getClass()).length; i++) {
+				Field field = ReflectionUtils.getFields(object.getClass())[i];
 
 				// Make sure the field is accessible
 				field.setAccessible(true);
@@ -390,7 +391,7 @@ public class DataManager extends AbstractModule {
 				int columnIndex = 2;
 
 				// Start at one since we've already gotten the class name ^
-				for (Field field : clazz.getDeclaredFields()) {
+				for (Field field : ReflectionUtils.getFields(clazz)) {
 
 					// Make sure the field doesn't have to be ignored
 					if (field.isAnnotationPresent(DataIgnore.class))
@@ -473,7 +474,7 @@ public class DataManager extends AbstractModule {
 				int columnIndex = 2;
 
 				// Start at one since we've already gotten the class name ^
-				for (Field field : clazz.getDeclaredFields()) {
+				for (Field field : ReflectionUtils.getFields(clazz)) {
 
 					// Make sure the field doesn't have to be ignored
 					if (field.isAnnotationPresent(DataIgnore.class))
@@ -626,50 +627,50 @@ public class DataManager extends AbstractModule {
 
 		String sql = String.format("INSERT INTO %s (object_type", table);
 
-		for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
-			Field field = object.getClass().getDeclaredFields()[i];
+		for (int i = 0; i < ReflectionUtils.getFields(object.getClass()).length; i++) {
+			Field field = ReflectionUtils.getFields(object.getClass())[i];
 			// Ignore field if the annotation is present
 			if (field.isAnnotationPresent(DataIgnore.class)) {
-				if (i == object.getClass().getDeclaredFields().length - 1) {
+				if (i == ReflectionUtils.getFields(object.getClass()).length - 1) {
 					sql += ") VALUES (";
 				}
 				continue;
 			}
 
-			if (i == object.getClass().getDeclaredFields().length - 1) {
+			if (i == ReflectionUtils.getFields(object.getClass()).length - 1) {
 				sql += ", " + field.getName() + ") VALUES (?, ";
 			} else {
 				sql += ", " + field.getName();
 			}
 		}
 
-		for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
+		for (int i = 0; i < ReflectionUtils.getFields(object.getClass()).length; i++) {
 
 			// Ignore field if the annotation is present
-			if (object.getClass().getDeclaredFields()[i].isAnnotationPresent(DataIgnore.class)) {
-				if (i == object.getClass().getDeclaredFields().length - 1) {
+			if (ReflectionUtils.getFields(object.getClass())[i].isAnnotationPresent(DataIgnore.class)) {
+				if (i == ReflectionUtils.getFields(object.getClass()).length - 1) {
 					sql += "?) ON DUPLICATE KEY UPDATE ";
 				}
 				continue;
 			}
 
-			if (i == object.getClass().getDeclaredFields().length - 1) {
+			if (i == ReflectionUtils.getFields(object.getClass()).length - 1) {
 				sql += "?) ON DUPLICATE KEY UPDATE ";
 			} else {
 				sql += "?, ";
 			}
 		}
 
-		for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
-			Field field = object.getClass().getDeclaredFields()[i];
+		for (int i = 0; i < ReflectionUtils.getFields(object.getClass()).length; i++) {
+			Field field = ReflectionUtils.getFields(object.getClass())[i];
 			// Ignore field if annotation is present
 			if (field.isAnnotationPresent(DataIgnore.class)) {
-				if (i == object.getClass().getDeclaredFields().length - 1) {
+				if (i == ReflectionUtils.getFields(object.getClass()).length - 1) {
 					sql += ";";
 				} else if (i == 0) {
 					Field tmp = field;
-					while (i < object.getClass().getDeclaredFields().length) {
-						tmp = object.getClass().getDeclaredFields()[i];
+					while (i < ReflectionUtils.getFields(object.getClass()).length) {
+						tmp = ReflectionUtils.getFields(object.getClass())[i];
 						if (tmp.isAnnotationPresent(DataIgnore.class)) {
 							i++;
 							continue;
@@ -677,7 +678,7 @@ public class DataManager extends AbstractModule {
 
 						sql += tmp.getName() + "=VALUES(" + tmp.getName() + ")";
 
-						if (i == object.getClass().getDeclaredFields().length - 1)
+						if (i == ReflectionUtils.getFields(object.getClass()).length - 1)
 							sql += ";";
 						break;
 					}
@@ -685,7 +686,7 @@ public class DataManager extends AbstractModule {
 				continue;
 			}
 
-			if (i == object.getClass().getDeclaredFields().length - 1) {
+			if (i == ReflectionUtils.getFields(object.getClass()).length - 1) {
 				sql += ", " + field.getName() + "=VALUES(" + field.getName() + ");";
 			} else if (i == 0) {
 				sql += field.getName() + "=VALUES(" + field.getName() + ")";
@@ -702,11 +703,11 @@ public class DataManager extends AbstractModule {
 
 			statement.setString(1, object.getClass().getName());
 
-			for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
+			for (int i = 0; i < ReflectionUtils.getFields(object.getClass()).length; i++) {
 				// Ignore field if annotation is present
-				if (object.getClass().getDeclaredFields()[i].isAnnotationPresent(DataIgnore.class))
+				if (ReflectionUtils.getFields(object.getClass())[i].isAnnotationPresent(DataIgnore.class))
 					continue;
-				Field field = object.getClass().getDeclaredFields()[i];
+				Field field = ReflectionUtils.getFields(object.getClass())[i];
 
 				field.setAccessible(true);
 
