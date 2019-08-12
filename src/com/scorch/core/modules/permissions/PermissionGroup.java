@@ -133,7 +133,7 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 	 * @see PermissionGroup#getGroupName()
 	 */
 	public String getPrefix() {
-		return prefix;
+		return prefix == null ? "" : prefix;
 	}
 
 	/**
@@ -147,6 +147,7 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 	 */
 	public void setPrefix(String prefix) {
 		this.prefix = prefix.replace("_", " ");
+		;
 		ScorchCore.getInstance().getDataManager().updateObjectAsync("groups", this);
 	}
 

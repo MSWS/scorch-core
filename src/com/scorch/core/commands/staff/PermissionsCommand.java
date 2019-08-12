@@ -289,7 +289,6 @@ public class PermissionsCommand extends BukkitCommand {
 				}
 				break;
 			}
-			MSG.tell(sender, " ");
 			return true;
 		default:
 			MSG.tell(sender, "Unknown arguments.");
