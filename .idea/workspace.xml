@@ -7,8 +7,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ab52d741-b23e-4716-9da1-7880a77f7cf8" name="Default Changelist" comment="Implemented JSONLocation&#10;Started work on message channel events&#10;Reworking permissions data structure to match the permissions.yml file workflow">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/CommunicationModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/CommunicationModule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/SocketClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/SocketClient.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -35,8 +35,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/CommunicationModule.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="589">
-              <caret line="63" column="62" selection-start-line="63" selection-start-column="62" selection-end-line="63" selection-end-column="62" />
+            <state relative-caret-position="538">
+              <caret line="60" column="5" selection-start-line="60" selection-start-column="5" selection-end-line="60" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#2877#2878#0" expanded="true" />
@@ -46,11 +46,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionPlayer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="485">
-              <caret line="132" column="47" selection-start-line="132" selection-start-column="47" selection-end-line="132" selection-end-column="47" />
+            <state relative-caret-position="349">
+              <caret line="124" column="61" selection-start-line="124" selection-start-column="61" selection-end-line="124" selection-end-column="61" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#9173#9174#0" expanded="true" />
@@ -60,17 +60,17 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/SocketClient.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="484">
-              <caret line="105" column="78" selection-start-line="105" selection-start-column="78" selection-end-line="105" selection-end-column="78" />
+            <state relative-caret-position="331">
+              <caret line="96" lean-forward="true" selection-start-line="96" selection-end-line="96" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#4140#4274#0" expanded="true" />
-                <element signature="e#4273#4274#0" expanded="true" />
-                <element signature="e#4465#4595#0" expanded="true" />
-                <element signature="e#4594#4595#0" expanded="true" />
+                <element signature="e#4140#4224#0" expanded="true" />
+                <element signature="e#4223#4224#0" expanded="true" />
+                <element signature="e#4517#4616#0" expanded="true" />
+                <element signature="e#4615#4616#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -93,7 +93,6 @@
       <find>registerEvents</find>
       <find>ge</find>
       <find>up</find>
-      <find>update</find>
       <find>module</find>
       <find>addPlayer</find>
       <find>isOnline</find>
@@ -119,6 +118,7 @@
       <find>getPrefix</find>
       <find>addPerm</find>
       <find>updatePer</find>
+      <find>update</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -180,9 +180,9 @@
         <option value="$PROJECT_DIR$/src/com/scorch/core/utils/ReflectionUtils.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionGroup.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/scoreboard/ScoreboardModule.java" />
-        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/SocketClient.java" />
-        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/communication/CommunicationModule.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionPlayer.java" />
+        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/communication/CommunicationModule.java" />
+        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/SocketClient.java" />
       </list>
     </option>
   </component>
@@ -392,7 +392,7 @@
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.3336887" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.3336887" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="UI Designer" order="3" />
@@ -604,13 +604,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/packets/out/CheckPlayerPacket.java" />
-    <entry file="jar://$MAVEN_REPOSITORY$/org/java-websocket/Java-WebSocket/1.4.0/Java-WebSocket-1.4.0.jar!/org/java_websocket/client/WebSocketClient.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="282">
-          <caret line="152" lean-forward="true" selection-start-line="152" selection-end-line="152" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/scorch/core/events/messages/MessageReceiveEvent.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
@@ -865,24 +858,29 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/SocketClient.java">
+    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionPlayer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="484">
-          <caret line="105" column="78" selection-start-line="105" selection-start-column="78" selection-end-line="105" selection-end-column="78" />
+        <state relative-caret-position="349">
+          <caret line="124" column="61" selection-start-line="124" selection-start-column="61" selection-end-line="124" selection-end-column="61" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#4140#4274#0" expanded="true" />
-            <element signature="e#4273#4274#0" expanded="true" />
-            <element signature="e#4465#4595#0" expanded="true" />
-            <element signature="e#4594#4595#0" expanded="true" />
+            <element signature="e#9173#9174#0" expanded="true" />
+            <element signature="e#9198#9199#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$MAVEN_REPOSITORY$/org/java-websocket/Java-WebSocket/1.4.0/Java-WebSocket-1.4.0.jar!/org/java_websocket/client/WebSocketClient.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="299">
+          <caret line="109" column="16" selection-start-line="109" selection-start-column="16" selection-end-line="109" selection-end-column="16" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/CommunicationModule.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="589">
-          <caret line="63" column="62" selection-start-line="63" selection-start-column="62" selection-end-line="63" selection-end-column="62" />
+        <state relative-caret-position="538">
+          <caret line="60" column="5" selection-start-line="60" selection-start-column="5" selection-end-line="60" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2877#2878#0" expanded="true" />
@@ -891,14 +889,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionPlayer.java">
+    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/SocketClient.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="485">
-          <caret line="132" column="47" selection-start-line="132" selection-start-column="47" selection-end-line="132" selection-end-column="47" />
+        <state relative-caret-position="331">
+          <caret line="96" lean-forward="true" selection-start-line="96" selection-end-line="96" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#9173#9174#0" expanded="true" />
-            <element signature="e#9198#9199#0" expanded="true" />
+            <element signature="e#4140#4224#0" expanded="true" />
+            <element signature="e#4223#4224#0" expanded="true" />
+            <element signature="e#4517#4616#0" expanded="true" />
+            <element signature="e#4615#4616#0" expanded="true" />
           </folding>
         </state>
       </provider>

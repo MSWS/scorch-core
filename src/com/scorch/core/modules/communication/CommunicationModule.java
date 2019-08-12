@@ -60,16 +60,6 @@ public class CommunicationModule extends AbstractModule {
         }
     }
 
-    public void reconnect () {
-        Logger.log("Setting up websocket connection to bungee server...");
-        try {
-            this.websocket = new SocketClient(new URI("ws://localhost:6969"));
-            this.websocket.connect();
-        } catch (URISyntaxException e) {
-            Logger.error("Invalid uri for websocket!");
-        }
-    }
-
     /**
      * Returns whether the target player is online on the bungee network
      * @param player the target player

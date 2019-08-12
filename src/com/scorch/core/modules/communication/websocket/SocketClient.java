@@ -103,7 +103,7 @@ public class SocketClient extends WebSocketClient {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				ScorchCore.getInstance().getCommunicationModule().reconnect();
+				reconnect();
 			}
 		}.runTaskLater(ScorchCore.getInstance(), 100);
 	}
@@ -116,7 +116,7 @@ public class SocketClient extends WebSocketClient {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				ScorchCore.getInstance().getCommunicationModule().reconnect();
+				reconnect();
 			}
 		}.runTaskLater(ScorchCore.getInstance(), 100);
 	}
