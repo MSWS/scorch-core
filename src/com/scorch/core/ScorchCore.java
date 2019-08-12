@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import com.scorch.core.modules.punish.tests.PunishEventTest;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -156,6 +157,13 @@ public class ScorchCore extends JavaPlugin implements PluginMessageListener {
 				p.sendPluginMessage(ScorchCore.getInstance(), "BungeeCord", out.toByteArray());
 			}
 		}.runTaskTimer(ScorchCore.getInstance(), 0, 20 * 10);
+
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				new PunishEventTest();
+			}
+		}.runTaskLater(this, 100); // Run 5 seconds after boot to ensure visibility in console
 
 	}
 
