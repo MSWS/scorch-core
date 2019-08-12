@@ -1,8 +1,8 @@
 package com.scorch.core.modules.communication.websocket.packets.in;
 
-import com.scorch.core.modules.communication.websocket.packets.BasePacket;
-
 import java.util.UUID;
+
+import com.scorch.core.modules.communication.websocket.packets.BasePacket;
 
 /**
  * A packet used when a player joins the network

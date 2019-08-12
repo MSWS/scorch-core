@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import com.scorch.core.modules.punish.tests.PunishEventTest;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -45,6 +44,7 @@ import com.scorch.core.modules.players.PlaytimeModule;
 import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.modules.punish.BanwaveModule;
 import com.scorch.core.modules.punish.PunishModule;
+import com.scorch.core.modules.punish.tests.PunishEventTest;
 import com.scorch.core.modules.report.ReportModule;
 import com.scorch.core.modules.scoreboard.ScoreboardModule;
 import com.scorch.core.modules.staff.AuthenticationModule;

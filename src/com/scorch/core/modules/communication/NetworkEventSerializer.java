@@ -3,8 +3,6 @@ package com.scorch.core.modules.communication;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
-import com.scorch.core.utils.Logger;
-import com.scorch.core.utils.ReflectionUtils;
 import org.bukkit.entity.Player;
 
 import com.google.gson.Gson;
@@ -15,6 +13,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.scorch.core.modules.data.annotations.DataIgnore;
 import com.scorch.core.modules.data.wrappers.JSONPlayer;
+import com.scorch.core.utils.ReflectionUtils;
 
 public class NetworkEventSerializer implements JsonSerializer<NetworkEvent> {
 

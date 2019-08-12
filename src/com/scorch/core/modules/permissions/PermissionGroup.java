@@ -18,7 +18,8 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 	private List<String> permissions;
 
 	/**
-	 * Default constructor for {@link com.scorch.core.modules.data.DataManager} to work
+	 * Default constructor for {@link com.scorch.core.modules.data.DataManager} to
+	 * work
 	 */
 	public PermissionGroup() {
 		// Default constructor
@@ -68,7 +69,8 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 	 * @param inheritedGroups the groups this group inherits
 	 * @param permissions     the permissions of the group
 	 */
-	public PermissionGroup (String groupName, boolean isDefault, String prefix, int weight, List<String> inheritedGroups, List<String> permissions) {
+	public PermissionGroup(String groupName, boolean isDefault, String prefix, int weight, List<String> inheritedGroups,
+			List<String> permissions) {
 		this.groupName = groupName;
 		this.isDefault = isDefault;
 		this.prefix = prefix;
@@ -88,14 +90,17 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 	 * @param inheritedGroups the groups this group inherits
 	 * @param permissions     the permissions of the group
 	 */
-	public PermissionGroup (String groupName, boolean isDefault, String prefix, int weight, List<String> inheritedGroups, String... permissions) {
+	public PermissionGroup(String groupName, boolean isDefault, String prefix, int weight, List<String> inheritedGroups,
+			String... permissions) {
 		this(groupName, isDefault, prefix, weight, inheritedGroups, Arrays.asList(permissions));
 	}
 
 	/**
-	 * Gets the group name <br>The group name is used for identifying groups and running
-	 * logic on them since, the players are only able to see the
-	 * {@link PermissionGroup#prefix} in game.</br>
+	 * Gets the group name <br>
+	 * The group name is used for identifying groups and running logic on them
+	 * since, the players are only able to see the {@link PermissionGroup#prefix} in
+	 * game.</br>
+	 * 
 	 * @return the group name
 	 *
 	 * @see PermissionGroup#getGroupName()
@@ -105,9 +110,10 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 	}
 
 	/**
-	 * Sets the group name <br>The group name is used for identifying groups and running
-	 * logic on them since, the players are only able to see the
-	 * {@link PermissionGroup#prefix} in game.</br>
+	 * Sets the group name <br>
+	 * The group name is used for identifying groups and running logic on them
+	 * since, the players are only able to see the {@link PermissionGroup#prefix} in
+	 * game.</br>
 	 * 
 	 * @param groupName the group name to set
 	 *
@@ -118,10 +124,10 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 	}
 
 	/**
-	 * Gets the group prefix, the group prefix is used for chat
-	 * formatting and other in game features where the player's group / "rank" is
-	 * used. For running logic on groups, and saving them the
-	 * {@link PermissionGroup#groupName} is used
+	 * Gets the group prefix, the group prefix is used for chat formatting and other
+	 * in game features where the player's group / "rank" is used. For running logic
+	 * on groups, and saving them the {@link PermissionGroup#groupName} is used
+	 * 
 	 * @return the group prefix
 	 *
 	 * @see PermissionGroup#getGroupName()
@@ -131,10 +137,9 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 	}
 
 	/**
-	 * Sets the group prefix, the group prefix is used for chat
-	 * formatting and other in game features where the player's group / "rank" is
-	 * used. For running logic on groups, and saving them the
-	 * {@link PermissionGroup#groupName} is used
+	 * Sets the group prefix, the group prefix is used for chat formatting and other
+	 * in game features where the player's group / "rank" is used. For running logic
+	 * on groups, and saving them the {@link PermissionGroup#groupName} is used
 	 * 
 	 * @param prefix the group display name to set
 	 *
@@ -171,10 +176,11 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 
 	/**
 	 * Sets whether the group is the default group players receive
+	 * 
 	 * @apiNote only used internally for me to test stuff
 	 * @param isDefault the new isDefault value
 	 */
-	public void setDefault (boolean isDefault){
+	public void setDefault(boolean isDefault) {
 		this.isDefault = isDefault;
 	}
 
@@ -184,17 +190,18 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 
 	// No setter method for the permission list since that won't be used
 
-
 	/**
-	 * Gets the groups this group inherits
-	 * Inherited groups are basically parent groups, as this group has all their permissions as well.
+	 * Gets the groups this group inherits Inherited groups are basically parent
+	 * groups, as this group has all their permissions as well.
+	 * 
 	 * @return a list of all the {@link PermissionGroup}s this group inherits
 	 */
 	public List<PermissionGroup> getInheritedGroups() {
-		if(this.inheritedGroups == null) this.inheritedGroups = new ArrayList<String>();
+		if (this.inheritedGroups == null)
+			this.inheritedGroups = new ArrayList<String>();
 		List<PermissionGroup> groups = new ArrayList<>();
 		this.inheritedGroups.forEach(group -> {
-			if(ScorchCore.getInstance().getPermissionModule().getGroup(group) != null){
+			if (ScorchCore.getInstance().getPermissionModule().getGroup(group) != null) {
 				groups.add(ScorchCore.getInstance().getPermissionModule().getGroup(group));
 			}
 		});
@@ -202,17 +209,19 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 	}
 
 	/**
-	 * Gets the names of the groups this group inherits
-	 * Inherited groups are basically parent groups, as this group has all their permissions as well.
+	 * Gets the names of the groups this group inherits Inherited groups are
+	 * basically parent groups, as this group has all their permissions as well.
+	 * 
 	 * @return a list of all the group names of the inherited groups for this group
 	 */
-	public List<String> getInheritedGroupNames () {
+	public List<String> getInheritedGroupNames() {
 		return this.inheritedGroups;
 	}
 
 	/**
-	 * Sets the gorups this groups inherits
-	 * Inherited groups are basically parent groups, as this group has all their permissions as well.
+	 * Sets the gorups this groups inherits Inherited groups are basically parent
+	 * groups, as this group has all their permissions as well.
+	 * 
 	 * @param inheritedGroups the new groups this group will inherit
 	 */
 	public void setInheritedGroups(List<String> inheritedGroups) {
@@ -220,24 +229,27 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 	}
 
 	/**
-	 * Adds the group to the inherited group list, if it's not already there
-	 * Returns true if the group was added successfully, false if not
+	 * Adds the group to the inherited group list, if it's not already there Returns
+	 * true if the group was added successfully, false if not
+	 * 
 	 * @param group the group to add to the inherited group list
 	 *
-	 * @returns     whether the group was added successfully
+	 * @returns whether the group was added successfully
 	 */
-	public boolean addInheritedGroup (PermissionGroup group){
-		if(!getInheritedGroups().contains(group)){
-			// Make sure to add it to the string list and not the getInheritedGroups list since that's a different list
+	public boolean addInheritedGroup(PermissionGroup group) {
+		if (!getInheritedGroups().contains(group)) {
+			// Make sure to add it to the string list and not the getInheritedGroups list
+			// since that's a different list
 			this.inheritedGroups.add(group.getGroupName());
 			return true;
 		}
 		return false;
 	}
 
-	public boolean removeInheritedGroup (PermissionGroup group){
-		if(getInheritedGroups().contains(group)){
-			// Make sure to add it to the string list and not the getInheritedGroups list since that's a different list
+	public boolean removeInheritedGroup(PermissionGroup group) {
+		if (getInheritedGroups().contains(group)) {
+			// Make sure to add it to the string list and not the getInheritedGroups list
+			// since that's a different list
 			this.inheritedGroups.remove(group.getGroupName());
 			return true;
 		}
@@ -246,12 +258,14 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 
 	/**
 	 * Adds the permission to the group
+	 * 
 	 * @param node the permission to add
-	 * @return     whether the operation was successful
+	 * @return whether the operation was successful
 	 */
-	public boolean addPermission(String node){
-		if(node == "" || node == null) return false;
-		if(!getPermissions().contains(node)){
+	public boolean addPermission(String node) {
+		if (node == "" || node == null)
+			return false;
+		if (!getPermissions().contains(node)) {
 			getPermissions().add(node);
 			ScorchCore.getInstance().getDataManager().updateObjectAsync("groups", this);
 			return true;
@@ -261,12 +275,14 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 
 	/**
 	 * Removes the permission from the group
+	 * 
 	 * @param node the permission to remove
-	 * @return     whether the operation was successful
+	 * @return whether the operation was successful
 	 */
-	public boolean removePermission (String node){
-		if(node == "" || node == null) return false;
-		if(getPermissions().contains(node)){
+	public boolean removePermission(String node) {
+		if (node == "" || node == null)
+			return false;
+		if (getPermissions().contains(node)) {
 			getPermissions().remove(node);
 			ScorchCore.getInstance().getDataManager().updateObjectAsync("groups", this);
 			return true;
@@ -275,7 +291,9 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 	}
 
 	/**
-	 * Gets this group's weight, the weight determines whether the prefix is used or not
+	 * Gets this group's weight, the weight determines whether the prefix is used or
+	 * not
+	 * 
 	 * @return the weight
 	 */
 	public int getWeight() {
@@ -283,46 +301,54 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 	}
 
 	/**
-	 * Sets the group's weight, the weight determines whether the prefix is used or not
+	 * Sets the group's weight, the weight determines whether the prefix is used or
+	 * not
+	 * 
 	 * @param weight the new weight to use
 	 */
 	public void setWeight(int weight) {
 		this.weight = weight;
 	}
 
-
 	/**
 	 * Compares the given group to this group instance
+	 * 
 	 * @param object the group you want to compare this group to
-	 * @return      whether these two groups are identical
+	 * @return whether these two groups are identical
 	 */
 	@Override
-	public boolean equals (Object object){
-		if(!(object instanceof PermissionGroup)) {
+	public boolean equals(Object object) {
+		if (!(object instanceof PermissionGroup)) {
 			return false;
 		}
 		PermissionGroup group = (PermissionGroup) object;
 
-		if(group.getPermissions().size() != getPermissions().size()) return false;
-		if(group.getInheritedGroupNames().size() != getInheritedGroupNames().size()) return false;
+		if (group.getPermissions().size() != getPermissions().size())
+			return false;
+		if (group.getInheritedGroupNames().size() != getInheritedGroupNames().size())
+			return false;
 
-		for(String perm : getPermissions()){
-			if(!group.getPermissions().contains(perm)) {
+		if ((group.getPrefix() == null) != (getPrefix() == null))
+			return false;
+
+		for (String perm : getPermissions()) {
+			if (!group.getPermissions().contains(perm)) {
 				return false;
 			}
-
 		}
 
-		return (getGroupName().equals(group.getGroupName()) && getPrefix().equals(group.getPrefix())
+		return (getGroupName().equals(group.getGroupName())
+				&& ((getPrefix() == null && group.getPrefix() == null) || getPrefix().equals(group.getPrefix()))
 				&& getWeight() == group.getWeight() && isDefault() == group.isDefault());
 	}
 
 	/**
 	 * Returns {@link PermissionGroup#groupName}
+	 * 
 	 * @return the group name
 	 */
 	@Override
-	public String toString () {
+	public String toString() {
 		return getGroupName();
 	}
 

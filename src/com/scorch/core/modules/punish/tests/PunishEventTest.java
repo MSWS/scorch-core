@@ -1,5 +1,10 @@
 package com.scorch.core.modules.punish.tests;
 
+import java.util.UUID;
+
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+
 import com.scorch.core.ScorchCore;
 import com.scorch.core.events.punishment.PunishmentCreateEvent;
 import com.scorch.core.events.punishment.PunishmentUpdateEvent;
@@ -7,10 +12,6 @@ import com.scorch.core.modules.communication.exceptions.WebSocketException;
 import com.scorch.core.modules.punish.PunishType;
 import com.scorch.core.modules.punish.Punishment;
 import com.scorch.core.utils.Logger;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-
-import java.util.UUID;
 
 public class PunishEventTest implements Listener {
 

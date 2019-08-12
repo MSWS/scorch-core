@@ -140,23 +140,34 @@ public class PermissionsCommand extends BukkitCommand {
 
 			return true;
 		case "group":
-			if (args.length < 2) {
-				sendGroupHelp(sender, label);
-				return true;
-			}
-
-			if (args[1].equalsIgnoreCase("list")) {
+			MSG.tell(sender, " ");
+			if (args.length < 2 || args[1].equalsIgnoreCase("list")) {
 				MSG.tell(sender, "Listing Available Groups");
 				perms.getGroupList().forEach(g -> MSG.tell(sender, g.getGroupName()));
+
+				for (PermissionGroup g : perms.getGroupList()) {
+					String msg = g.getGroupName();
+					if (g.getInheritedGroups().size() > 0)
+						msg += " parents " + g.getInheritedGroupNames();
+					if (g.getPrefix() != null)
+						msg += " Prefix: " + g.getPrefix();
+
+					MSG.tell(sender, msg);
+				}
 				return true;
 			}
+
+			// /perms group test
+			PermissionGroup pg = perms.getGroup(args[1]);
 
 			if (args.length < 3) {
-				sendGroupHelp(sender, label);
+				MSG.tell(sender, pg.getGroupName() + (pg.getPrefix() == null ? "" : " (" + pg.getPrefix() + "&r) ")
+						+ "contains the following permission" + (pg.getPermissions().size() == 1 ? "" : "s"));
+				for (String p : pg.getPermissions()) {
+					MSG.tell(sender, p + (sender.hasPermission(p) ? " (Owned)" : ""));
+				}
 				return true;
 			}
-
-			PermissionGroup pg = perms.getGroup(args[1]);
 
 			switch (args[2].toLowerCase()) {
 			case "create":
@@ -278,7 +289,7 @@ public class PermissionsCommand extends BukkitCommand {
 				}
 				break;
 			}
-
+			MSG.tell(sender, " ");
 			return true;
 		default:
 			MSG.tell(sender, "Unknown arguments.");
@@ -353,6 +364,12 @@ public class PermissionsCommand extends BukkitCommand {
 							result.add(res);
 					break;
 				}
+				if (args.length > 2)
+					if (args[2].equalsIgnoreCase("set"))
+						for (String res : new String[] { "prefix", "parents", "priority" })
+							if (res.toLowerCase().startsWith(args[args.length - 1]))
+								result.add(res);
+
 				if (args[args.length - 1].equalsIgnoreCase("delete"))
 					break;
 			case 5:

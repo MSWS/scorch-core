@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.entity.Player;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.scorch.core.modules.AbstractModule;
@@ -13,7 +15,6 @@ import com.scorch.core.modules.communication.exceptions.WebSocketException;
 import com.scorch.core.modules.communication.websocket.SocketClient;
 import com.scorch.core.modules.communication.websocket.packets.out.EventPacket;
 import com.scorch.core.utils.Logger;
-import org.bukkit.entity.Player;
 
 public class CommunicationModule extends AbstractModule {
 

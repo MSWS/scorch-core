@@ -1,6 +1,5 @@
 package com.scorch.core.modules.communication.websocket.packets;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.communication.ExcludeStrategy;

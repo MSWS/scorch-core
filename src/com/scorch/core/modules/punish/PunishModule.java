@@ -221,4 +221,9 @@ public class PunishModule extends AbstractModule {
 	public Punishment getPunishment(UUID uuid) {
 		return punishments.stream().filter(id -> id.getId().equals(uuid)).findFirst().orElse(null);
 	}
+
+	public void updatePunishment(Punishment p) {
+		punishments.remove(getPunishment(p.getId()));
+		punishments.add(p);
+	}
 }

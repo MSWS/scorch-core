@@ -150,6 +150,7 @@ public class PermissionPlayer {
 	private void addGroupPermissions(PermissionGroup group, PermissionAttachment attachment) {
 		// Add the permissions for the parent groups first
 		group.getInheritedGroups().forEach(parent -> {
+			
 			addGroupPermissions(parent, attachment);
 		});
 

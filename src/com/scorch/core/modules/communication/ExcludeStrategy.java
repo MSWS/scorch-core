@@ -3,7 +3,6 @@ package com.scorch.core.modules.communication;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.scorch.core.modules.data.annotations.DataIgnore;
-import com.scorch.core.utils.Logger;
 
 /**
  * Custom exclusion strategy for {@link com.google.gson.Gson}. This strategy

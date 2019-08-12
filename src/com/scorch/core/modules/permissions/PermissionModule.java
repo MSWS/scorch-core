@@ -317,9 +317,8 @@ public class PermissionModule extends AbstractModule {
 	 */
 	public PermissionGroup getGroup(String groupName) {
 		for (PermissionGroup group : groupList) {
-			if (group.getGroupName().equals(groupName)) {
+			if (group.getGroupName().equals(groupName))
 				return group;
-			}
 		}
 		return null;
 	}

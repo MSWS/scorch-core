@@ -2,9 +2,6 @@ package com.scorch.core.modules.communication.websocket;
 
 import java.net.URI;
 
-import com.scorch.core.modules.communication.websocket.packets.in.NetworkPlayerDisconnectPacket;
-import com.scorch.core.modules.communication.websocket.packets.in.NetworkPlayerJoinPacket;
-import com.scorch.core.modules.communication.websocket.packets.in.NetworkPlayerListPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.java_websocket.client.WebSocketClient;
@@ -16,6 +13,9 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.communication.NetworkEvent;
 import com.scorch.core.modules.communication.exceptions.WebSocketException;
 import com.scorch.core.modules.communication.websocket.packets.PacketUtils;
+import com.scorch.core.modules.communication.websocket.packets.in.NetworkPlayerDisconnectPacket;
+import com.scorch.core.modules.communication.websocket.packets.in.NetworkPlayerJoinPacket;
+import com.scorch.core.modules.communication.websocket.packets.in.NetworkPlayerListPacket;
 import com.scorch.core.modules.communication.websocket.packets.out.ConnectionPacket;
 import com.scorch.core.modules.permissions.PermissionUpdateEvent;
 import com.scorch.core.utils.Logger;
