@@ -51,7 +51,6 @@ public class CommunicationModule extends AbstractModule {
     public void dispatchEvent (NetworkEvent event) throws WebSocketException {
         if(this.websocket.isOpen()){
             EventPacket packet = new EventPacket(event);
-            Logger.info("sending packet: " + eventGson.toJson(packet));
 			this.websocket.send(eventGson.toJson(packet));
         }
         else {

@@ -25,7 +25,7 @@ public class ReflectionUtils {
         Field[] superclassFields = getSuperclassFields(type);
         List<Field> fieldList = new ArrayList<>(Arrays.asList(superclassFields));
         fieldList.addAll(Arrays.asList(type.getDeclaredFields()));
-        return fieldList.stream().toArray(Field[]::new);
+        return fieldList.toArray(new Field[0]);
     }
 
     /**
@@ -39,7 +39,7 @@ public class ReflectionUtils {
             Field[] superclassFields = getSuperclassFields(type.getSuperclass());
             List<Field> fieldList = new ArrayList<>(Arrays.asList(superclassFields));
             fieldList.addAll(Arrays.asList(type.getDeclaredFields()));
-            return fieldList.stream().toArray(Field[]::new);
+            return fieldList.toArray(new Field[0]);
         }
         else {
             return type.getDeclaredFields();
