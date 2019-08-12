@@ -7,9 +7,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ab52d741-b23e-4716-9da1-7880a77f7cf8" name="Default Changelist" comment="Implemented JSONLocation&#10;Started work on message channel events&#10;Reworking permissions data structure to match the permissions.yml file workflow">
-      <change beforePath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/CommunicationModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/CommunicationModule.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/SocketClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/SocketClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/scorch/core/modules/scoreboard/ScoreboardModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/scorch/core/modules/scoreboard/ScoreboardModule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionPlayer.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -33,15 +32,29 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/CommunicationModule.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="555">
-              <caret line="60" lean-forward="true" selection-start-line="60" selection-end-line="60" />
+            <state relative-caret-position="589">
+              <caret line="63" column="62" selection-start-line="63" selection-start-column="62" selection-end-line="63" selection-end-column="62" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#2877#2878#0" expanded="true" />
                 <element signature="e#2914#2915#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionPlayer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="485">
+              <caret line="132" column="47" selection-start-line="132" selection-start-column="47" selection-end-line="132" selection-end-column="47" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#9173#9174#0" expanded="true" />
+                <element signature="e#9198#9199#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -76,12 +89,10 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>addGrou</find>
       <find>fireEvent</find>
       <find>registerEvents</find>
       <find>ge</find>
       <find>up</find>
-      <find>updatePer</find>
       <find>update</find>
       <find>module</find>
       <find>addPlayer</find>
@@ -106,6 +117,8 @@
       <find>checking:</find>
       <find>Checking:</find>
       <find>getPrefix</find>
+      <find>addPerm</find>
+      <find>updatePer</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -129,7 +142,6 @@
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/chat/ChatListener.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionModule.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionListener.java" />
-        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionPlayer.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/events/friends/FriendEvent.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/events/friends/FriendRemoveEvent.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/events/friends/FriendRequestEvent.java" />
@@ -170,6 +182,7 @@
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/scoreboard/ScoreboardModule.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/communication/websocket/SocketClient.java" />
         <option value="$PROJECT_DIR$/src/com/scorch/core/modules/communication/CommunicationModule.java" />
+        <option value="$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionPlayer.java" />
       </list>
     </option>
   </component>
@@ -433,26 +446,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="299">
           <caret line="1241" column="23" selection-start-line="1241" selection-start-column="23" selection-end-line="1241" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionPlayer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="276" column="45" selection-start-line="276" selection-start-column="45" selection-end-line="276" selection-end-column="45" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2989#2990#0" expanded="true" />
-            <element signature="e#3030#3031#0" expanded="true" />
-            <element signature="e#7416#7417#0" expanded="true" />
-            <element signature="e#7438#7439#0" expanded="true" />
-            <element signature="e#7652#7653#0" expanded="true" />
-            <element signature="e#7693#7694#0" expanded="true" />
-            <element signature="e#8567#8568#0" expanded="true" />
-            <element signature="e#8592#8593#0" expanded="true" />
-            <element signature="e#8779#8780#0" expanded="true" />
-            <element signature="e#8829#8830#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -888,12 +881,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/communication/CommunicationModule.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="555">
-          <caret line="60" lean-forward="true" selection-start-line="60" selection-end-line="60" />
+        <state relative-caret-position="589">
+          <caret line="63" column="62" selection-start-line="63" selection-start-column="62" selection-end-line="63" selection-end-column="62" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2877#2878#0" expanded="true" />
             <element signature="e#2914#2915#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/scorch/core/modules/permissions/PermissionPlayer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="485">
+          <caret line="132" column="47" selection-start-line="132" selection-start-column="47" selection-end-line="132" selection-end-column="47" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#9173#9174#0" expanded="true" />
+            <element signature="e#9198#9199#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -130,9 +130,7 @@ public class PermissionPlayer {
 		// Add the player's own custom permissions
 		getPermissions().forEach(node -> {
 			if (!attachment.getPermissions().containsKey(node)) {
-				if (node.startsWith("-")) {
-					attachment.setPermission(node, !node.startsWith("-"));
-				}
+				attachment.setPermission(node, !node.startsWith("-"));
 			}
 		});
 
