@@ -15,7 +15,6 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-import com.scorch.core.utils.ReflectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -93,7 +92,7 @@ public class DataManager extends AbstractModule {
 	 * Creates a table if it doesn't exist already with <code>name</code> as name
 	 * and with the fields of <code>storageType</code> as columns Call this in your
 	 * plugin/module initialisation
-	 * 
+	 *
 	 * @param name        the name of the database
 	 * @param storageType the column template
 	 */
@@ -111,12 +110,12 @@ public class DataManager extends AbstractModule {
 
 		String query = "CREATE TABLE IF NOT EXISTS " + name + " (object_type TEXT NOT NULL, ";
 
-		for (int i = 0; i < ReflectionUtils.getFields(storageType).length; i++) {
-			Field field = ReflectionUtils.getFields(storageType)[i];
+		for (int i = 0; i < storageType.getDeclaredFields().length; i++) {
+			Field field = storageType.getDeclaredFields()[i];
 
 			// Makes sure that the field doesn't have to be ignored for serialization
 			if (field.isAnnotationPresent(DataIgnore.class)) {
-				if (i == ReflectionUtils.getFields(storageType).length - 1) {
+				if (i == storageType.getDeclaredFields().length - 1) {
 					if (query.endsWith(", ")) {
 						query = query.substring(0, query.length() - 2);
 					}
@@ -182,7 +181,7 @@ public class DataManager extends AbstractModule {
 				query += " PRIMARY KEY";
 			}
 
-			if (i != (ReflectionUtils.getFields(storageType).length - 1)) {
+			if (i != (storageType.getDeclaredFields().length - 1)) {
 				query += ", ";
 			} else {
 				query += ");";
@@ -215,7 +214,7 @@ public class DataManager extends AbstractModule {
 	 *             <br>
 	 *             If the type isn't listed above, it will try to convert the object
 	 *             to json using Google's {@link Gson}</br>
-	 * 
+	 *
 	 * @param table  the table to save <code>object</code> to
 	 * @param object the object to save
 	 */
@@ -223,8 +222,8 @@ public class DataManager extends AbstractModule {
 		// Create prepared statement based on the object
 		String query = "INSERT INTO " + table + " (object_type, ";
 
-		for (int i = 0; i < ReflectionUtils.getFields(object.getClass()).length; i++) {
-			Field field = ReflectionUtils.getFields(object.getClass())[i];
+		for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
+			Field field = object.getClass().getDeclaredFields()[i];
 
 			// Makes sure that the field doesn't have to be ignored for serialisation
 			if (field.isAnnotationPresent(DataIgnore.class)) {
@@ -236,15 +235,15 @@ public class DataManager extends AbstractModule {
 			// if the next field had a DataIgnore class then this code would result in an
 			// unfinished statement "(?,?,?" for example
 
-			if (i == ReflectionUtils.getFields(object.getClass()).length - 1
-					|| ReflectionUtils.getFields(object.getClass())[i + 1].isAnnotationPresent(DataIgnore.class)) {
+			if (i == object.getClass().getDeclaredFields().length - 1
+					|| object.getClass().getDeclaredFields()[i + 1].isAnnotationPresent(DataIgnore.class)) {
 				query += ") VALUES (?,";
-				for (int j = 0; j < ReflectionUtils.getFields(object.getClass()).length; j++) {
-					if (ReflectionUtils.getFields(object.getClass())[j].isAnnotationPresent(DataIgnore.class))
+				for (int j = 0; j < object.getClass().getDeclaredFields().length; j++) {
+					if (object.getClass().getDeclaredFields()[j].isAnnotationPresent(DataIgnore.class))
 						continue;
 					query += "?";
-					if (j == ReflectionUtils.getFields(object.getClass()).length - 1
-							|| ReflectionUtils.getFields(object.getClass())[j + 1].isAnnotationPresent(DataIgnore.class)) {
+					if (j == object.getClass().getDeclaredFields().length - 1
+							|| object.getClass().getDeclaredFields()[j + 1].isAnnotationPresent(DataIgnore.class)) {
 						query += ");";
 					} else {
 						query += ", ";
@@ -262,8 +261,8 @@ public class DataManager extends AbstractModule {
 
 			int parameterIndex = 2;
 
-			for (int i = 0; i < ReflectionUtils.getFields(object.getClass()).length; i++) {
-				Field field = ReflectionUtils.getFields(object.getClass())[i];
+			for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
+				Field field = object.getClass().getDeclaredFields()[i];
 
 				// Make sure the field is accessible
 				field.setAccessible(true);
@@ -325,7 +324,7 @@ public class DataManager extends AbstractModule {
 	 * <br>
 	 * If the type isn't listed above, it will try to convert the object to json
 	 * using Google's {@link Gson}</br>
-	 * 
+	 *
 	 * @param table  the table to save <code>object</code> to
 	 * @param object the object to save
 	 */
@@ -342,7 +341,7 @@ public class DataManager extends AbstractModule {
 	 * Gets the object where selector == value from table Returns a
 	 * {@link java.util.Collection} of said object if multiple objects are found in
 	 * the database that match the selectors
-	 * 
+	 *
 	 * @param table        the table
 	 * @param sqlSelectors the selectors to use
 	 * @return the object found in the database
@@ -391,7 +390,7 @@ public class DataManager extends AbstractModule {
 				int columnIndex = 2;
 
 				// Start at one since we've already gotten the class name ^
-				for (Field field : ReflectionUtils.getFields(clazz)) {
+				for (Field field : clazz.getDeclaredFields()) {
 
 					// Make sure the field doesn't have to be ignored
 					if (field.isAnnotationPresent(DataIgnore.class))
@@ -447,7 +446,7 @@ public class DataManager extends AbstractModule {
 
 	/**
 	 * Gets all the objects in a table using SELECT * FROM table
-	 * 
+	 *
 	 * @param table the target table
 	 * @return a {@link Collection} of objects that are stored in the table
 	 * @throws DataObtainException thrown when there's an issue obtaining the data
@@ -474,7 +473,7 @@ public class DataManager extends AbstractModule {
 				int columnIndex = 2;
 
 				// Start at one since we've already gotten the class name ^
-				for (Field field : ReflectionUtils.getFields(clazz)) {
+				for (Field field : clazz.getDeclaredFields()) {
 
 					// Make sure the field doesn't have to be ignored
 					if (field.isAnnotationPresent(DataIgnore.class))
@@ -531,7 +530,7 @@ public class DataManager extends AbstractModule {
 
 	/**
 	 * Deletes the object specified using the {@link SQLSelector}s from the table
-	 * 
+	 *
 	 * @param table        the table to delete the data from
 	 * @param sqlSelectors the sql selectors that specify the data
 	 * @throws DataDeleteException
@@ -617,7 +616,7 @@ public class DataManager extends AbstractModule {
 	/**
 	 * Updates the object in the database using {@link SQLSelector}s to select the
 	 * object
-	 * 
+	 *
 	 * @param table  the table to update data in
 	 * @param object the object to update
 	 */
@@ -627,50 +626,50 @@ public class DataManager extends AbstractModule {
 
 		String sql = String.format("INSERT INTO %s (object_type", table);
 
-		for (int i = 0; i < ReflectionUtils.getFields(object.getClass()).length; i++) {
-			Field field = ReflectionUtils.getFields(object.getClass())[i];
+		for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
+			Field field = object.getClass().getDeclaredFields()[i];
 			// Ignore field if the annotation is present
 			if (field.isAnnotationPresent(DataIgnore.class)) {
-				if (i == ReflectionUtils.getFields(object.getClass()).length - 1) {
+				if (i == object.getClass().getDeclaredFields().length - 1) {
 					sql += ") VALUES (";
 				}
 				continue;
 			}
 
-			if (i == ReflectionUtils.getFields(object.getClass()).length - 1) {
+			if (i == object.getClass().getDeclaredFields().length - 1) {
 				sql += ", " + field.getName() + ") VALUES (?, ";
 			} else {
 				sql += ", " + field.getName();
 			}
 		}
 
-		for (int i = 0; i < ReflectionUtils.getFields(object.getClass()).length; i++) {
+		for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
 
 			// Ignore field if the annotation is present
-			if (ReflectionUtils.getFields(object.getClass())[i].isAnnotationPresent(DataIgnore.class)) {
-				if (i == ReflectionUtils.getFields(object.getClass()).length - 1) {
+			if (object.getClass().getDeclaredFields()[i].isAnnotationPresent(DataIgnore.class)) {
+				if (i == object.getClass().getDeclaredFields().length - 1) {
 					sql += "?) ON DUPLICATE KEY UPDATE ";
 				}
 				continue;
 			}
 
-			if (i == ReflectionUtils.getFields(object.getClass()).length - 1) {
+			if (i == object.getClass().getDeclaredFields().length - 1) {
 				sql += "?) ON DUPLICATE KEY UPDATE ";
 			} else {
 				sql += "?, ";
 			}
 		}
 
-		for (int i = 0; i < ReflectionUtils.getFields(object.getClass()).length; i++) {
-			Field field = ReflectionUtils.getFields(object.getClass())[i];
+		for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
+			Field field = object.getClass().getDeclaredFields()[i];
 			// Ignore field if annotation is present
 			if (field.isAnnotationPresent(DataIgnore.class)) {
-				if (i == ReflectionUtils.getFields(object.getClass()).length - 1) {
+				if (i == object.getClass().getDeclaredFields().length - 1) {
 					sql += ";";
 				} else if (i == 0) {
 					Field tmp = field;
-					while (i < ReflectionUtils.getFields(object.getClass()).length) {
-						tmp = ReflectionUtils.getFields(object.getClass())[i];
+					while (i < object.getClass().getDeclaredFields().length) {
+						tmp = object.getClass().getDeclaredFields()[i];
 						if (tmp.isAnnotationPresent(DataIgnore.class)) {
 							i++;
 							continue;
@@ -678,7 +677,7 @@ public class DataManager extends AbstractModule {
 
 						sql += tmp.getName() + "=VALUES(" + tmp.getName() + ")";
 
-						if (i == ReflectionUtils.getFields(object.getClass()).length - 1)
+						if (i == object.getClass().getDeclaredFields().length - 1)
 							sql += ";";
 						break;
 					}
@@ -686,7 +685,7 @@ public class DataManager extends AbstractModule {
 				continue;
 			}
 
-			if (i == ReflectionUtils.getFields(object.getClass()).length - 1) {
+			if (i == object.getClass().getDeclaredFields().length - 1) {
 				sql += ", " + field.getName() + "=VALUES(" + field.getName() + ");";
 			} else if (i == 0) {
 				sql += field.getName() + "=VALUES(" + field.getName() + ")";
@@ -703,11 +702,11 @@ public class DataManager extends AbstractModule {
 
 			statement.setString(1, object.getClass().getName());
 
-			for (int i = 0; i < ReflectionUtils.getFields(object.getClass()).length; i++) {
+			for (int i = 0; i < object.getClass().getDeclaredFields().length; i++) {
 				// Ignore field if annotation is present
-				if (ReflectionUtils.getFields(object.getClass())[i].isAnnotationPresent(DataIgnore.class))
+				if (object.getClass().getDeclaredFields()[i].isAnnotationPresent(DataIgnore.class))
 					continue;
-				Field field = ReflectionUtils.getFields(object.getClass())[i];
+				Field field = object.getClass().getDeclaredFields()[i];
 
 				field.setAccessible(true);
 
@@ -745,7 +744,7 @@ public class DataManager extends AbstractModule {
 	/**
 	 * Updates the object in the database using {@link SQLSelector}s to select the
 	 * object
-	 * 
+	 *
 	 * @param table  the table to update data in
 	 * @param object the object to update
 	 */
@@ -764,7 +763,7 @@ public class DataManager extends AbstractModule {
 
 	/**
 	 * Checks if the type has a default constructor
-	 * 
+	 *
 	 * @param type the type to check
 	 * @return whether the type has a default constructor
 	 */
@@ -792,7 +791,7 @@ public class DataManager extends AbstractModule {
 
 	/**
 	 * Gets the gson instance
-	 * 
+	 *
 	 * @return the gson instance
 	 */
 	public static Gson getGson() {
@@ -801,7 +800,7 @@ public class DataManager extends AbstractModule {
 
 	/**
 	 * Gets the connectionmanager
-	 * 
+	 *
 	 * @return the connection manager
 	 */
 	private ConnectionManager getConnectionManager() {
