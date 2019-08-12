@@ -60,6 +60,16 @@ public class CommunicationModule extends AbstractModule {
         }
     }
 
+    public void reconnect () {
+        Logger.log("Setting up websocket connection to bungee server...");
+        try {
+            this.websocket = new SocketClient(new URI("ws://localhost:6969"));
+            this.websocket.connect();
+        } catch (URISyntaxException e) {
+            Logger.error("Invalid uri for websocket!");
+        }
+    }
+
     /**
      * Returns whether the target player is online on the bungee network
      * @param player the target player
@@ -79,6 +89,14 @@ public class CommunicationModule extends AbstractModule {
     }
 
     /**
+     * Gets a list of all the players on the network
+     * @return
+     */
+    public List<UUID> getNetworkOnlinePlayers() {
+        return networkPlayers;
+    }
+
+    /**
      * Adds a player to the network player list, this will make {@link CommunicationModule#isOnline(UUID)} return true
      * for the given uuid
      * @param uuid the player to add to the list
@@ -86,6 +104,7 @@ public class CommunicationModule extends AbstractModule {
     public void addNetworkPlayer (UUID uuid){
         if(this.networkPlayers.contains(uuid)) return;
         this.networkPlayers.add(uuid);
+        Logger.info("Added %s to networkplayers total: %s", uuid, networkPlayers.size());
     }
 
     /**

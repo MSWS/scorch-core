@@ -97,12 +97,27 @@ public class SocketClient extends WebSocketClient {
 
 	@Override
 	public void onClose(int i, String s, boolean b) {
+
 		Logger.info("Closed websocket connection, reason: %s", s);
+		Logger.info("Retrying connection in 5 seconds...");
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				ScorchCore.getInstance().getCommunicationModule().reconnect();
+			}
+		}.runTaskLater(ScorchCore.getInstance(), 100);
 	}
 
 	@Override
 	public void onError(Exception e) {
 		Logger.error("Error occured with websocket: " + e.getMessage());
 		e.printStackTrace();
+		Logger.info("Retrying connection in 5 seconds...");
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				ScorchCore.getInstance().getCommunicationModule().reconnect();
+			}
+		}.runTaskLater(ScorchCore.getInstance(), 100);
 	}
 }
