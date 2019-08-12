@@ -48,6 +48,6 @@ public class Friendship implements Serializable {
 	}
 
 	public enum FriendStatus {
-		REQUESTED, DENIED, FRIENDS, FAVORITES;
+		REQUESTED, DENIED, FRIENDS;
 	}
 }

@@ -108,10 +108,12 @@ public class FriendModule extends AbstractModule {
 	}
 
 	public boolean areFriends(UUID player, UUID target) {
-		List<Friendship> friends = getFriends(player);
-		for (Friendship f : friends) {
-			if (f.getTarget().equals(target)
-					&& (f.getStatus() == FriendStatus.FRIENDS || f.getStatus() == FriendStatus.FAVORITES))
+		for (Friendship f : getFriends(player)) {
+			if (f.getTarget().equals(target) && f.getStatus() == FriendStatus.FRIENDS)
+				return true;
+		}
+		for (Friendship f : getFriends(target)) {
+			if (f.getTarget().equals(player) && f.getStatus() == FriendStatus.FRIENDS)
 				return true;
 		}
 		return false;

@@ -143,7 +143,6 @@ public class PermissionsCommand extends BukkitCommand {
 			MSG.tell(sender, " ");
 			if (args.length < 2 || args[1].equalsIgnoreCase("list")) {
 				MSG.tell(sender, "Listing Available Groups");
-				perms.getGroupList().forEach(g -> MSG.tell(sender, g.getGroupName()));
 
 				for (PermissionGroup g : perms.getGroupList()) {
 					String msg = g.getGroupName();
