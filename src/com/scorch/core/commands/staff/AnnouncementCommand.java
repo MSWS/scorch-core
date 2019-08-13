@@ -19,7 +19,7 @@ public class AnnouncementCommand extends Command {
 		super(name);
 		setPermission("scorch.command.announce");
 		setPermissionMessage(ScorchCore.getInstance().getMessage("noperm"));
-		setAliases(Arrays.asList("broadcast"));
+		setAliases(Arrays.asList("broadcast", "bc"));
 	}
 
 	@Override

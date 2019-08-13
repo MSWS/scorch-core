@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.events.punishment.PunishmentCreateEvent;
 import com.scorch.core.events.punishment.PunishmentUpdateEvent;
+import com.scorch.core.utils.Logger;
 
 public class PunishmentListener implements Listener {
 	private PunishModule pm = ScorchCore.getInstance().getPunishModule();
@@ -17,7 +18,9 @@ public class PunishmentListener implements Listener {
 
 	@EventHandler
 	public void onPunishmentCreate(PunishmentCreateEvent event) {
-		pm.addPunishment(event.getPunishment());
+		pm.addExecutedPunishment(event.getPunishment());
+
+		Logger.log("Adding punishment " + event.getPunishment().getId());
 	}
 
 	@EventHandler

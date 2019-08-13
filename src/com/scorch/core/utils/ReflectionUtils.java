@@ -21,7 +21,7 @@ public class ReflectionUtils {
      *
      * @see Field
      */
-    public static Field[] getFields (Class type){
+    public static Field[] getFields (Class<?> type){
         Field[] superclassFields = getSuperclassFields(type);
         List<Field> fieldList = new ArrayList<>(Arrays.asList(superclassFields));
         fieldList.addAll(Arrays.asList(type.getDeclaredFields()));
@@ -34,7 +34,7 @@ public class ReflectionUtils {
      * @param type the type you want to get the superclasses of
      * @return     an array of the declared {@link Field}s in the superclasses of the type.
      */
-    private static Field[] getSuperclassFields (Class type){
+    private static Field[] getSuperclassFields (Class<?> type){
         if(type.getSuperclass() != Object.class){
             Field[] superclassFields = getSuperclassFields(type.getSuperclass());
             List<Field> fieldList = new ArrayList<>(Arrays.asList(superclassFields));

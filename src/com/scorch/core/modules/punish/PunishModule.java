@@ -72,6 +72,16 @@ public class PunishModule extends AbstractModule {
 	public void addPunishment(Punishment punishment) {
 		punishment.execute();
 
+		addExecutedPunishment(punishment);
+
+		try {
+			ScorchCore.getInstance().getDataManager().updateObject("punishments", punishment);
+		} catch (DataUpdateException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void addExecutedPunishment(Punishment punishment) {
 		List<Punishment> current = linked.getOrDefault(punishment.getTargetUUID(), new ArrayList<>());
 		current.add(punishment);
 		punishments.add(punishment);
@@ -80,12 +90,6 @@ public class PunishModule extends AbstractModule {
 			globalPunishments.add(punishment);
 
 		linked.put(punishment.getTargetUUID(), current);
-
-		try {
-			ScorchCore.getInstance().getDataManager().updateObject("punishments", punishment);
-		} catch (DataUpdateException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public void openPunishGUI(Player punisher, OfflinePlayer player, String reason) {
@@ -131,9 +135,9 @@ public class PunishModule extends AbstractModule {
 
 	public Inventory getHistoryGUI(OfflinePlayer target, int page) {
 		Inventory hist = Bukkit.createInventory(null, 54,
-				target.getName() + "'" + (target.getName().toLowerCase().endsWith("s") ? "" : "s") + " History");
+				MSG.plural(target.getName() == null ? target.getUniqueId().toString() : target.getName()) + " History");
 
-		List<Punishment> history = ScorchCore.getInstance().getPunishModule().getPunishments(target.getUniqueId());
+		List<Punishment> history = getPunishments(target.getUniqueId());
 		Collections.sort(history);
 
 		int slot = 0;

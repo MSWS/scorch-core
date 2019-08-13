@@ -7,7 +7,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.communication.exceptions.WebSocketException;
-import com.scorch.core.utils.Logger;
 
 public class ServerTrackListener implements Listener {
 	public ServerTrackListener() {
@@ -23,12 +22,11 @@ public class ServerTrackListener implements Listener {
 				}
 				ScorchCore.getInstance().getCommunicationModule().getServers().clear();
 			}
-		}.runTaskTimer(ScorchCore.getInstance(), 20 * 5, 20 * 60 * 5);
+		}.runTaskTimer(ScorchCore.getInstance(), 20 * 5, 20 * 20);
 	}
 
 	@EventHandler
 	public void serverRequestEvent(ServerRequestListEvent event) {
-		Logger.log("Requesting server list...");
 		ServerExistsEvent see = new ServerExistsEvent(ScorchCore.getInstance().getServerName());
 		try {
 			ScorchCore.getInstance().getCommunicationModule().dispatchEvent(see);
@@ -39,7 +37,6 @@ public class ServerTrackListener implements Listener {
 
 	@EventHandler
 	public void serverExistsEvent(ServerExistsEvent event) {
-		Logger.log("Server exists: " + event.getServer());
 		ScorchCore.getInstance().getCommunicationModule().addServer(event.getServer());
 	}
 

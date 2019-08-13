@@ -21,6 +21,7 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import com.scorch.core.events.announcements.AnnouncementListener;
+import com.scorch.core.events.servers.ServerTrackListener;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.ModulePriority;
 import com.scorch.core.modules.chat.ChatModule;
@@ -139,15 +140,20 @@ public class ScorchCore extends JavaPlugin implements PluginMessageListener {
 		getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
 
 		new AnnouncementListener();
+		new ServerTrackListener();
 
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				if (!"Unknown".equals(serverName))
+				if (!"Unknown".equals(serverName)) {
+					Logger.log("Registered server name: " + serverName);
 					cancel();
+					return;
+				}
 				Player p = Iterables.getFirst(Bukkit.getOnlinePlayers(), null);
 				if (p == null)
 					return;
+				Logger.log("Attempting to get server name...");
 
 				ByteArrayDataOutput out = ByteStreams.newDataOutput();
 				out.writeUTF("GetServer");
