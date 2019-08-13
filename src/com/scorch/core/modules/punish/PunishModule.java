@@ -3,9 +3,12 @@ package com.scorch.core.modules.punish;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -138,6 +141,49 @@ public class PunishModule extends AbstractModule {
 				MSG.plural(target.getName() == null ? target.getUniqueId().toString() : target.getName()) + " History");
 
 		List<Punishment> history = getPunishments(target.getUniqueId());
+		Collections.sort(history);
+
+		int slot = 0;
+
+		for (int i = (page * (hist.getSize() - 9)); i < (page * (hist.getSize() - 9)) + hist.getSize() - 9
+				&& i < history.size(); i++) {
+			Punishment p = history.get(i);
+			hist.setItem(slot, p.getItem());
+			slot++;
+		}
+
+		if (page > 0) {
+			ItemStack back = new ItemStack(Material.ARROW);
+			ItemMeta bMeta = back.getItemMeta();
+			bMeta.setDisplayName(MSG.color("&aPrevious Page"));
+			back.setItemMeta(bMeta);
+			hist.setItem(hist.getSize() - 9, back);
+		}
+		if (hist.getItem(hist.getSize() - 10) != null) {
+			ItemStack next = new ItemStack(Material.ARROW);
+			ItemMeta nMeta = next.getItemMeta();
+			nMeta.setDisplayName(MSG.color("&aNext Page"));
+			next.setItemMeta(nMeta);
+			hist.setItem(hist.getSize() - 1, next);
+		}
+		return hist;
+	}
+
+	public Inventory getRecordGUI(OfflinePlayer target, int page) {
+		Inventory hist = Bukkit.createInventory(null, 54,
+				MSG.plural(target.getName() == null ? target.getUniqueId().toString() : target.getName())
+						+ " Punishments");
+
+		Set<Punishment> tmp = new HashSet<>();
+
+		for (String username : Utils.getPastUsernames(target.getUniqueId())) {
+
+			tmp.addAll(
+					punishments.stream().filter(p -> p.getStaffName().equals(username)).collect(Collectors.toList()));
+		}
+
+		List<Punishment> history = new ArrayList<>(tmp);
+
 		Collections.sort(history);
 
 		int slot = 0;

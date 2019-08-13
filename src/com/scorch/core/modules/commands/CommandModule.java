@@ -40,6 +40,7 @@ import com.scorch.core.commands.staff.MACommand;
 import com.scorch.core.commands.staff.PermissionsCommand;
 import com.scorch.core.commands.staff.PunishCommand;
 import com.scorch.core.commands.staff.RACommand;
+import com.scorch.core.commands.staff.RecordCommand;
 import com.scorch.core.commands.staff.TFACommand;
 import com.scorch.core.commands.staff.TPCommand;
 import com.scorch.core.commands.staff.TestCommand;
@@ -115,6 +116,7 @@ public class CommandModule extends AbstractModule {
 		commands.put(new PermissionsCommand("permissions"), true);
 		commands.put(new FindCommand("find"), true);
 		commands.put(new AnnouncementCommand("announce"), true);
+		commands.put(new RecordCommand("record"), true);
 
 		enableCommands(commands.keySet().stream().collect(Collectors.toList()));
 		Logger.log("&aSuccessfully enabled &e" + commands.size() + "&a command" + (commands.size() == 1 ? "" : "s"));

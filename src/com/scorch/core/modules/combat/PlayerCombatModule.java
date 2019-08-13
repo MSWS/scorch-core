@@ -160,7 +160,7 @@ public class PlayerCombatModule extends AbstractModule implements Listener {
 			} else if (hand.getType() == Material.AIR) {
 				weapon = "Hand";
 			} else {
-				weapon = hand.getType().toString();
+				weapon = MSG.camelCase(hand.getType().toString());
 			}
 		}
 

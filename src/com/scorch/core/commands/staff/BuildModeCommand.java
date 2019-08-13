@@ -95,10 +95,6 @@ public class BuildModeCommand extends BukkitCommand {
 				}
 
 				if (target == null) {
-					// bm rollback <Player>
-					// bm rollback [Player] [number]
-					// bm rollback [number]
-
 					if (!NumberUtils.isNumber(args[1])) {
 						MSG.tell(sender, "Unknown Player");
 						return true;
@@ -199,7 +195,6 @@ public class BuildModeCommand extends BukkitCommand {
 				.replace("%s%", target.getName().toLowerCase().endsWith("s") ? "" : "s").replace("%mode%", "build");
 
 		MSG.tell(sender, msg);
-
 		return true;
 	}
 

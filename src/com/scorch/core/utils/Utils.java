@@ -2,11 +2,18 @@ package com.scorch.core.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -27,6 +34,9 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.players.ScorchPlayer;
 
@@ -611,6 +621,35 @@ public class Utils {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	private static Map<UUID, List<String>> usernameCache = new HashMap<UUID, List<String>>();
+
+	public static List<String> getPastUsernames(UUID uuid) {
+		if (usernameCache.containsKey(uuid))
+			return usernameCache.get(uuid);
+		List<String> result = new ArrayList<>();
+		final String sURL = "https://api.mojang.com/user/profiles/" + uuid.toString().replace("-", "") + "/names";
+		try {
+			URL url = new URL(sURL);
+
+			URLConnection request = url.openConnection();
+			request.connect();
+
+			JsonParser jp = new JsonParser(); // from gson
+			JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); // Convert the input
+
+			JsonArray rootobj = root.getAsJsonArray(); // May be an array, may be an object.
+
+			rootobj.forEach(obj -> result.add(obj.getAsJsonObject().get("name").getAsString()));
+
+		} catch (IOException e) {
+			e.printStackTrace();
+			return result;
+		}
+
+		usernameCache.put(uuid, result);
+		return result;
 	}
 
 	public static Sounds getBreakSound(Material mat) {

@@ -244,6 +244,8 @@ public class Punishment implements Comparable<Punishment> {
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(MSG.color("&r" + punishType.getColored()));
 		List<String> lore = new ArrayList<>();
+		lore.add(MSG.color("&aPlayer: &b"
+				+ (getTargetPlayer().getName() == null ? target.toString() : getTargetPlayer().getName())));
 		lore.add(MSG.color("&3Staff: &b" + staff));
 		lore.add(MSG.color("&3Reason: &b" + reason));
 		if (punishType == PunishType.IP_BAN)

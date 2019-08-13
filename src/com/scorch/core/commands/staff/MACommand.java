@@ -57,7 +57,7 @@ public class MACommand extends BukkitCommand {
 			if (p.equals(sender)) {
 				MSG.tell(p,
 						ScorchCore.getInstance().getMessage("maformat-sender")
-								.replace("%group%", ScorchCore.getInstance().getPrefix(p))
+								.replace("%group%", ScorchCore.getInstance().getPrefix(target))
 								.replace("%player%", target.getName()).replace("%message%", builder.toString().trim()));
 				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 2, 1.5f);
 			}
