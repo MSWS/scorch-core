@@ -103,6 +103,10 @@ public class MessagesModule extends AbstractModule implements Listener {
 		defaults.add(
 				new CMessage("authenticatetimeleft", "&7Welcome back &a%player%&7. You are signed in for &a%time%&7."));
 		defaults.add(new CMessage("authenticated", "&aSuccessfully authenticated. Welcome!"));
+		defaults.add(new CMessage("announcement-title", "&c&lANNOUNCEMENT"));
+		defaults.add(new CMessage("announcement-subtitle", "&b%msg%"));
+		defaults.add(new CMessage("announcement-message", "&3Announcement> &b%msg%"));
+
 //		defaults.add(new CMessage("", ""));
 	}
 

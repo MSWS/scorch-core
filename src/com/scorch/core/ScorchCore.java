@@ -1,9 +1,6 @@
 package com.scorch.core;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -23,6 +20,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import com.scorch.core.events.announcements.AnnouncementListener;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.ModulePriority;
 import com.scorch.core.modules.chat.ChatModule;
@@ -44,7 +42,6 @@ import com.scorch.core.modules.players.PlaytimeModule;
 import com.scorch.core.modules.players.ScorchPlayer;
 import com.scorch.core.modules.punish.BanwaveModule;
 import com.scorch.core.modules.punish.PunishModule;
-import com.scorch.core.modules.punish.tests.PunishEventTest;
 import com.scorch.core.modules.report.ReportModule;
 import com.scorch.core.modules.scoreboard.ScoreboardModule;
 import com.scorch.core.modules.staff.AuthenticationModule;
@@ -56,7 +53,6 @@ import com.scorch.core.modules.staff.VanishModule;
 import com.scorch.core.modules.staff.WorldProtectionModule;
 import com.scorch.core.pastebin.Paste;
 import com.scorch.core.utils.Logger;
-import com.scorch.core.utils.MSG;
 
 /**
  * The Core class of the plugin All initialisation is done here and it's used a
@@ -84,7 +80,7 @@ public class ScorchCore extends JavaPlugin implements PluginMessageListener {
 	private File guiYml = new File(getDataFolder(), "guis.yml");
 	private YamlConfiguration gui;
 
-	private String serverName;
+	private String serverName = "Unknown";
 
 	@Override
 	public void onEnable() {
@@ -142,10 +138,12 @@ public class ScorchCore extends JavaPlugin implements PluginMessageListener {
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		getServer().getMessenger().registerIncomingPluginChannel(this, "BungeeCord", this);
 
+		new AnnouncementListener();
+
 		new BukkitRunnable() {
 			@Override
 			public void run() {
-				if (serverName != null)
+				if (!"Unknown".equals(serverName))
 					cancel();
 				Player p = Iterables.getFirst(Bukkit.getOnlinePlayers(), null);
 				if (p == null)
@@ -157,14 +155,6 @@ public class ScorchCore extends JavaPlugin implements PluginMessageListener {
 				p.sendPluginMessage(ScorchCore.getInstance(), "BungeeCord", out.toByteArray());
 			}
 		}.runTaskTimer(ScorchCore.getInstance(), 0, 20 * 10);
-
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				new PunishEventTest();
-			}
-		}.runTaskLater(this, 100); // Run 5 seconds after boot to ensure visibility in console
-
 	}
 
 	@Override
@@ -415,51 +405,8 @@ public class ScorchCore extends JavaPlugin implements PluginMessageListener {
 			String method = in.readUTF();
 			Logger.log("method: " + method);
 			switch (method.split(" ")[0]) {
-			case "MESSAGE":
-				Player target = Bukkit.getPlayer(method.split(" ")[1]);
-				if (target == null)
-					return;
-				String msg = "";
-				for (int i = 2; i < method.split(" ").length; i++) {
-					msg += method.split(" ")[i] + " ";
-				}
 
-				msg = msg.trim();
-
-				MSG.tell(target, msg);
-				break;
-			case "FIND":
-				Player found = Bukkit.getPlayer(method.split(" ")[1]);
-				if (found == null)
-					return;
-
-				ByteArrayDataOutput out = ByteStreams.newDataOutput();
-				out.writeUTF("Forward");
-				out.writeUTF("ALL");
-				out.writeUTF("Scorch");
-				out.writeUTF("MESSAGE " + method.split(" ")[2] + " Found on server " + serverName + "!");
-
-				found.sendPluginMessage(this, "BungeeCord", out.toByteArray());
-				break;
-			default:
-				Logger.log("Unknown method: " + method);
-//				String subChannel = in.readUTF();
-				short len = in.readShort();
-				byte[] msgbytes = new byte[len];
-				in.readFully(msgbytes);
-
-				DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
-				try {
-					String somedata = msgin.readUTF();
-					short somenumber = msgin.readShort();
-					Logger.log("data: " + somedata + " num: " + somenumber);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} // Read the data in the same way you wrote it
-				break;
 			}
-			break;
 		case "GetServer":
 			this.serverName = in.readUTF();
 			Logger.log("Received server name: " + serverName);
@@ -468,5 +415,9 @@ public class ScorchCore extends JavaPlugin implements PluginMessageListener {
 			Logger.log("Unknown channel: " + subchannel);
 			break;
 		}
+	}
+
+	public String getServerName() {
+		return serverName;
 	}
 }

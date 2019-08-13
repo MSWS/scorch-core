@@ -31,6 +31,7 @@ import com.scorch.core.commands.report.ReportCommand;
 import com.scorch.core.commands.report.ReportHandleCommand;
 import com.scorch.core.commands.report.ReportInfoCommand;
 import com.scorch.core.commands.staff.ACommand;
+import com.scorch.core.commands.staff.AnnouncementCommand;
 import com.scorch.core.commands.staff.BVersionCommand;
 import com.scorch.core.commands.staff.BuildModeCommand;
 import com.scorch.core.commands.staff.FindCommand;
@@ -113,6 +114,7 @@ public class CommandModule extends AbstractModule {
 		commands.put(new MessageCommand("message"), true);
 		commands.put(new PermissionsCommand("permissions"), true);
 		commands.put(new FindCommand("find"), true);
+		commands.put(new AnnouncementCommand("announce"), true);
 
 		enableCommands(commands.keySet().stream().collect(Collectors.toList()));
 		Logger.log("&aSuccessfully enabled &e" + commands.size() + "&a command" + (commands.size() == 1 ? "" : "s"));

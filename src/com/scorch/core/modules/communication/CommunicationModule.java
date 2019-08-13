@@ -3,7 +3,9 @@ package com.scorch.core.modules.communication;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
@@ -18,97 +20,120 @@ import com.scorch.core.utils.Logger;
 
 public class CommunicationModule extends AbstractModule {
 
-    private SocketClient websocket;
+	private SocketClient websocket;
 
-    private List<UUID> networkPlayers;
+	private List<UUID> networkPlayers;
+	private Set<String> servers;
 
-    private Gson eventGson;
+	private Gson eventGson;
 
+	public CommunicationModule(String id) {
+		super(id);
+		this.networkPlayers = new ArrayList<>();
+		this.eventGson = new GsonBuilder().registerTypeAdapter(NetworkEvent.class, new NetworkEventSerializer())
+				.addSerializationExclusionStrategy(new ExcludeStrategy()).create();
+	}
 
-    public CommunicationModule(String id) {
-        super(id);
-        this.networkPlayers = new ArrayList<>();
-        this.eventGson = new GsonBuilder().registerTypeAdapter(NetworkEvent.class, new NetworkEventSerializer()).addSerializationExclusionStrategy(new ExcludeStrategy()).create();
-    }
+	@Override
+	public void initialize() {
+		Logger.log("Setting up websocket connection to bungee server...");
+		servers = new HashSet<>();
 
-    @Override
-    public void initialize() {
-        Logger.log("Setting up websocket connection to bungee server...");
-        try {
-            this.websocket = new SocketClient(new URI("ws://localhost:6969"));
-            this.websocket.connect();
-        } catch (URISyntaxException e) {
-            Logger.error("Invalid uri for websocket!");
-        }
-    }
+		try {
+			this.websocket = new SocketClient(new URI("ws://localhost:6969"));
+			this.websocket.connect();
+		} catch (URISyntaxException e) {
+			Logger.error("Invalid uri for websocket!");
+		}
+	}
 
-    /**
-     * Dispatches the event across the bungee network by converting the the event given to json
-     * using {@link com.google.gson.Gson}. Use the {@link com.scorch.core.modules.data.annotations.DataIgnore} annotation
-     * to ignore any data you want to be ignored
-     * @param event the event
-     * @throws WebSocketException
-     */
-    public void dispatchEvent (NetworkEvent event) throws WebSocketException {
-        if(this.websocket.isOpen()){
-            EventPacket packet = new EventPacket(event);
+	/**
+	 * Dispatches the event across the bungee network by converting the the event
+	 * given to json using {@link com.google.gson.Gson}. Use the
+	 * {@link com.scorch.core.modules.data.annotations.DataIgnore} annotation to
+	 * ignore any data you want to be ignored
+	 * 
+	 * @param event the event
+	 * @throws WebSocketException
+	 */
+	public void dispatchEvent(NetworkEvent event) throws WebSocketException {
+		if (this.websocket.isOpen()) {
+			EventPacket packet = new EventPacket(event);
 			this.websocket.send(eventGson.toJson(packet));
-        }
-        else {
-            Logger.error("Tried to dispatch a network event even though the websocket isn't connected!");
-            throw new WebSocketException("Websocket state isn't OPEN!");
-        }
-    }
+		} else {
+			Logger.error("Tried to dispatch a network event even though the websocket isn't connected!");
+			throw new WebSocketException("Websocket state isn't OPEN!");
+		}
+	}
 
-    /**
-     * Returns whether the target player is online on the bungee network
-     * @param player the target player
-     * @return       whether the target player is online or not
-     */
-    public boolean isOnline (UUID player){
-        return networkPlayers.contains(player);
-    }
+	/**
+	 * Returns whether the target player is online on the bungee network
+	 * 
+	 * @param player the target player
+	 * @return whether the target player is online or not
+	 */
+	public boolean isOnline(UUID player) {
+		return networkPlayers.contains(player);
+	}
 
-    /**
-     * Returns whether the target player is online on the bungee network
-     * @param player the target player
-     * @return       whether the target player is online or not
-     */
-    public boolean isOnline (Player player){
-        return isOnline(player.getUniqueId());
-    }
+	/**
+	 * Returns whether the target player is online on the bungee network
+	 * 
+	 * @param player the target player
+	 * @return whether the target player is online or not
+	 */
+	public boolean isOnline(Player player) {
+		return isOnline(player.getUniqueId());
+	}
 
-    /**
-     * Gets a list of all the players on the network
-     * @return
-     */
-    public List<UUID> getNetworkOnlinePlayers() {
-        return networkPlayers;
-    }
+	/**
+	 * Gets a list of all the players on the network
+	 * 
+	 * @return
+	 */
+	public List<UUID> getNetworkOnlinePlayers() {
+		return networkPlayers;
+	}
 
-    /**
-     * Adds a player to the network player list, this will make {@link CommunicationModule#isOnline(UUID)} return true
-     * for the given uuid
-     * @param uuid the player to add to the list
-     */
-    public void addNetworkPlayer (UUID uuid){
-        if(this.networkPlayers.contains(uuid)) return;
-        this.networkPlayers.add(uuid);
-        Logger.info("Added %s to networkplayers total: %s", uuid, networkPlayers.size());
-    }
+	/**
+	 * Adds a player to the network player list, this will make
+	 * {@link CommunicationModule#isOnline(UUID)} return true for the given uuid
+	 * 
+	 * @param uuid the player to add to the list
+	 */
+	public void addNetworkPlayer(UUID uuid) {
+		if (this.networkPlayers.contains(uuid))
+			return;
+		this.networkPlayers.add(uuid);
+		Logger.info("Added %s to networkplayers, total: %s", uuid, networkPlayers.size());
+	}
 
-    /**
-     * Removes a player from the network player list, this will make {@link CommunicationModule#isOnline(UUID)} return
-     * false for the given uuid
-     * @param uuid the player to remove from the list
-     */
-    public void removeNetworkPlayer (UUID uuid){
-        if(!this.networkPlayers.contains(uuid)) return;
-        this.networkPlayers.remove(uuid);
-    }
+	/**
+	 * Removes a player from the network player list, this will make
+	 * {@link CommunicationModule#isOnline(UUID)} return false for the given uuid
+	 * 
+	 * @param uuid the player to remove from the list
+	 */
+	public void removeNetworkPlayer(UUID uuid) {
+		if (!this.networkPlayers.contains(uuid))
+			return;
+		this.networkPlayers.remove(uuid);
+	}
 
-    @Override
-    public void disable() {
-        this.websocket.close(1000, "server shutdown");
-    }
+	@Override
+	public void disable() {
+		this.websocket.close(1000, "server shutdown");
+	}
+
+	public Set<String> getServers() {
+		return servers;
+	}
+
+	public boolean addServer(String server) {
+		return servers.add(server);
+	}
+
+	public boolean removeServer(String server) {
+		return servers.remove(server);
+	}
 }
