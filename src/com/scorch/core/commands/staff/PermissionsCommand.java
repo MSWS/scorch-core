@@ -208,7 +208,8 @@ public class PermissionsCommand extends BukkitCommand {
 					MSG.tell(sender, "&cUnknown permission group: &e" + args[1]);
 					return true;
 				}
-				MSG.tell(sender, perms.removeGroup(args[1]) ? "Successfully deleted group" : "Unable to delete group");
+				MSG.tell(sender, perms.removeGroup(args[1]) ? "&aSuccessfully &6deleted &e" + args[1] + "&7."
+						: "&cUnable to delete group.");
 				break;
 			case "add":
 				if (!sender.hasPermission("scorch.command.permissions.group.add." + args[1])) {
@@ -383,6 +384,7 @@ public class PermissionsCommand extends BukkitCommand {
 		MSG.tell(sender, "/" + label + " user [Name] group [set/add/remove] [Group]");
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
 		List<String> result = new ArrayList<>();
@@ -407,11 +409,18 @@ public class PermissionsCommand extends BukkitCommand {
 
 				break;
 			case 4:
-				if (!args[2].equalsIgnoreCase("group"))
-					break;
-				for (String res : new String[] { "set", "add", "remove" })
-					if (res.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
-						result.add(res);
+				if (args[2].equalsIgnoreCase("group")) {
+					for (String res : new String[] { "set", "add", "remove" })
+						if (res.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
+							result.add(res);
+				}
+				if (args[2].equalsIgnoreCase("add") || args[2].equalsIgnoreCase("remove")) {
+					PermissionPlayer pp = ScorchCore.getInstance().getPermissionModule()
+							.getPermissionPlayer(Bukkit.getOfflinePlayer(args[1]).getUniqueId());
+					for (String perm : pp.getPermissions())
+						if (perm.toLowerCase().startsWith(args[args.length - 1]))
+							result.add(perm);
+				}
 				break;
 			case 5:
 				if (!args[2].equalsIgnoreCase("group"))
@@ -446,12 +455,13 @@ public class PermissionsCommand extends BukkitCommand {
 				for (PermissionGroup group : ScorchCore.getInstance().getPermissionModule().getGroupList())
 					if (group.getGroupName().toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
 						result.add(group.getGroupName());
-				if (args[2].equalsIgnoreCase("set") && args[3].equalsIgnoreCase("default")) {
-					for (String res : new String[] { "true", "false" }) {
-						if (res.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
-							result.add(res);
+				if (args.length > 3)
+					if (args[2].equalsIgnoreCase("set") && args[3].equalsIgnoreCase("default")) {
+						for (String res : new String[] { "true", "false" }) {
+							if (res.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
+								result.add(res);
+						}
 					}
-				}
 				break;
 			case 3:
 				for (String res : new String[] { "set", "create", "delete", "parents" })

@@ -25,7 +25,7 @@ import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.ModulePriority;
 import com.scorch.core.modules.chat.ChatModule;
 import com.scorch.core.modules.chat.FilterModule;
-import com.scorch.core.modules.combat.CombatModule;
+import com.scorch.core.modules.combat.PlayerCombatModule;
 import com.scorch.core.modules.commands.CommandModule;
 import com.scorch.core.modules.communication.CommunicationModule;
 import com.scorch.core.modules.data.ConnectionManager;
@@ -46,7 +46,6 @@ import com.scorch.core.modules.report.ReportModule;
 import com.scorch.core.modules.scoreboard.ScoreboardModule;
 import com.scorch.core.modules.staff.AuthenticationModule;
 import com.scorch.core.modules.staff.BuildModeModule;
-import com.scorch.core.modules.staff.PlayerCombatModule;
 import com.scorch.core.modules.staff.TeleportModule;
 import com.scorch.core.modules.staff.TrustModule;
 import com.scorch.core.modules.staff.VanishModule;
@@ -97,8 +96,10 @@ public class ScorchCore extends JavaPlugin implements PluginMessageListener {
 		this.communicationModule = (CommunicationModule) registerModule(new CommunicationModule("CommunicationModule"),
 				ModulePriority.HIGHEST);
 		registerModule(new ConnectionManager("ConnectionManager"), ModulePriority.HIGHEST);
-		this.dataManager = (DataManager) registerModule(
-				new DataManager("DataManager", (ConnectionManager) getModule("ConnectionManager")),
+//		this.dataManager = (DataManager) registerModule(
+//				new DataManager("DataManager", (ConnectionManager) getModule("ConnectionManager")),
+//				ModulePriority.HIGHEST);
+		this.dataManager = register(new DataManager("DataManager", (ConnectionManager) getModule("ConnectionManager")),
 				ModulePriority.HIGHEST);
 
 		this.messages = (MessagesModule) registerModule(new MessagesModule("MessagesModule"), ModulePriority.HIGH);
@@ -119,7 +120,6 @@ public class ScorchCore extends JavaPlugin implements PluginMessageListener {
 
 		registerModule(new ChatModule("ChatModule"), ModulePriority.LOW);
 		registerModule(new TeleportModule("TeleportModule"), ModulePriority.LOW);
-		registerModule(new CombatModule("CombatModule"), ModulePriority.LOW);
 		registerModule(new VanishModule("VanishModule"), ModulePriority.LOW);
 		registerModule(new FilterModule("FilterModule"), ModulePriority.LOW);
 		registerModule(new FriendModule("FriendModule"), ModulePriority.LOW);
@@ -239,6 +239,16 @@ public class ScorchCore extends JavaPlugin implements PluginMessageListener {
 			Logger.warn("Module (" + module.getId() + ") is already registered!");
 		}
 		return modules.stream().filter(m -> m == module).findFirst().orElse(null);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends AbstractModule> T register(T module, ModulePriority priority) {
+		if (this.modules.add(module)) {
+			this.getRegisteredModules().put(module, priority);
+		} else {
+			Logger.warn("Module (" + module.getId() + ") is already registered!");
+		}
+		return (T) modules.stream().filter(m -> m == module).findFirst().orElse(null);
 	}
 
 	/**

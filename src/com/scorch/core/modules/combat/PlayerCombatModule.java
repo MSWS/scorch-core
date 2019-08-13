@@ -1,4 +1,4 @@
-package com.scorch.core.modules.staff;
+package com.scorch.core.modules.combat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -18,11 +19,14 @@ import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
+import com.scorch.core.modules.staff.BuildModeModule;
+import com.scorch.core.modules.staff.DamageEntry;
 import com.scorch.core.utils.MSG;
 
 public class PlayerCombatModule extends AbstractModule implements Listener {
@@ -31,6 +35,10 @@ public class PlayerCombatModule extends AbstractModule implements Listener {
 	private BuildModeModule bm;
 
 	private Map<UUID, List<DamageEntry>> damageHistory;
+
+	private boolean oldPvp = true;
+
+	private Listener legacyListener;
 
 	public PlayerCombatModule(String id) {
 		super(id);
@@ -42,12 +50,23 @@ public class PlayerCombatModule extends AbstractModule implements Listener {
 
 		damageHistory = new HashMap<UUID, List<DamageEntry>>();
 
+		if (oldPvp && !Bukkit.getVersion().contains("1.8")) {
+			legacyListener = new LegacyHitListener();
+			for (Player p : Bukkit.getOnlinePlayers()) {
+				p.getAttribute(Attribute.GENERIC_ATTACK_SPEED).setBaseValue(1024);
+				p.saveData();
+			}
+		}
+
 		Bukkit.getPluginManager().registerEvents(this, ScorchCore.getInstance());
 	}
 
 	@Override
 	public void disable() {
 		EntityDamageEvent.getHandlerList().unregister(this);
+
+		if (legacyListener != null)
+			PlayerJoinEvent.getHandlerList().unregister(legacyListener);
 	}
 
 	public List<DamageEntry> getDamageEntries(UUID uuid) {

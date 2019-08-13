@@ -216,7 +216,7 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 	 * @return a list of all the group names of the inherited groups for this group
 	 */
 	public List<String> getInheritedGroupNames() {
-		return this.inheritedGroups;
+		return this.inheritedGroups == null ? new ArrayList<>() : inheritedGroups;
 	}
 
 	/**
