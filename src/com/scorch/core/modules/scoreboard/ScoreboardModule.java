@@ -38,12 +38,13 @@ public class ScoreboardModule extends AbstractModule {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
+				int online = ScorchCore.getInstance().getCommunicationModule().getNetworkOnlinePlayers().size();
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					setLine(p, 15, "&aWelcome to &cScorch&6Gamez&e!");
 					setLine(p, 14, " ");
 					setLine(p, 13, " ");
 					setLine(p, 12, " ");
-					setLine(p, 11, "&eCurrently online: &e" + ScorchCore.getInstance().getCommunicationModule().getNetworkOnlinePlayers().size());
+					setLine(p, 11, "&eCurrently online: &e" + online);
 					setLine(p, 10, " ");
 					setLine(p, 9, " ");
 					setLine(p, 8, "&cScorch&6Bux&e: " + ScorchCore.getInstance().getEconomy().getFunds(p));
@@ -51,8 +52,8 @@ public class ScoreboardModule extends AbstractModule {
 					setLine(p, 6, " ");
 					setLine(p, 5, " ");
 					setLine(p, 4, " ");
-					setLine(p, 3, " ");
-					setLine(p, 2, " ");
+					setLine(p, 3, "");
+					setLine(p, 2, System.currentTimeMillis() + "");
 					setLine(p, 1, "&escorchgamez.net");
 
 				}
@@ -79,8 +80,7 @@ public class ScoreboardModule extends AbstractModule {
 
 		Validate.isTrue(value.length() <= 124, "Value cannot exceed length of 124", value);
 
-		String prefix = ChatColor.translateAlternateColorCodes('&',
-				value.substring(0, Math.min(62, value.length())));
+		String prefix = ChatColor.translateAlternateColorCodes('&', value.substring(0, Math.min(62, value.length())));
 		String suffix = ChatColor.translateAlternateColorCodes('&',
 				value.substring(Math.min(value.length(), 62), Math.max(value.length(), Math.min(value.length(), 62))));
 

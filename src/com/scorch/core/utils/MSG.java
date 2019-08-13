@@ -479,4 +479,12 @@ public class MSG {
 			res = res + keys[(int) Math.floor(ThreadLocalRandom.current().nextDouble(pos))];
 		return res;
 	}
+
+	public static String plural(String name) {
+		return name + (name.toLowerCase().endsWith("s") ? "'" : "'s");
+	}
+
+	public static String plural(String name, int amo) {
+		return name + (amo == 1 ? "'" : "'s");
+	}
 }

@@ -319,9 +319,9 @@ public class PermissionGroup implements Comparable<PermissionGroup> {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof PermissionGroup)) {
+		if (object == null || this == null || !(object instanceof PermissionGroup))
 			return false;
-		}
+
 		PermissionGroup group = (PermissionGroup) object;
 
 		if (group.getPermissions().size() != getPermissions().size())

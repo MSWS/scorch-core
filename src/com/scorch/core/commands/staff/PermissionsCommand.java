@@ -45,6 +45,8 @@ public class PermissionsCommand extends BukkitCommand {
 
 		switch (args[0].toLowerCase()) {
 		case "user":
+			MSG.tell(sender, " ");
+
 			if (args.length < 2) {
 				sendPlayerHelp(sender, label);
 				return true;
@@ -142,28 +144,38 @@ public class PermissionsCommand extends BukkitCommand {
 		case "group":
 			MSG.tell(sender, " ");
 			if (args.length < 2 || args[1].equalsIgnoreCase("list")) {
-				MSG.tell(sender, "Listing Available Groups");
+				if (perms.getGroupList().isEmpty()) {
+					MSG.tell(sender, "&cThere are no permission groups.");
+					return true;
+				}
+
+				MSG.tell(sender, "&aListing Available Groups");
 
 				for (PermissionGroup g : perms.getGroupList()) {
-					String msg = g.getGroupName();
+					String msg = "&e" + g.getGroupName() + "&7";
 					if (g.getInheritedGroups().size() > 0)
 						msg += " parents " + g.getInheritedGroupNames();
-					if (g.getPrefix() != null)
-						msg += " Prefix: " + g.getPrefix();
+					if (!g.getPrefix().isEmpty())
+						msg += " Prefix: " + g.getPrefix().trim();
+					msg += " Weight: " + g.getWeight();
 
 					MSG.tell(sender, msg);
 				}
 				return true;
 			}
 
-			// /perms group test
 			PermissionGroup pg = perms.getGroup(args[1]);
 
 			if (args.length < 3) {
-				MSG.tell(sender, pg.getGroupName() + (pg.getPrefix() == null ? "" : " (" + pg.getPrefix() + "&r) ")
-						+ "contains the following permission" + (pg.getPermissions().size() == 1 ? "" : "s"));
+				if (pg == null) {
+					MSG.tell(sender, "&cUnknown permission group: &e" + args[1]);
+					return true;
+				}
+				MSG.tell(sender, "&e" + pg.getGroupName()
+						+ (pg.getPrefix().isEmpty() ? "" : " &7(" + pg.getPrefix().trim() + "&7) &r")
+						+ " &7contains the following permission" + (pg.getPermissions().size() == 1 ? "" : "s") + ":");
 				for (String p : pg.getPermissions()) {
-					MSG.tell(sender, p + (sender.hasPermission(p) ? " (Owned)" : ""));
+					MSG.tell(sender, "- " + p + (sender.hasPermission(p) ? " (Owned)" : ""));
 				}
 				return true;
 			}
@@ -178,13 +190,14 @@ public class PermissionsCommand extends BukkitCommand {
 				if (args.length > 3) {
 					pg = perms.getGroup(args[3]);
 					if (pg == null) {
-						MSG.tell(sender, "Unknown group: " + args[3]);
+						MSG.tell(sender, "&cUnknown permission group: &e" + args[1]);
 						return true;
 					}
 					ng.addInheritedGroup(ng);
 				}
 
-				MSG.tell(sender, perms.addGroup(ng) ? "Successfully created new group" : "Unable to create group");
+				MSG.tell(sender, perms.addGroup(ng) ? "&aSuccessfully created group &e" + args[1] + "&7."
+						: "&cUnable to create group.");
 				break;
 			case "delete":
 				if (!sender.hasPermission("scorch.command.permissions.group.delete." + args[1])) {
@@ -192,10 +205,56 @@ public class PermissionsCommand extends BukkitCommand {
 					return true;
 				}
 				if (pg == null) {
-					MSG.tell(sender, "Unknown group");
+					MSG.tell(sender, "&cUnknown permission group: &e" + args[1]);
 					return true;
 				}
 				MSG.tell(sender, perms.removeGroup(args[1]) ? "Successfully deleted group" : "Unable to delete group");
+				break;
+			case "add":
+				if (!sender.hasPermission("scorch.command.permissions.group.add." + args[1])) {
+					MSG.tell(sender, getPermissionMessage());
+					return true;
+				}
+
+				if (pg == null) {
+					MSG.tell(sender, "&cUnknown permission group: &e" + args[1]);
+					return true;
+				}
+
+				if (args.length < 4) {
+					sendGroupHelp(sender, label);
+					return true;
+				}
+
+				perm = args[3];
+				MSG.tell(sender,
+						pg.addPermission(perm)
+								? "&aSuccessfully &6added &e" + perm + "&7 to &a" + MSG.plural(pg.getGroupName())
+										+ " &7permisisons list."
+								: "Unable to add " + perm + " to " + pg.getGroupName());
+				break;
+			case "remove":
+				if (!sender.hasPermission("scorch.command.permissions.group.remove." + args[1])) {
+					MSG.tell(sender, getPermissionMessage());
+					return true;
+				}
+
+				if (pg == null) {
+					MSG.tell(sender, "&cUnknown permission group: &e" + args[1]);
+					return true;
+				}
+
+				if (args.length < 4) {
+					sendGroupHelp(sender, label);
+					return true;
+				}
+
+				perm = args[3];
+				MSG.tell(sender,
+						pg.removePermission(perm)
+								? "&cRemoved &e" + perm + " &7from &a" + MSG.plural(pg.getGroupName())
+										+ " &7permissions."
+								: "&cUnable to remove &e" + perm + "&7 from &a" + pg.getGroupName() + "&7.");
 				break;
 			case "set":
 				if (args.length < 5) {
@@ -203,7 +262,7 @@ public class PermissionsCommand extends BukkitCommand {
 					return true;
 				}
 				if (pg == null) {
-					MSG.tell(sender, "Unknown group");
+					MSG.tell(sender, "&cUnknown permission group: &e" + args[1]);
 					return true;
 				}
 
@@ -218,6 +277,8 @@ public class PermissionsCommand extends BukkitCommand {
 						return true;
 					}
 					pg.setWeight(Integer.valueOf(args[4]));
+					MSG.tell(sender, "&aSuccessfully &7set &e" + MSG.plural(pg.getGroupName()) + " &6priority &7to &a"
+							+ args[4] + "&7.");
 					break;
 				case "prefix":
 					if (!sender.hasPermission("scorch.command.permissions.group." + args[1] + ".prefix")) {
@@ -228,7 +289,8 @@ public class PermissionsCommand extends BukkitCommand {
 					for (int i = 4; i < args.length; i++)
 						prefix += args[i] + " ";
 					pg.setPrefix(prefix);
-					MSG.tell(sender, "Set " + pg.getGroupName() + "'s prefix to " + prefix);
+					MSG.tell(sender, "&aSuccessfully &7set &e" + MSG.plural(pg.getGroupName()) + " &6prefix &7to &r"
+							+ prefix + "&7.");
 					break;
 				case "default":
 					if (!sender.hasPermission("scorch.command.permissions.group." + args[1] + ".default")) {
@@ -237,13 +299,14 @@ public class PermissionsCommand extends BukkitCommand {
 					}
 					boolean val = false;
 					try {
-						val = Boolean.getBoolean(args[4]);
+						val = Boolean.valueOf(args[4]);
 					} catch (IllegalArgumentException e) {
-						MSG.tell(sender, "Must be true or false");
+						MSG.tell(sender, "&cMust be true or false");
 						return true;
 					}
 					pg.setDefault(val);
-					MSG.tell(sender, "Set " + pg.getGroupName() + " default to " + MSG.TorF(val));
+					MSG.tell(sender,
+							"&7Set " + MSG.plural(pg.getGroupName()) + " default status to " + MSG.TorF(val) + "&7.");
 					break;
 				}
 				break;
@@ -258,39 +321,47 @@ public class PermissionsCommand extends BukkitCommand {
 				}
 
 				if (pg == null) {
-					MSG.tell(sender, "Unknown group");
+					MSG.tell(sender, "&cUnknown permission group: &e" + args[1]);
 					return true;
 				}
 
 				ng = perms.getGroup(args[4]);
 				if (ng == null) {
-					MSG.tell(sender, "Unknown group: " + args[4]);
+					MSG.tell(sender, "&cUnknown permission group: &e" + args[1]);
 					return true;
 				}
 
 				switch (args[3].toLowerCase()) {
 				case "set":
 					pg.setInheritedGroups(Arrays.asList(args[4]));
-					MSG.tell(sender, "Set " + pg.getGroupName() + "'s parent to " + ng.getGroupName());
+					MSG.tell(sender, "&aSuccessfully &7set &e" + MSG.plural(pg.getGroupName()) + " &6parent &7to &a"
+							+ ng.getGroupName() + "&7.");
 					break;
 				case "add":
 					MSG.tell(sender,
 							pg.addInheritedGroup(ng)
-									? "Added " + ng.getGroupName() + " to " + pg.getGroupName() + "'s parents"
-									: "Unable to add inheritance");
+									? "&aAdded &e" + ng.getGroupName() + "&7 to &a" + MSG.plural(pg.getGroupName())
+											+ " &6parents &7list."
+									: "&cUnable to add inheritance");
 					break;
 				case "remove":
 					MSG.tell(sender,
 							pg.removeInheritedGroup(ng)
-									? "Removed " + ng.getGroupName() + " to " + pg.getGroupName() + "'s parents"
+									? "&cRemoved &e" + ng.getGroupName() + " from &a" + MSG.plural(pg.getGroupName())
+											+ " &6parents&7."
 									: "Unable to remove inheritance");
 					break;
+				default:
+					MSG.tell(sender, "&cUnknown arguments.");
+					break;
 				}
+			default:
+				MSG.tell(sender, "&cUnknown arguments.");
 				break;
 			}
-			return true;
+			break;
 		default:
-			MSG.tell(sender, "Unknown arguments.");
+			MSG.tell(sender, "&cUnknown arguments.");
 			break;
 		}
 
@@ -298,6 +369,7 @@ public class PermissionsCommand extends BukkitCommand {
 	}
 
 	public void sendGroupHelp(CommandSender sender, String label) {
+		MSG.tell(sender, "/" + label + " group");
 		MSG.tell(sender, "/" + label + " group list");
 		MSG.tell(sender, "/" + label + " group [Name] create <Parent>");
 		MSG.tell(sender, "/" + label + " group [Name] delete");
@@ -306,9 +378,9 @@ public class PermissionsCommand extends BukkitCommand {
 	}
 
 	public void sendPlayerHelp(CommandSender sender, String label) {
-		MSG.tell(sender, "/" + label + " user [Name] group [set/add/remove] [Group]");
 		MSG.tell(sender, "/" + label + " user [Name]");
 		MSG.tell(sender, "/" + label + " user [Name] [add/remove] [perm]");
+		MSG.tell(sender, "/" + label + " user [Name] group [set/add/remove] [Group]");
 	}
 
 	@Override
@@ -364,7 +436,7 @@ public class PermissionsCommand extends BukkitCommand {
 				}
 				if (args.length > 2)
 					if (args[2].equalsIgnoreCase("set"))
-						for (String res : new String[] { "prefix", "parents", "priority" })
+						for (String res : new String[] { "prefix", "parents", "priority", "default" })
 							if (res.toLowerCase().startsWith(args[args.length - 1]))
 								result.add(res);
 
@@ -374,6 +446,12 @@ public class PermissionsCommand extends BukkitCommand {
 				for (PermissionGroup group : ScorchCore.getInstance().getPermissionModule().getGroupList())
 					if (group.getGroupName().toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
 						result.add(group.getGroupName());
+				if (args[2].equalsIgnoreCase("set") && args[3].equalsIgnoreCase("default")) {
+					for (String res : new String[] { "true", "false" }) {
+						if (res.toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
+							result.add(res);
+					}
+				}
 				break;
 			case 3:
 				for (String res : new String[] { "set", "create", "delete", "parents" })
