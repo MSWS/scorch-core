@@ -3,12 +3,14 @@ package com.scorch.core.modules.report;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -166,6 +168,39 @@ public class ReportModule extends AbstractModule {
 		}
 
 		return inv;
+	}
+
+	public Inventory getReportsGUI(OfflinePlayer target, int page) {
+		Inventory hist = Bukkit.createInventory(null, 54,
+				MSG.plural(target.getName() == null ? target.getUniqueId().toString() : target.getName()) + " History");
+
+		List<Report> reports = getReports(target.getUniqueId());
+		Collections.sort(reports);
+
+		int slot = 0;
+
+		for (int i = (page * (hist.getSize() - 9)); i < (page * (hist.getSize() - 9)) + hist.getSize() - 9
+				&& i < reports.size(); i++) {
+			Report report = reports.get(i);
+			hist.setItem(slot, report.getItem());
+			slot++;
+		}
+
+		if (page > 0) {
+			ItemStack back = new ItemStack(Material.ARROW);
+			ItemMeta bMeta = back.getItemMeta();
+			bMeta.setDisplayName(MSG.color("&aPrevious Page"));
+			back.setItemMeta(bMeta);
+			hist.setItem(hist.getSize() - 9, back);
+		}
+		if (hist.getItem(hist.getSize() - 10) != null) {
+			ItemStack next = new ItemStack(Material.ARROW);
+			ItemMeta nMeta = next.getItemMeta();
+			nMeta.setDisplayName(MSG.color("&aNext Page"));
+			next.setItemMeta(nMeta);
+			hist.setItem(hist.getSize() - 1, next);
+		}
+		return hist;
 	}
 
 	public Report getReport(String id) {

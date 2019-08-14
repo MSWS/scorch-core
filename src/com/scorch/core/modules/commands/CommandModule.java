@@ -16,6 +16,7 @@ import org.bukkit.command.SimpleCommandMap;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.commands.FeedCommand;
 import com.scorch.core.commands.FilterCommand;
+import com.scorch.core.commands.FlyCommand;
 import com.scorch.core.commands.FriendCommand;
 import com.scorch.core.commands.HealCommand;
 import com.scorch.core.commands.HelpCommand;
@@ -29,6 +30,7 @@ import com.scorch.core.commands.report.ConfirmReportCommand;
 import com.scorch.core.commands.report.ReportCloseCommand;
 import com.scorch.core.commands.report.ReportCommand;
 import com.scorch.core.commands.report.ReportHandleCommand;
+import com.scorch.core.commands.report.ReportHistoryCommand;
 import com.scorch.core.commands.report.ReportInfoCommand;
 import com.scorch.core.commands.staff.ACommand;
 import com.scorch.core.commands.staff.AnnouncementCommand;
@@ -117,6 +119,8 @@ public class CommandModule extends AbstractModule {
 		commands.put(new FindCommand("find"), true);
 		commands.put(new AnnouncementCommand("announce"), true);
 		commands.put(new RecordCommand("record"), true);
+		commands.put(new FlyCommand("fly"), true);
+		commands.put(new ReportHistoryCommand("reporthistory"), true);
 
 		enableCommands(commands.keySet().stream().collect(Collectors.toList()));
 		Logger.log("&aSuccessfully enabled &e" + commands.size() + "&a command" + (commands.size() == 1 ? "" : "s"));

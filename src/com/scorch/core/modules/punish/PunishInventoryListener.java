@@ -136,11 +136,11 @@ public class PunishInventoryListener implements Listener {
 
 			if (event.getRawSlot() == event.getInventory().getSize() - 1) {
 				sp.setTempData("page", page + 1);
-				refreshHistory(player, target);
+				refreshRecord(player, target);
 				return;
 			} else if (event.getRawSlot() == event.getInventory().getSize() - 9) {
 				sp.setTempData("page", page - 1);
-				refreshHistory(player, target);
+				refreshRecord(player, target);
 				return;
 			}
 		}

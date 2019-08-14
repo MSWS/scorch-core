@@ -5,15 +5,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -23,6 +24,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
@@ -620,6 +622,65 @@ public class Utils {
 		} catch (IllegalArgumentException | NullPointerException e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	public static boolean isValidSelector(CommandSender player, String selection) {
+		if (selection.matches("(?i)(all|world)"))
+			return true;
+		if ((selection.startsWith("world:") && player instanceof Player) || selection.startsWith("perm:")
+				|| (selection.startsWith("radius") && player instanceof Player))
+			return true;
+
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			if (p.getName().equalsIgnoreCase(selection))
+				return true;
+		}
+		List<Player> result = new ArrayList<>();
+		result = Bukkit.matchPlayer(selection);
+
+		if (result.size() > 1) {
+			MSG.tell(player, "Too many matches " + result);
+			return false;
+		} else if (result.size() == 0) {
+			MSG.tell(player, "No matches for " + selection);
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	public static List<Player> parsePlayerSelector(CommandSender player, String selection) {
+		if (!isValidSelector(player, selection))
+			return null;
+		List<Player> result = new ArrayList<>();
+
+		switch (selection) {
+		case "all":
+			return new ArrayList<>(Bukkit.getOnlinePlayers());
+		case "world":
+			return ((Player) player).getWorld().getPlayers();
+		default:
+			if (selection.startsWith("world:"))
+				return Bukkit.getWorld(selection.substring("world:".length())).getPlayers();
+			if (selection.startsWith("perm:"))
+				return Bukkit.getOnlinePlayers().stream()
+						.filter(p -> p.hasPermission(selection.substring("perm:".length())))
+						.collect(Collectors.toList());
+			if (selection.startsWith("radius:")) {
+				double rad = Double.parseDouble(selection.substring("radius:".length()));
+				return new ArrayList<>(((Player) player).getLocation().getNearbyPlayers(rad));
+			}
+
+			for (Player p : Bukkit.getOnlinePlayers()) {
+				if (p.getName().equalsIgnoreCase(selection))
+					return Arrays.asList(p);
+			}
+			result = Bukkit.matchPlayer(selection);
+			if (result.size() != 1)
+				return null;
+
+			return result;
 		}
 	}
 
