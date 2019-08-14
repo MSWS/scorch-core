@@ -67,7 +67,7 @@ public class ReportCommand extends BukkitCommand {
 
 		List<Report> reports = rm.getReports(player.getUniqueId());
 		if (reports.stream().filter(r -> r.isOpen()).collect(Collectors.toList()).size() >= getMaxReports(player)) {
-			MSG.tell(sender, "You've met the limit on reports you can make.");
+			MSG.tell(sender, "&cYou've met the limit on reports you can make. (&e" + getMaxReports(player) + "&c)");
 			return true;
 		}
 

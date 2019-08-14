@@ -92,7 +92,7 @@ public class DataManager extends AbstractModule {
 	 * Creates a table if it doesn't exist already with <code>name</code> as name
 	 * and with the fields of <code>storageType</code> as columns Call this in your
 	 * plugin/module initialisation
-	 * 
+	 *
 	 * @param name        the name of the database
 	 * @param storageType the column template
 	 */
@@ -214,7 +214,7 @@ public class DataManager extends AbstractModule {
 	 *             <br>
 	 *             If the type isn't listed above, it will try to convert the object
 	 *             to json using Google's {@link Gson}</br>
-	 * 
+	 *
 	 * @param table  the table to save <code>object</code> to
 	 * @param object the object to save
 	 */
@@ -324,7 +324,7 @@ public class DataManager extends AbstractModule {
 	 * <br>
 	 * If the type isn't listed above, it will try to convert the object to json
 	 * using Google's {@link Gson}</br>
-	 * 
+	 *
 	 * @param table  the table to save <code>object</code> to
 	 * @param object the object to save
 	 */
@@ -341,7 +341,7 @@ public class DataManager extends AbstractModule {
 	 * Gets the object where selector == value from table Returns a
 	 * {@link java.util.Collection} of said object if multiple objects are found in
 	 * the database that match the selectors
-	 * 
+	 *
 	 * @param table        the table
 	 * @param sqlSelectors the selectors to use
 	 * @return the object found in the database
@@ -446,7 +446,7 @@ public class DataManager extends AbstractModule {
 
 	/**
 	 * Gets all the objects in a table using SELECT * FROM table
-	 * 
+	 *
 	 * @param table the target table
 	 * @return a {@link Collection} of objects that are stored in the table
 	 * @throws DataObtainException thrown when there's an issue obtaining the data
@@ -530,7 +530,7 @@ public class DataManager extends AbstractModule {
 
 	/**
 	 * Deletes the object specified using the {@link SQLSelector}s from the table
-	 * 
+	 *
 	 * @param table        the table to delete the data from
 	 * @param sqlSelectors the sql selectors that specify the data
 	 * @throws DataDeleteException
@@ -616,7 +616,7 @@ public class DataManager extends AbstractModule {
 	/**
 	 * Updates the object in the database using {@link SQLSelector}s to select the
 	 * object
-	 * 
+	 *
 	 * @param table  the table to update data in
 	 * @param object the object to update
 	 */
@@ -744,7 +744,7 @@ public class DataManager extends AbstractModule {
 	/**
 	 * Updates the object in the database using {@link SQLSelector}s to select the
 	 * object
-	 * 
+	 *
 	 * @param table  the table to update data in
 	 * @param object the object to update
 	 */
@@ -763,7 +763,7 @@ public class DataManager extends AbstractModule {
 
 	/**
 	 * Checks if the type has a default constructor
-	 * 
+	 *
 	 * @param type the type to check
 	 * @return whether the type has a default constructor
 	 */
@@ -791,7 +791,7 @@ public class DataManager extends AbstractModule {
 
 	/**
 	 * Gets the gson instance
-	 * 
+	 *
 	 * @return the gson instance
 	 */
 	public static Gson getGson() {
@@ -800,7 +800,7 @@ public class DataManager extends AbstractModule {
 
 	/**
 	 * Gets the connectionmanager
-	 * 
+	 *
 	 * @return the connection manager
 	 */
 	private ConnectionManager getConnectionManager() {

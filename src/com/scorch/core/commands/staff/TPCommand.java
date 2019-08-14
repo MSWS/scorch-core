@@ -192,6 +192,7 @@ public class TPCommand extends BukkitCommand {
 			playerName = "everyone";
 		} else {
 			if (players.get(0) != null) {
+				playerName = players.get(0).getName();
 				if (args.length == 1) {
 					if (sender instanceof Player) {
 						target = players.get(0).getLocation();
@@ -208,6 +209,7 @@ public class TPCommand extends BukkitCommand {
 						if (NumberUtils.isNumber(args[1]) && args.length >= 4) {
 							target = new Location(players.get(0).getWorld(), Double.parseDouble(args[1]),
 									Double.parseDouble(args[2]), Double.parseDouble(args[3]));
+
 							targetName = String.format("%s %s %s", args[1], args[2], args[3]);
 							if (args.length == 6) {
 								target.setYaw(Float.parseFloat(args[4]));

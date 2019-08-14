@@ -243,6 +243,7 @@ public class BuildModeModule extends AbstractModule implements Listener {
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if (event instanceof BlockMultiPlaceEvent)
 			return;
+
 		Player player = event.getPlayer();
 
 		if (getStatus(player.getUniqueId()) == BuildStatus.OVERRIDE) {

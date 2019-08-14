@@ -16,6 +16,12 @@ import com.scorch.core.modules.permissions.PermissionGroup;
 import com.scorch.core.modules.permissions.PermissionPlayer;
 import com.scorch.core.utils.MSG;
 
+/**
+ * 
+ * @author imodm
+ * @deprecated Unused
+ * 
+ */
 public class PermissionsCommand extends BukkitCommand {
 
 	public PermissionsCommand(String name) {
@@ -25,7 +31,6 @@ public class PermissionsCommand extends BukkitCommand {
 		this.setPermissionMessage(ScorchCore.getInstance().getMessages().getMessage("noperm").getMessage());
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean execute(CommandSender sender, String commandLabel, String[] args) {
 		if (!sender.hasPermission(getPermission())) {

@@ -130,9 +130,7 @@ public class PermissionPlayer {
 		// Add the player's own custom permissions
 		getPermissions().forEach(node -> {
 			if (!attachment.getPermissions().containsKey(node)) {
-				if (node.startsWith("-")) {
-					attachment.setPermission(node, !node.startsWith("-"));
-				}
+				attachment.setPermission(node, !node.startsWith("-"));
 			}
 		});
 
@@ -150,6 +148,7 @@ public class PermissionPlayer {
 	private void addGroupPermissions(PermissionGroup group, PermissionAttachment attachment) {
 		// Add the permissions for the parent groups first
 		group.getInheritedGroups().forEach(parent -> {
+			
 			addGroupPermissions(parent, attachment);
 		});
 

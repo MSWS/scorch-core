@@ -6,9 +6,7 @@ import org.bukkit.event.Listener;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.events.punishment.PunishmentCreateEvent;
-import com.scorch.core.events.punishment.PunishmentEvent;
 import com.scorch.core.events.punishment.PunishmentUpdateEvent;
-import com.scorch.core.events.punishment.TestEvent;
 import com.scorch.core.utils.Logger;
 
 public class PunishmentListener implements Listener {
@@ -20,22 +18,13 @@ public class PunishmentListener implements Listener {
 
 	@EventHandler
 	public void onPunishmentCreate(PunishmentCreateEvent event) {
-		Logger.log("Received new punishment: " + event.getPunishment().getReason());
-		pm.addPunishment(event.getPunishment());
+		pm.addExecutedPunishment(event.getPunishment());
+
+		Logger.log("Adding punishment " + event.getPunishment().getId());
 	}
 
 	@EventHandler
 	public void onPunishmentUpdate(PunishmentUpdateEvent event) {
-		Logger.log("Received updated punishment: " + event.getPunishment().getReason());
-	}
-
-	@EventHandler
-	public void onUpdate(PunishmentEvent event) {
-		Logger.log("Received punishment event");
-	}
-
-	@EventHandler
-	public void onTest(TestEvent event) {
-		Logger.log("Received test event");
+		pm.updatePunishment(event.getPunishment());
 	}
 }

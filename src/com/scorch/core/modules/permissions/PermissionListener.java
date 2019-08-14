@@ -3,13 +3,10 @@ package com.scorch.core.modules.permissions;
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.utils.Logger;
@@ -47,18 +44,7 @@ public class PermissionListener implements Listener {
 			module.getPermissionPlayer(e.getUniqueId()).updatePermissions();
 		}
 	}
-
-	/**
-	 * @deprecated literally screws with the permission setup, 5 am code at its
-	 *             finest (writing this at 4:07 am btw) Called when when the player
-	 *             disconnects, handled in it's own method because there's
-	 *             {@link PlayerQuitEvent} and {@link PlayerKickEvent}
-	 * @param player the player that's disconnecting
-	 */
-	private void onPlayerDisconnect(Player player) {
-		module.removePlayer(player);
-	}
-
+	
 	@EventHandler
 	public void onPermissionUpdateEvent(PermissionUpdateEvent e) {
 		Logger.info(e.getGroupToUpdate());

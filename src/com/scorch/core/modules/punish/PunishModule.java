@@ -3,9 +3,12 @@ package com.scorch.core.modules.punish;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -72,6 +75,16 @@ public class PunishModule extends AbstractModule {
 	public void addPunishment(Punishment punishment) {
 		punishment.execute();
 
+		addExecutedPunishment(punishment);
+
+		try {
+			ScorchCore.getInstance().getDataManager().updateObject("punishments", punishment);
+		} catch (DataUpdateException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void addExecutedPunishment(Punishment punishment) {
 		List<Punishment> current = linked.getOrDefault(punishment.getTargetUUID(), new ArrayList<>());
 		current.add(punishment);
 		punishments.add(punishment);
@@ -80,12 +93,6 @@ public class PunishModule extends AbstractModule {
 			globalPunishments.add(punishment);
 
 		linked.put(punishment.getTargetUUID(), current);
-
-		try {
-			ScorchCore.getInstance().getDataManager().updateObject("punishments", punishment);
-		} catch (DataUpdateException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public void openPunishGUI(Player punisher, OfflinePlayer player, String reason) {
@@ -131,9 +138,52 @@ public class PunishModule extends AbstractModule {
 
 	public Inventory getHistoryGUI(OfflinePlayer target, int page) {
 		Inventory hist = Bukkit.createInventory(null, 54,
-				target.getName() + "'" + (target.getName().toLowerCase().endsWith("s") ? "" : "s") + " History");
+				MSG.plural(target.getName() == null ? target.getUniqueId().toString() : target.getName()) + " History");
 
-		List<Punishment> history = ScorchCore.getInstance().getPunishModule().getPunishments(target.getUniqueId());
+		List<Punishment> history = getPunishments(target.getUniqueId());
+		Collections.sort(history);
+
+		int slot = 0;
+
+		for (int i = (page * (hist.getSize() - 9)); i < (page * (hist.getSize() - 9)) + hist.getSize() - 9
+				&& i < history.size(); i++) {
+			Punishment p = history.get(i);
+			hist.setItem(slot, p.getItem());
+			slot++;
+		}
+
+		if (page > 0) {
+			ItemStack back = new ItemStack(Material.ARROW);
+			ItemMeta bMeta = back.getItemMeta();
+			bMeta.setDisplayName(MSG.color("&aPrevious Page"));
+			back.setItemMeta(bMeta);
+			hist.setItem(hist.getSize() - 9, back);
+		}
+		if (hist.getItem(hist.getSize() - 10) != null) {
+			ItemStack next = new ItemStack(Material.ARROW);
+			ItemMeta nMeta = next.getItemMeta();
+			nMeta.setDisplayName(MSG.color("&aNext Page"));
+			next.setItemMeta(nMeta);
+			hist.setItem(hist.getSize() - 1, next);
+		}
+		return hist;
+	}
+
+	public Inventory getRecordGUI(OfflinePlayer target, int page) {
+		Inventory hist = Bukkit.createInventory(null, 54,
+				MSG.plural(target.getName() == null ? target.getUniqueId().toString() : target.getName())
+						+ " Punishments");
+
+		Set<Punishment> tmp = new HashSet<>();
+
+		for (String username : Utils.getPastUsernames(target.getUniqueId())) {
+
+			tmp.addAll(
+					punishments.stream().filter(p -> p.getStaffName().equals(username)).collect(Collectors.toList()));
+		}
+
+		List<Punishment> history = new ArrayList<>(tmp);
+
 		Collections.sort(history);
 
 		int slot = 0;
@@ -220,5 +270,10 @@ public class PunishModule extends AbstractModule {
 
 	public Punishment getPunishment(UUID uuid) {
 		return punishments.stream().filter(id -> id.getId().equals(uuid)).findFirst().orElse(null);
+	}
+
+	public void updatePunishment(Punishment p) {
+		punishments.remove(getPunishment(p.getId()));
+		punishments.add(p);
 	}
 }

@@ -125,6 +125,26 @@ public class PunishInventoryListener implements Listener {
 			return;
 		}
 
+		if ("punishmentrecord".equals(sp.getTempData("openInventory"))) {
+			int page = sp.getTempData("page", Integer.class, 0);
+			event.setCancelled(true);
+
+			if (event.getClickedInventory().getType() != InventoryType.CHEST)
+				return;
+
+			player.playSound(player.getLocation(), Sounds.CLICK.bukkitSound(), 2, 1);
+
+			if (event.getRawSlot() == event.getInventory().getSize() - 1) {
+				sp.setTempData("page", page + 1);
+				refreshRecord(player, target);
+				return;
+			} else if (event.getRawSlot() == event.getInventory().getSize() - 9) {
+				sp.setTempData("page", page - 1);
+				refreshRecord(player, target);
+				return;
+			}
+		}
+
 		if (!"punish".equals(sp.getTempData("openInventory")))
 			return;
 
@@ -216,6 +236,17 @@ public class PunishInventoryListener implements Listener {
 		sp.setTempData("openInventory", "viewing");
 		sp.setTempData("punishing", tempPunish);
 		sp.setTempData("reason", tempReason);
+		sp.setTempData("page", tempPage);
+	}
+
+	public void refreshRecord(Player player, OfflinePlayer target) {
+		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(player.getUniqueId());
+		String tempPunish = sp.getTempData("punishing", String.class);
+		int tempPage = sp.getTempData("page", Integer.class, 0);
+		player.openInventory(ScorchCore.getInstance().getPunishModule().getRecordGUI(target,
+				sp.getTempData("page", Integer.class, 0)));
+		sp.setTempData("openInventory", "viewing");
+		sp.setTempData("punishing", tempPunish);
 		sp.setTempData("page", tempPage);
 	}
 

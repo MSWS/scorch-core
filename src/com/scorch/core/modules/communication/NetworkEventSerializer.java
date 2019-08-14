@@ -13,6 +13,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.scorch.core.modules.data.annotations.DataIgnore;
 import com.scorch.core.modules.data.wrappers.JSONPlayer;
+import com.scorch.core.utils.ReflectionUtils;
 
 public class NetworkEventSerializer implements JsonSerializer<NetworkEvent> {
 
@@ -24,7 +25,7 @@ public class NetworkEventSerializer implements JsonSerializer<NetworkEvent> {
 
         obj.addProperty("eventClassType",  src.getClass().getName());
 
-        for(Field field : src.getClass().getDeclaredFields()){
+        for(Field field : ReflectionUtils.getFields(src.getClass())){
             if(!field.isAnnotationPresent(DataIgnore.class)){
                 try {
                     field.setAccessible(true);

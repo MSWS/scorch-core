@@ -1,5 +1,6 @@
 package com.scorch.core.modules.report;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,7 +19,8 @@ import com.scorch.core.modules.staff.TrustModule;
 import com.scorch.core.utils.MSG;
 
 public class Report implements Comparable<Report> {
-	@DataNotNull @DataPrimaryKey
+	@DataNotNull
+	@DataPrimaryKey
 	private String id;
 
 	@DataNotNull
@@ -177,6 +179,40 @@ public class Report implements Comparable<Report> {
 		public ItemStack getItem() {
 			return stack;
 		}
+	}
+
+	public ItemStack getItem() {
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+
+		ItemStack item = new ItemStack(
+				isOpen() ? getType().getItem().getType() : getResolutionType().getItem().getType());
+
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(MSG.color("&9" + id + " &8[&7" + sdf.format(reportDate) + "&8]"));
+
+		List<String> lore = new ArrayList<>();
+		lore.add(MSG.color(
+				"&6Reason: &b" + reason + " &4(&c" + MSG.color(type.getItem().getItemMeta().getDisplayName()) + "&4)"));
+		lore.add(MSG.color("&3Target: &b" + Bukkit.getOfflinePlayer(target).getName()));
+
+		if (type == ReportType.CHAT && pastebin != null) {
+			lore.add(MSG.color("&bChat Logs: &e" + pastebin));
+		}
+		if (server != null)
+			lore.add(MSG.color("&3Server: &b" + server));
+
+		if (isHandled()) {
+			lore.add(MSG.color(""));
+			lore.add(MSG.color("&aHandled By: " + staff));
+			lore.add(MSG.color("&aOn: &e" + sdf.format(handleDate)));
+			lore.add(MSG.color("&9Resolution: " + resolution + " &4(&c"
+					+ MSG.color(resType.getItem().getItemMeta().getDisplayName()) + "&4)"));
+		}
+
+		meta.setLore(lore);
+
+		item.setItemMeta(meta);
+		return item;
 	}
 
 	@Override

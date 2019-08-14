@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,6 +34,7 @@ public class ReportInventoryListener implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, ScorchCore.getInstance());
 	}
 
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
 		ReportModule rm = ScorchCore.getInstance().getModule("ReportModule", ReportModule.class);
@@ -60,6 +62,23 @@ public class ReportInventoryListener implements Listener {
 			}
 		}
 
+		if ("reporthistory".equals(sp.getTempData("openInventory", String.class))) {
+			event.setCancelled(true);
+			int page = sp.getTempData("page", Integer.class, 0);
+
+			OfflinePlayer target = Bukkit.getOfflinePlayer(sp.getTempData("viewing", String.class));
+
+			if (event.getRawSlot() == event.getInventory().getSize() - 1) {
+				sp.setTempData("page", page + 1);
+				refreshHistory(player, target);
+				return;
+			} else if (event.getRawSlot() == event.getInventory().getSize() - 9) {
+				sp.setTempData("page", page - 1);
+				refreshHistory(player, target);
+				return;
+			}
+		}
+
 		if ("report".equals(sp.getTempData("openInventory", String.class))) {
 			event.setCancelled(true);
 
@@ -75,6 +94,7 @@ public class ReportInventoryListener implements Listener {
 			UUID target = sp.getTempData("reporting", UUID.class);
 
 			Report report = new Report(player.getUniqueId(), target, type, sp.getTempData("reason", String.class));
+			report.setServer(ScorchCore.getInstance().getServerName());
 			if (type == ReportType.CHAT) {
 				List<String> lines = rm.getLogs(player.getUniqueId());
 				if (lines.isEmpty()) {
@@ -196,6 +216,17 @@ public class ReportInventoryListener implements Listener {
 		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(player.getUniqueId());
 		for (String id : new String[] { "openInventory", "reporting", "reason", "closereason" })
 			sp.removeTempData(id);
+	}
+
+	private void refreshHistory(Player player, OfflinePlayer target) {
+		ScorchPlayer sp = ScorchCore.getInstance().getPlayer(player.getUniqueId());
+		String tempViewing = sp.getTempData("viewing", String.class);
+		int tempPage = sp.getTempData("page", Integer.class, 0);
+		player.openInventory(
+				ScorchCore.getInstance().getModule("ReportModule", ReportModule.class).getReportsGUI(target, tempPage));
+		sp.setTempData("openInventory", "reporthistory");
+		sp.setTempData("viewing", tempViewing);
+		sp.setTempData("page", tempPage);
 	}
 
 }

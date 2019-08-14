@@ -2,9 +2,6 @@ package com.scorch.core.modules.communication.websocket;
 
 import java.net.URI;
 
-import com.scorch.core.modules.communication.websocket.packets.in.NetworkPlayerDisconnectPacket;
-import com.scorch.core.modules.communication.websocket.packets.in.NetworkPlayerJoinPacket;
-import com.scorch.core.modules.communication.websocket.packets.in.NetworkPlayerListPacket;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.java_websocket.client.WebSocketClient;
@@ -14,10 +11,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.communication.NetworkEvent;
-import com.scorch.core.modules.communication.exceptions.WebSocketException;
 import com.scorch.core.modules.communication.websocket.packets.PacketUtils;
+import com.scorch.core.modules.communication.websocket.packets.in.NetworkPlayerDisconnectPacket;
+import com.scorch.core.modules.communication.websocket.packets.in.NetworkPlayerJoinPacket;
+import com.scorch.core.modules.communication.websocket.packets.in.NetworkPlayerListPacket;
 import com.scorch.core.modules.communication.websocket.packets.out.ConnectionPacket;
-import com.scorch.core.modules.permissions.PermissionUpdateEvent;
 import com.scorch.core.utils.Logger;
 
 /**
@@ -37,23 +35,11 @@ public class SocketClient extends WebSocketClient {
 		ConnectionPacket packet = new ConnectionPacket("server:" + ScorchCore.getInstance().getServer().getPort());
 		Logger.log("&eConnected to websocket server, sending connection packet with name %s", packet.getServerName());
 		send(packet.toString());
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				try {
-					ScorchCore.getInstance().getCommunicationModule()
-							.dispatchEvent(new PermissionUpdateEvent("gamergirl"));
-				} catch (WebSocketException e) {
-					e.printStackTrace();
-				}
-			}
-		}.runTaskLater(ScorchCore.getInstance(), 30);
 	}
 
 	@Override
 	public void onMessage(String message) {
 		Gson gson = new Gson();
-		Logger.log("received: " + message);
 
 		if (!PacketUtils.isValidJSON(message)) {
 			Logger.error("Received a packet that contained invalid json!\n%s", message);
@@ -74,7 +60,6 @@ public class SocketClient extends WebSocketClient {
 				NetworkEvent networkEvent = (NetworkEvent) gson.fromJson(event.toString(), Class.forName(type));
 				if (networkEvent != null) {
 					Bukkit.getServer().getPluginManager().callEvent(networkEvent);
-					Logger.log("Successfully called event");
 				} else {
 					Logger.error("Received invalid event gson: " + event.toString() + " (" + type + ")");
 				}
@@ -97,12 +82,19 @@ public class SocketClient extends WebSocketClient {
 
 	@Override
 	public void onClose(int i, String s, boolean b) {
+
 		Logger.info("Closed websocket connection, reason: %s", s);
+		Logger.info("Retrying connection in 30 seconds...");
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				reconnect();
+			}
+		}.runTaskLater(ScorchCore.getInstance(), 20 * 30);
 	}
 
 	@Override
-	public void onError(Exception e) {
-		Logger.error("Error occured with websocket: " + e.getMessage());
-		e.printStackTrace();
+	public void onError(Exception ex) {
+
 	}
 }

@@ -21,7 +21,6 @@ import com.scorch.core.ScorchCore;
 import com.scorch.core.events.punishment.PunishmentCreateEvent;
 import com.scorch.core.events.punishment.PunishmentEvent;
 import com.scorch.core.events.punishment.PunishmentUpdateEvent;
-import com.scorch.core.events.punishment.TestEvent;
 import com.scorch.core.modules.communication.CommunicationModule;
 import com.scorch.core.modules.communication.exceptions.WebSocketException;
 import com.scorch.core.modules.data.annotations.DataIgnore;
@@ -95,7 +94,6 @@ public class Punishment implements Comparable<Punishment> {
 		CommunicationModule cm = ScorchCore.getInstance().getCommunicationModule();
 		try {
 			cm.dispatchEvent(new PunishmentCreateEvent(this));
-			cm.dispatchEvent(new TestEvent(this));
 		} catch (WebSocketException e) {
 			e.printStackTrace();
 		}
@@ -246,6 +244,8 @@ public class Punishment implements Comparable<Punishment> {
 		ItemMeta meta = item.getItemMeta();
 		meta.setDisplayName(MSG.color("&r" + punishType.getColored()));
 		List<String> lore = new ArrayList<>();
+		lore.add(MSG.color("&aPlayer: &b"
+				+ (getTargetPlayer().getName() == null ? target.toString() : getTargetPlayer().getName())));
 		lore.add(MSG.color("&3Staff: &b" + staff));
 		lore.add(MSG.color("&3Reason: &b" + reason));
 		if (punishType == PunishType.IP_BAN)
