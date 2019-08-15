@@ -94,18 +94,15 @@ public class ScorchCore extends JavaPlugin implements PluginMessageListener {
 		this.modules = new HashSet<>();
 
 		// Data modules
-		this.communicationModule = (CommunicationModule) registerModule(new CommunicationModule("CommunicationModule"),
+		this.communicationModule = registerModule(new CommunicationModule("CommunicationModule"),
 				ModulePriority.HIGHEST);
 		registerModule(new ConnectionManager("ConnectionManager"), ModulePriority.HIGHEST);
-//		this.dataManager = (DataManager) registerModule(
-//				new DataManager("DataManager", (ConnectionManager) getModule("ConnectionManager")),
-//				ModulePriority.HIGHEST);
-		this.dataManager = register(new DataManager("DataManager", (ConnectionManager) getModule("ConnectionManager")),
+		this.dataManager = registerModule(
+				new DataManager("DataManager", (ConnectionManager) getModule("ConnectionManager")),
 				ModulePriority.HIGHEST);
 
-		this.messages = (MessagesModule) registerModule(new MessagesModule("MessagesModule"), ModulePriority.HIGH);
-		this.permissionModule = (PermissionModule) registerModule(new PermissionModule("PermissionModule"),
-				ModulePriority.HIGH);
+		this.messages = registerModule(new MessagesModule("MessagesModule"), ModulePriority.HIGH);
+		this.permissionModule = registerModule(new PermissionModule("PermissionModule"), ModulePriority.HIGH);
 		registerModule(new BuildModeModule("BuildModeModule"), ModulePriority.HIGH);
 		registerModule(new WorldProtectionModule("WorldProtectionModule"), ModulePriority.HIGH);
 		registerModule(new PlayerCombatModule("PlayerCombatModule"), ModulePriority.HIGH);
@@ -115,9 +112,9 @@ public class ScorchCore extends JavaPlugin implements PluginMessageListener {
 		registerModule(new BanwaveModule("BanwaveModule"), ModulePriority.MEDIUM);
 		registerModule(new OfflineMessagesModule("OfflineMessagesModule"), ModulePriority.MEDIUM);
 		registerModule(new ReportModule("ReportModule"), ModulePriority.MEDIUM);
-		this.pMod = (PunishModule) registerModule(new PunishModule("PunishModule"), ModulePriority.MEDIUM);
-		this.commands = (CommandModule) registerModule(new CommandModule("CommandModule"), ModulePriority.MEDIUM);
-		this.economy = (EconomyModule) registerModule(new EconomyModule("EconomyModule"), ModulePriority.MEDIUM);
+		this.pMod = registerModule(new PunishModule("PunishModule"), ModulePriority.MEDIUM);
+		this.commands = registerModule(new CommandModule("CommandModule"), ModulePriority.MEDIUM);
+		this.economy = registerModule(new EconomyModule("EconomyModule"), ModulePriority.MEDIUM);
 
 		registerModule(new ChatModule("ChatModule"), ModulePriority.LOW);
 		registerModule(new TeleportModule("TeleportModule"), ModulePriority.LOW);
@@ -229,6 +226,25 @@ public class ScorchCore extends JavaPlugin implements PluginMessageListener {
 		return registeredModules;
 	}
 
+//	/**
+//	 * Registers a module to be initialised. Modules will be initialised using
+//	 * {@link ModulePriority}.
+//	 * 
+//	 * @param module   the module to register
+//	 * @param priority the module's priority
+//	 * @deprecated
+//	 *
+//	 * @see ModulePriority
+//	 */
+//	public AbstractModule registerModule(AbstractModule module, ModulePriority priority) {
+//		if (this.modules.add(module)) {
+//			this.getRegisteredModules().put(module, priority);
+//		} else {
+//			Logger.warn("Module (" + module.getId() + ") is already registered!");
+//		}
+//		return modules.stream().filter(m -> m == module).findFirst().orElse(null);
+//	}
+
 	/**
 	 * Registers a module to be initialised. Modules will be initialised using
 	 * {@link ModulePriority}.
@@ -238,17 +254,8 @@ public class ScorchCore extends JavaPlugin implements PluginMessageListener {
 	 *
 	 * @see ModulePriority
 	 */
-	public AbstractModule registerModule(AbstractModule module, ModulePriority priority) {
-		if (this.modules.add(module)) {
-			this.getRegisteredModules().put(module, priority);
-		} else {
-			Logger.warn("Module (" + module.getId() + ") is already registered!");
-		}
-		return modules.stream().filter(m -> m == module).findFirst().orElse(null);
-	}
-
 	@SuppressWarnings("unchecked")
-	public <T extends AbstractModule> T register(T module, ModulePriority priority) {
+	public <T extends AbstractModule> T registerModule(T module, ModulePriority priority) {
 		if (this.modules.add(module)) {
 			this.getRegisteredModules().put(module, priority);
 		} else {

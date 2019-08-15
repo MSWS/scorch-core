@@ -13,6 +13,7 @@ import org.bukkit.scoreboard.Team;
 
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.AbstractModule;
+import com.scorch.core.modules.staff.TrustModule;
 import com.scorch.core.utils.MSG;
 
 /**
@@ -52,7 +53,8 @@ public class ScoreboardModule extends AbstractModule {
 					setLine(p, 5, " ");
 					setLine(p, 4, " ");
 					setLine(p, 3, "");
-					setLine(p, 2, System.currentTimeMillis() + "");
+					setLine(p, 2, ScorchCore.getInstance().getModule("TrustModule", TrustModule.class)
+							.getTrust(p.getUniqueId()) + "");
 					setLine(p, 1, "&escorchgamez.net");
 
 				}

@@ -107,7 +107,7 @@ public class MessagesModule extends AbstractModule implements Listener {
 		defaults.add(new CMessage("announcement-subtitle", "&b%msg%"));
 		defaults.add(new CMessage("announcement-message", "&3Announcement> &b%msg%"));
 		defaults.add(new CMessage("report-resolved",
-				"&9Report &b%id% &7was marked as &e%status% &7by &a%staff%&7. Reason: &b%reason%"));
+				"&b%id% &7was marked as &e%status% &7by &a%staff%&7. Reason: &b%reason%"));
 		defaults.add(new CMessage("abusive-report",
 				"&c&lWARNING &7Abusing the report system will result in a &4Report Ban&7."));
 //		defaults.add(new CMessage("", ""));

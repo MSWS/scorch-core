@@ -67,7 +67,7 @@ public class Report implements Comparable<Report> {
 				OfflineMessagesModule.class);
 
 		String rr = ScorchCore.getInstance().getMessage("report-resolved").replace("%staff%", staff).replace("%id%", id)
-				.replace("%status%", MSG.camelCase(type + "").replace("%reason%", resolution));
+				.replace("%status%", MSG.camelCase(type + "")).replace("%reason%", resolution);
 
 		OfflineMessage main = new OfflineMessage("Report", reporter, rr);
 
