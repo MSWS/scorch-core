@@ -7,6 +7,7 @@ import com.scorch.core.modules.data.annotations.DataPrimaryKey;
 public class OfflineMessage implements Comparable<OfflineMessage> {
 	@DataPrimaryKey
 	private UUID uuid;
+
 	private String sender;
 	private UUID receiver;
 	private String message;

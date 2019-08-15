@@ -15,6 +15,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.scorch.core.ScorchCore;
 import com.scorch.core.modules.data.annotations.DataNotNull;
 import com.scorch.core.modules.data.annotations.DataPrimaryKey;
+import com.scorch.core.modules.messages.OfflineMessage;
+import com.scorch.core.modules.messages.OfflineMessagesModule;
 import com.scorch.core.modules.staff.TrustModule;
 import com.scorch.core.utils.MSG;
 
@@ -39,7 +41,6 @@ public class Report implements Comparable<Report> {
 	}
 
 	public Report(UUID reporter, UUID target, ReportType type, String reason) {
-
 		ReportModule rm = ScorchCore.getInstance().getModule("ReportModule", ReportModule.class);
 		do {
 			this.id = MSG.genUUID(6);
@@ -61,6 +62,20 @@ public class Report implements Comparable<Report> {
 		this.staff = staff;
 		this.resolution = resolution;
 		this.resType = type;
+
+		OfflineMessagesModule omm = ScorchCore.getInstance().getModule("OfflineMessagesModule",
+				OfflineMessagesModule.class);
+
+		String rr = ScorchCore.getInstance().getMessage("report-resolved").replace("%staff%", staff).replace("%id%", id)
+				.replace("%status%", MSG.camelCase(type + "").replace("%reason%", resolution));
+
+		OfflineMessage main = new OfflineMessage("Report", reporter, rr);
+
+		omm.addMessage(main, true);
+		if (type != ResolutionType.ABUSE)
+			return;
+		omm.addMessage(new OfflineMessage("Report", reporter, ScorchCore.getInstance().getMessage("abusive-report")),
+				true);
 	}
 
 	public boolean isHandled() {
