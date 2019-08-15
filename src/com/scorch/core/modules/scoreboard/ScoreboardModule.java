@@ -1,5 +1,7 @@
 package com.scorch.core.modules.scoreboard;
 
+import java.text.SimpleDateFormat;
+
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -39,9 +41,13 @@ public class ScoreboardModule extends AbstractModule {
 			@Override
 			public void run() {
 				int online = ScorchCore.getInstance().getCommunicationModule().getNetworkOnlinePlayers().size();
+
+				SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/YYYY");
+
 				for (Player p : Bukkit.getOnlinePlayers()) {
-					setLine(p, 15, "&aWelcome to &cScorch&6Gamez&e!");
-					setLine(p, 14, " ");
+					setLine(p, 15, "&8" + sdf.format(System.currentTimeMillis()) + " &6- "
+							+ ScorchCore.getInstance().getServerName());
+					setLine(p, 14, "&aWelcome to &cScorch&6Gamez&e!");
 					setLine(p, 13, " ");
 					setLine(p, 12, " ");
 					setLine(p, 11, "&eCurrently online: &e" + online);
@@ -53,8 +59,8 @@ public class ScoreboardModule extends AbstractModule {
 					setLine(p, 5, " ");
 					setLine(p, 4, " ");
 					setLine(p, 3, "");
-					setLine(p, 2, ScorchCore.getInstance().getModule("TrustModule", TrustModule.class)
-							.getTrust(p.getUniqueId()) + "");
+					setLine(p, 2, MSG.parseDecimal(ScorchCore.getInstance().getModule("TrustModule", TrustModule.class)
+							.getTrust(p.getUniqueId()) + "", 2));
 					setLine(p, 1, "&escorchgamez.net");
 
 				}
