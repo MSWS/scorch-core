@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -28,6 +29,9 @@ public class PlaytimeModule extends AbstractModule implements Listener {
 		Bukkit.getPluginManager().registerEvents(this, ScorchCore.getInstance());
 
 		loginTimes = new HashMap<UUID, Long>();
+
+		for (Player p : Bukkit.getOnlinePlayers())
+			loginTimes.put(p.getUniqueId(), System.currentTimeMillis());
 
 		new BukkitRunnable() {
 			@Override
@@ -65,7 +69,6 @@ public class PlaytimeModule extends AbstractModule implements Listener {
 		} else {
 			return sp.getData("playtime", Number.class, 0).longValue();
 		}
-
 	}
 
 	@EventHandler

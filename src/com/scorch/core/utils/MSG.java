@@ -209,6 +209,10 @@ public class MSG {
 	}
 
 	public static String getTime(long mils) {
+		if (mils == 0) {
+			return "Just Now";
+		}
+
 		boolean isNegative = mils < 0;
 		double mil = Math.abs(mils);
 		String names[] = { "milliseconds", "seconds", "minutes", "hours", "days", "weeks", "months", "years", "decades",

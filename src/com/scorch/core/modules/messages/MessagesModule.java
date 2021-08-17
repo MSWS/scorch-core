@@ -106,7 +106,10 @@ public class MessagesModule extends AbstractModule implements Listener {
 		defaults.add(new CMessage("announcement-title", "&c&lANNOUNCEMENT"));
 		defaults.add(new CMessage("announcement-subtitle", "&b%msg%"));
 		defaults.add(new CMessage("announcement-message", "&3Announcement> &b%msg%"));
-
+		defaults.add(new CMessage("report-resolved",
+				"&b%id% &7was marked as &e%status% &7by &a%staff%&7. Reason: &b%reason%"));
+		defaults.add(new CMessage("abusive-report",
+				"&c&lWARNING &7Abusing the report system will result in a &4Report Ban&7."));
 //		defaults.add(new CMessage("", ""));
 	}
 
@@ -138,7 +141,6 @@ public class MessagesModule extends AbstractModule implements Listener {
 					Logger.log("&e" + msg.getId() + " &cdoes not exist&b, saving default.");
 				}
 			} catch (DataUpdateException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			Logger.log("&aSuccessfully loaded &e" + messages.size() + "&a message" + (messages.size() == 1 ? "" : "s")
@@ -183,7 +185,6 @@ public class MessagesModule extends AbstractModule implements Listener {
 		try {
 			ScorchCore.getInstance().getCommunicationModule().dispatchEvent(mre);
 		} catch (WebSocketException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -204,7 +205,6 @@ public class MessagesModule extends AbstractModule implements Listener {
 		try {
 			ScorchCore.getInstance().getCommunicationModule().dispatchEvent(mre);
 		} catch (WebSocketException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -142,7 +142,7 @@ public class Punishment implements Comparable<Punishment> {
 				} else {
 					OfflineMessagesModule omm = (OfflineMessagesModule) ScorchCore.getInstance()
 							.getModule("OfflineMessagesModule");
-					omm.addMessage(new OfflineMessage("> ", target.getUniqueId(), msg));
+					omm.addMessage(new OfflineMessage("> ", target.getUniqueId(), msg), true);
 				}
 		}
 

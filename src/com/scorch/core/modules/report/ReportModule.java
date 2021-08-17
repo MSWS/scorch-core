@@ -23,6 +23,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.scorch.core.ScorchCore;
+import com.scorch.core.events.reports.ReportListener;
 import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
@@ -66,6 +67,7 @@ public class ReportModule extends AbstractModule {
 
 		listener = new ReportInventoryListener();
 		chatListener = new ReportChatListener();
+		new ReportListener();
 
 		(messenger = sendReportMessages()).runTaskTimer(ScorchCore.getInstance(), 0, 600);
 	}

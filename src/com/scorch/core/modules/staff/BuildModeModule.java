@@ -25,7 +25,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockFertilizeEvent;
 import org.bukkit.event.block.BlockMultiPlaceEvent;
@@ -58,7 +57,6 @@ import com.scorch.core.modules.AbstractModule;
 import com.scorch.core.utils.MSG;
 import com.scorch.core.utils.Utils;
 
-@SuppressWarnings("deprecation")
 /**
  * This module manages and listens to all events related to players in build
  * mode
@@ -323,14 +321,6 @@ public class BuildModeModule extends AbstractModule implements Listener {
 
 		event.setCancelled(false);
 		event.setDropItems(false);
-	}
-
-	@EventHandler(priority = EventPriority.HIGH)
-	public void onDropItem(BlockDropItemEvent event) {
-		if (!isProtected(event.getBlock()))
-			return;
-
-		event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)

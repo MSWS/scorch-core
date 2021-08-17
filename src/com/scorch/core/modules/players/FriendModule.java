@@ -99,7 +99,7 @@ public class FriendModule extends AbstractModule {
 			OfflineMessagesModule omm = ScorchCore.getInstance().getModule("OfflineMessagesModule",
 					OfflineMessagesModule.class);
 			omm.addMessage(new OfflineMessage("Friends", target,
-					Bukkit.getOfflinePlayer(player).getName() + " unfriended you."));
+					Bukkit.getOfflinePlayer(player).getName() + " unfriended you."), true);
 		}
 
 		ScorchCore.getInstance().getDataManager().deleteObjectAsync("friends",

@@ -7,18 +7,25 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.scorch.core.ScorchCore;
+import com.scorch.core.events.messages.OfflineMessageCreateEvent;
+import com.scorch.core.events.messages.OfflineMessageReadEvent;
 import com.scorch.core.modules.AbstractModule;
+import com.scorch.core.modules.communication.exceptions.WebSocketException;
 import com.scorch.core.modules.data.exceptions.DataObtainException;
 import com.scorch.core.modules.data.exceptions.DataPrimaryKeyException;
 import com.scorch.core.modules.data.exceptions.NoDefaultConstructorException;
 import com.scorch.core.utils.Logger;
+import com.scorch.core.utils.MSG;
 
-public class OfflineMessagesModule extends AbstractModule {
+public class OfflineMessagesModule extends AbstractModule implements Listener {
 
 	public OfflineMessagesModule(String id) {
 		super(id);
@@ -58,6 +65,8 @@ public class OfflineMessagesModule extends AbstractModule {
 						+ (linked.size() == 1 ? "" : "s") + ".");
 			}
 		}.runTaskAsynchronously(ScorchCore.getInstance());
+
+		Bukkit.getPluginManager().registerEvents(this, ScorchCore.getInstance());
 	}
 
 	public List<OfflineMessage> getMessages(UUID player) {
@@ -75,13 +84,45 @@ public class OfflineMessagesModule extends AbstractModule {
 		PlayerJoinEvent.getHandlerList().unregister(offlineJoinListener);
 	}
 
-	public void addMessage(OfflineMessage msg) {
+	public void addMessage(OfflineMessage msg, boolean sendEvent) {
+		OfflinePlayer target = Bukkit.getOfflinePlayer(msg.getReceiver());
+
+		MessagesModule mm = ScorchCore.getInstance().getMessages();
+
+		if (target.isOnline()) {
+			MSG.tell(target.getPlayer(),
+					mm.getMessage("offlinemessageformat").getMessage().replace("%sender%", msg.getSender())
+							.replace("%message%", msg.getMessage())
+							.replace("%time%", MSG.getTime(System.currentTimeMillis() - msg.getSentTime())));
+			update(msg, msg.read());
+			ScorchCore.getInstance().getDataManager().updateObjectAsync("offlinemessages", msg);
+			return;
+		}
+
 		offline.add(msg);
 
 		List<OfflineMessage> temp = linked.getOrDefault(msg.getReceiver(), new ArrayList<>());
 		temp.add(msg);
 		linked.put(msg.getReceiver(), temp);
+
+		OfflineMessageCreateEvent event = new OfflineMessageCreateEvent(msg);
+		try {
+			ScorchCore.getInstance().getCommunicationModule().dispatchEvent(event);
+		} catch (WebSocketException e) {
+			e.printStackTrace();
+		}
+
 		ScorchCore.getInstance().getDataManager().updateObjectAsync("offlinemessages", msg);
+	}
+
+	@EventHandler
+	public void messageCreate(OfflineMessageCreateEvent event) {
+		addMessage(event.getMessage(), false);
+	}
+
+	@EventHandler
+	public void messageRead(OfflineMessageReadEvent event) {
+		update(event.getMessage(), event.getMessage().read());
 	}
 
 	public void update(OfflineMessage old, OfflineMessage newM) {

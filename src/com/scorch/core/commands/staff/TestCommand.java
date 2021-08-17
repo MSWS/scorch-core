@@ -135,7 +135,7 @@ public class TestCommand extends BukkitCommand {
 			OfflineMessage off = new OfflineMessage(sender.getName(), Bukkit.getOfflinePlayer(args[1]).getUniqueId(),
 					msg.toString().trim());
 
-			om.addMessage(off);
+			om.addMessage(off, true);
 			break;
 		case "enablecmd":
 			if (args.length < 2) {
